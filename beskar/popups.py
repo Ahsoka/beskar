@@ -1,5 +1,7 @@
 from PyQt6 import QtCore, QtWidgets, QtTest
 from nidaqmx.system import System
+from .utils import apply_voltage
+from .constants import offset
 
 import nidaqmx
 
@@ -35,7 +37,7 @@ class MultipleSEALKitsPopup(QtWidgets.QDialog):
     def on_push_button_clicked(self):
          self.parent.device_name = self.combo_box.currentText()
          self.accept()
-         self.parent.write_2_5_volts()
+         apply_voltage(self.parent.device_name)
          self.parent.enter_volts_popup.show()
 
     def closeEvent(self, close_event):
@@ -96,7 +98,7 @@ class NoSEALKitPopup(QtWidgets.QDialog):
         elif self.push_button.text() == 'OK':
             self.parent.device_name = self.combo_box.currentText()
             self.accept()
-            self.parent.write_2_5_volts()
+            apply_voltage(self.parent.device_name)
             self.parent.enter_volts_popup.show()
         else:
             raise RuntimeError('This should never be triggered.')
@@ -158,19 +160,9 @@ class EnterVoltsPopup(QtWidgets.QDialog):
     @QtCore.pyqtSlot(int)
     def on_horizontal_slider_valueChanged(self, position):
         self.double_spin_box.setValue(position / 1000)
-        self.apply_voltage(position / 1000)
+        apply_voltage(self.parent.device_name, position / 1000 + offset)
 
     @QtCore.pyqtSlot(float)
     def on_double_spin_box_valueChanged(self, value):
         self.horizontal_slider.setValue(int(value * 1000))
-        self.apply_voltage(value)
-
-
-    def apply_voltage(self, voltage):
-        with nidaqmx.Task() as task:
-            task.ao_channels.add_ao_voltage_chan(
-                f"{self.parent.device_name}/ao0",
-                min_val=0,
-                max_val=5
-            )
-            task.write(voltage + 2.5)
+        apply_voltage(self.parent.device_name, value + offset)
