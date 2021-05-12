@@ -4,8 +4,6 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from nidaqmx.system import System
 from .utils import apply_voltage
 
-import nidaqmx
-
 
 class BeskarWindow(QtWidgets.QWidget):
     def __init__(self):
