@@ -1,6 +1,8 @@
 from PyQt6 import QtCore, QtWidgets, QtTest
 from nidaqmx.system import System
 
+import nidaqmx
+
 
 class MultipleSEALKitsPopup(QtWidgets.QDialog):
     def __init__(self, parent):
@@ -105,3 +107,68 @@ class NoSEALKitPopup(QtWidgets.QDialog):
                 "Please refresh until it is found."
             )
             new_popup.show()
+
+
+class EnterVoltsPopup(QtWidgets.QDialog):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.parent = parent
+
+        self.label = QtWidgets.QLabel(
+            "Enter current reading on multimeter and "
+            "use slider until the reading is zero (or close to zero)"
+        )
+
+
+        self.horizontal_slider = QtWidgets.QSlider(QtCore.Qt.Orientations.Horizontal)
+        self.horizontal_slider.setObjectName('horizontal_slider')
+        self.horizontal_slider.setMaximum(1000)
+
+        self.double_spin_box = QtWidgets.QDoubleSpinBox()
+        self.double_spin_box.setObjectName('double_spin_box')
+        self.double_spin_box.setRange(0, 1)
+        self.double_spin_box.setSingleStep(0.001)
+        self.double_spin_box.setDecimals(3)
+        self.double_spin_box.setSuffix(' Volts')
+
+        self.middle_horizontal_layout = QtWidgets.QHBoxLayout()
+        self.middle_horizontal_layout.addWidget(self.horizontal_slider)
+        self.middle_horizontal_layout.addWidget(self.double_spin_box)
+
+
+        self.push_button = QtWidgets.QPushButton('OK')
+        self.push_button.setObjectName('push_button')
+
+        self.vertical_layout = QtWidgets.QVBoxLayout()
+        self.vertical_layout.addWidget(self.label)
+        self.vertical_layout.addLayout(self.middle_horizontal_layout)
+        self.vertical_layout.addWidget(self.push_button, 0, QtCore.Qt.Alignment.AlignRight)
+
+        self.setLayout(self.vertical_layout)
+
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    @QtCore.pyqtSlot()
+    def on_push_button_clicked(self):
+        self.accept()
+
+    @QtCore.pyqtSlot(int)
+    def on_horizontal_slider_sliderMoved(self, position):
+        self.double_spin_box.setValue(position / 1000)
+        self.apply_voltage(position / 1000)
+
+    @QtCore.pyqtSlot(float)
+    def on_double_spin_box_valueChanged(self, value):
+        self.horizontal_slider.setValue(int(value * 1000))
+        self.apply_voltage(value)
+
+
+    def apply_voltage(self, voltage):
+        with nidaqmx.Task() as task:
+            task.ao_channels.add_ao_voltage_chan(
+                f"{self.parent.device_name}/ao0",
+                min_val=0,
+                max_val=5
+            )
+            task.write(voltage + 2.5)
