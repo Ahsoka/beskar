@@ -3,8 +3,6 @@ from nidaqmx.system import System
 from .utils import apply_voltage
 from .constants import offset
 
-import nidaqmx
-
 
 class MultipleSEALKitsPopup(QtWidgets.QDialog):
     def __init__(self, parent):
