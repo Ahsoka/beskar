@@ -1,6 +1,8 @@
+from typing import Union
+
 import nidaqmx
 
-def apply_voltage(device_name, voltage=2.5, min_val=0, max_val=5):
+def apply_voltage(device_name: str, voltage: Union[float, int] = 2.5, min_val: int = 0, max_val: int = 5):
     with nidaqmx.Task() as task:
         task.ao_channels.add_ao_voltage_chan(
             f'{device_name}/ao0',
