@@ -154,7 +154,7 @@ class EnterVoltsPopup(QtWidgets.QDialog):
         self.accept()
 
     @QtCore.pyqtSlot(int)
-    def on_horizontal_slider_sliderMoved(self, position):
+    def on_horizontal_slider_valueChanged(self, position):
         self.double_spin_box.setValue(position / 1000)
         self.apply_voltage(position / 1000)
 
