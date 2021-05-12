@@ -75,7 +75,7 @@ class NoSEALKitPopup(QtWidgets.QDialog):
     def on_push_button_clicked(self):
         if self.push_button.text() == 'Refresh':
             self.label.setText('Looking')
-            for iterr in range(5):
+            for _ in range(5):
                 QtTest.QTest.qWait(100)
                 self.label.setText(f"{self.label.text()}.")
             system = System.local()
