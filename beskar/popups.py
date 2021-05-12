@@ -80,7 +80,7 @@ class NoSEALKitPopup(QtWidgets.QDialog):
                 self.label.setText(f"{self.label.text()}.")
             system = System.local()
             if len(system.devices) == 0:
-                self.label.setText('SEAL kit not detected please try refreshing again')
+                self.label.setText('SEAL kit not detected, please try refreshing again.')
             else:
                 for device_name in system.devices.device_names:
                     self.combo_box.addItem(device_name)
