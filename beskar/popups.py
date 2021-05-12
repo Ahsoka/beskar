@@ -35,6 +35,7 @@ class MultipleSEALKitsPopup(QtWidgets.QDialog):
     def on_push_button_clicked(self):
          self.parent.device_name = self.combo_box.currentText()
          self.accept()
+         self.parent.write_2_5_volts()
          self.parent.enter_volts_popup.show()
 
     def closeEvent(self, close_event):
@@ -95,6 +96,7 @@ class NoSEALKitPopup(QtWidgets.QDialog):
         elif self.push_button.text() == 'OK':
             self.parent.device_name = self.combo_box.currentText()
             self.accept()
+            self.parent.write_2_5_volts()
             self.parent.enter_volts_popup.show()
         else:
             raise RuntimeError('This should never be triggered.')
