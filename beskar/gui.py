@@ -1,4 +1,3 @@
-from beskar.utils import apply_voltage
 from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
 from PyQt6 import QtCore, QtGui, QtWidgets
 from nidaqmx.system import System
