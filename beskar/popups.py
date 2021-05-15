@@ -2,11 +2,10 @@ from PyQt6 import QtCore, QtWidgets, QtTest
 from nidaqmx.system import System
 from .utils import apply_voltage
 from .constants import offset
-from .gui import BeskarWindow
 
 
 class MultipleSEALKitsPopup(QtWidgets.QDialog):
-    def __init__(self, parent: BeskarWindow):
+    def __init__(self, parent):
         super().__init__(parent)
 
         self.parent = parent
@@ -49,7 +48,7 @@ class MultipleSEALKitsPopup(QtWidgets.QDialog):
 
 
 class NoSEALKitPopup(QtWidgets.QDialog):
-    def __init__(self, parent: BeskarWindow):
+    def __init__(self, parent):
         super().__init__(parent)
 
         self.parent = parent
@@ -113,7 +112,7 @@ class NoSEALKitPopup(QtWidgets.QDialog):
 
 
 class EnterVoltsPopup(QtWidgets.QDialog):
-    def __init__(self, parent: BeskarWindow):
+    def __init__(self, parent):
         super().__init__(parent)
 
         self.parent = parent
