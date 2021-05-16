@@ -25,6 +25,7 @@ class MultipleSEALKitsPopup(QtWidgets.QDialog):
 
         self.vertical_layout = QtWidgets.QVBoxLayout()
         self.vertical_layout.addWidget(self.label)
+        self.vertical_layout.addWidget(self.combo_box)
         self.vertical_layout.addWidget(self.push_button, 0, QtCore.Qt.Alignment.AlignRight)
 
         self.setLayout(self.vertical_layout)
