@@ -30,6 +30,8 @@ class MultipleSEALKitsPopup(QtWidgets.QDialog):
 
         self.setLayout(self.vertical_layout)
 
+        self.setWindowFlag(QtCore.Qt.WindowFlags.WindowCloseButtonHint, on=False)
+
         QtCore.QMetaObject.connectSlotsByName(self)
 
     @QtCore.pyqtSlot()
@@ -70,6 +72,8 @@ class NoSEALKitPopup(QtWidgets.QDialog):
         self.vertical_layout.addWidget(self.push_button, 0, QtCore.Qt.Alignment.AlignRight)
 
         self.setLayout(self.vertical_layout)
+
+        self.setWindowFlag(QtCore.Qt.WindowFlags.WindowCloseButtonHint, on=False)
 
         QtCore.QMetaObject.connectSlotsByName(self)
 
