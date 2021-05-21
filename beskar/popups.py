@@ -3,6 +3,8 @@ from nidaqmx.system import System
 from .utils import apply_voltage
 from .constants import offset
 
+import sys
+
 
 class MultipleSEALKitsPopup(QtWidgets.QDialog):
     def __init__(self, parent):
@@ -30,7 +32,7 @@ class MultipleSEALKitsPopup(QtWidgets.QDialog):
 
         self.setLayout(self.vertical_layout)
 
-        self.setWindowFlag(QtCore.Qt.WindowFlags.WindowCloseButtonHint, on=False)
+        # self.setWindowFlag(QtCore.Qt.WindowFlags.WindowCloseButtonHint, on=False)
 
         QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -39,15 +41,10 @@ class MultipleSEALKitsPopup(QtWidgets.QDialog):
          self.parent.device_name = self.combo_box.currentText()
          self.accept()
          apply_voltage(self.parent.device_name)
-         self.parent.enter_volts_popup.show()
+         self.parent.enter_volts_popup.open()
 
     def closeEvent(self, close_event):
-        if not self.parent.closing:
-            new_popup = MultipleSEALKitsPopup(self.parent)
-            new_popup.label.setText(
-                "You must select which SEAL kit you want to use before starting the program."
-            )
-            new_popup.show()
+        sys.exit()
 
 
 class NoSEALKitPopup(QtWidgets.QDialog):
@@ -73,7 +70,7 @@ class NoSEALKitPopup(QtWidgets.QDialog):
 
         self.setLayout(self.vertical_layout)
 
-        self.setWindowFlag(QtCore.Qt.WindowFlags.WindowCloseButtonHint, on=False)
+        # self.setWindowFlag(QtCore.Qt.WindowFlags.WindowCloseButtonHint, on=False)
 
         QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -102,18 +99,12 @@ class NoSEALKitPopup(QtWidgets.QDialog):
             self.parent.device_name = self.combo_box.currentText()
             self.accept()
             apply_voltage(self.parent.device_name)
-            self.parent.enter_volts_popup.show()
+            self.parent.enter_volts_popup.open()
         else:
             raise RuntimeError('This should never be triggered.')
 
     def closeEvent(self, close_event):
-        if not self.parent.closing:
-            new_popup = NoSEALKitPopup(self.parent)
-            new_popup.label.setText(
-                "You cannot use the progam until the SEAL kit is detected. "
-                "Please refresh until it is found."
-            )
-            new_popup.show()
+        sys.exit()
 
 
 class EnterVoltsPopup(QtWidgets.QDialog):

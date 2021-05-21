@@ -14,10 +14,10 @@ class BeskarWindow(QtWidgets.QWidget):
         self.enter_volts_popup = EnterVoltsPopup(self)
         if len(system.devices) > 1:
             popup = MultipleSEALKitsPopup(self)
-            popup.show()
+            popup.exec()
         elif len(system.devices) == 0:
             popup = NoSEALKitPopup(self)
-            popup.show()
+            popup.exec()
         elif len(system.devices) == 1:
             self.device_name = system.devices.device_names[0]
             apply_voltage(self.device_name)
