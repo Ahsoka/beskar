@@ -127,8 +127,6 @@ class BeskarWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.closing = False
-
         system = System.local()
         self.enter_volts_popup = EnterVoltsPopup(self)
         if len(system.devices) > 1:
@@ -192,6 +190,3 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.menu_group_box = QtWidgets.QGroupBox()
         self.menu_group_box.setLayout(self.vertical_menu_layout)
-
-    def closeEvent(self, close_event):
-        self.closing = True
