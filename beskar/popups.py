@@ -28,7 +28,7 @@ class MultipleSEALKitsPopup(QtWidgets.QDialog):
         self.vertical_layout = QtWidgets.QVBoxLayout()
         self.vertical_layout.addWidget(self.label)
         self.vertical_layout.addWidget(self.combo_box)
-        self.vertical_layout.addWidget(self.push_button, 0, QtCore.Qt.Alignment.AlignRight)
+        self.vertical_layout.addWidget(self.push_button, 0, QtCore.Qt.AlignmentFlag.AlignRight)
 
         self.setLayout(self.vertical_layout)
 
@@ -66,7 +66,7 @@ class NoSEALKitPopup(QtWidgets.QDialog):
 
         self.vertical_layout = QtWidgets.QVBoxLayout()
         self.vertical_layout.addWidget(self.label)
-        self.vertical_layout.addWidget(self.push_button, 0, QtCore.Qt.Alignment.AlignRight)
+        self.vertical_layout.addWidget(self.push_button, 0, QtCore.Qt.AlignmentFlag.AlignRight)
 
         self.setLayout(self.vertical_layout)
 
@@ -119,7 +119,7 @@ class EnterVoltsPopup(QtWidgets.QDialog):
         )
 
 
-        self.horizontal_slider = QtWidgets.QSlider(QtCore.Qt.Orientations.Horizontal)
+        self.horizontal_slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
         self.horizontal_slider.setObjectName('horizontal_slider')
         self.horizontal_slider.setMaximum(1000)
 
@@ -141,7 +141,7 @@ class EnterVoltsPopup(QtWidgets.QDialog):
         self.vertical_layout = QtWidgets.QVBoxLayout()
         self.vertical_layout.addWidget(self.label)
         self.vertical_layout.addLayout(self.middle_horizontal_layout)
-        self.vertical_layout.addWidget(self.push_button, 0, QtCore.Qt.Alignment.AlignRight)
+        self.vertical_layout.addWidget(self.push_button, 0, QtCore.Qt.AlignmentFlag.AlignRight)
 
         self.setLayout(self.vertical_layout)
 

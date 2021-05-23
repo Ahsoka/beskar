@@ -25,7 +25,7 @@ class ApplyVoltagePage(QtWidgets.QWidget):
         self.min_voltage = -round(5 - offset - self.parent.voltage_offset, 3)
         self.max_voltage = -round(-offset - self.parent.voltage_offset, 3)
 
-        self.horizontal_slider = QtWidgets.QSlider(QtCore.Qt.Orientations.Horizontal)
+        self.horizontal_slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
         self.horizontal_slider.setObjectName('horizontal_slider')
         self.horizontal_slider.setMaximum(5000)
         self.horizontal_slider.setValue(abs(int(self.min_voltage * 1000)))
@@ -56,12 +56,12 @@ class ApplyVoltagePage(QtWidgets.QWidget):
         self.interactable_layout.setContentsMargins(
             self.interactable_layout.contentsMargins()
         )
-        self.interactable_layout.addWidget(self.apply_voltage_label, 0, QtCore.Qt.Alignment.AlignHCenter)
+        self.interactable_layout.addWidget(self.apply_voltage_label, 0, QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.interactable_layout.addItem(spacer1)
         self.interactable_layout.addLayout(interaction_hbox)
-        self.interactable_layout.addWidget(self.warning_label, alignment=QtCore.Qt.Alignment.AlignRight)
+        self.interactable_layout.addWidget(self.warning_label, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
         self.warning_label.hide()
-        self.interactable_layout.addWidget(self.apply_button, 0, QtCore.Qt.Alignment.AlignRight)
+        self.interactable_layout.addWidget(self.apply_button, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         self.interactable_layout.addItem(spacer1)
 
         self.help_tab_header = QtWidgets.QLabel("About Apply Voltage")
@@ -144,7 +144,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.apply_voltage_widget = ApplyVoltagePage(self)
 
-        self.splitter = QtWidgets.QSplitter(QtCore.Qt.Orientations.Horizontal)
+        self.splitter = QtWidgets.QSplitter(QtCore.Qt.Orientation.Horizontal)
         self.splitter.addWidget(self.menu_group_box)
         self.splitter.addWidget(self.apply_voltage_widget)
 
