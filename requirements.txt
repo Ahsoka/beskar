@@ -1,3 +1,4 @@
 nidaqmx
+PyQt6-Charts
 PyQt6
 lorem # Only temporary will remove once the real text is typed
