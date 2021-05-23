@@ -1,7 +1,7 @@
 from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
 from PyQt6 import QtCore, QtGui, QtWidgets
 from nidaqmx.system import System
-from .constants import h1_font, offset
+from .constants import offset
 from .utils import apply_voltage
 
 import lorem
@@ -15,8 +15,7 @@ class ApplyVoltagePage(QtWidgets.QWidget):
 
         self.current_voltage_applied = 0
 
-        self.apply_voltage_label = QtWidgets.QLabel("Apply Voltage")
-        self.apply_voltage_label.setFont(h1_font)
+        self.apply_voltage_label = QtWidgets.QLabel("<h1>Apply Voltage</h1>")
 
         spacer1 = QtWidgets.QSpacerItem(
             0, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
@@ -64,8 +63,7 @@ class ApplyVoltagePage(QtWidgets.QWidget):
         self.interactable_layout.addWidget(self.apply_button, 0, QtCore.Qt.AlignmentFlag.AlignRight)
         self.interactable_layout.addItem(spacer1)
 
-        self.help_tab_header = QtWidgets.QLabel("About Apply Voltage")
-        self.help_tab_header.setFont(h1_font)
+        self.help_tab_header = QtWidgets.QLabel("<h1>About Apply Voltage</h1>")
 
         self.help_tab_desc = QtWidgets.QLabel(lorem.text())
         self.help_tab_desc.setWordWrap(True)
