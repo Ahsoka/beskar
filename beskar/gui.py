@@ -22,15 +22,19 @@ class ApplyVoltagePage(QtWidgets.QWidget):
             0, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
         )
 
+        self.min_voltage = -round(5 - offset - self.parent.voltage_offset, 3)
+        self.max_voltage = -round(-offset - self.parent.voltage_offset, 3)
+
         self.horizontal_slider = QtWidgets.QSlider(QtCore.Qt.Orientations.Horizontal)
         self.horizontal_slider.setObjectName('horizontal_slider')
-        self.horizontal_slider.setMaximum(1000)
-        self.horizontal_slider.setValue(500)
+        self.horizontal_slider.setMaximum(5000)
+        self.horizontal_slider.setValue(abs(int(self.min_voltage * 1000)))
 
         self.double_spin_box = QtWidgets.QDoubleSpinBox()
         self.double_spin_box.setObjectName('double_spin_box')
-        self.double_spin_box.setRange(-5, 5)
-        self.double_spin_box.setSingleStep(0.01)
+        self.double_spin_box.setRange(self.min_voltage, self.max_voltage)
+        self.double_spin_box.setSingleStep(0.001)
+        self.double_spin_box.setDecimals(3)
         self.double_spin_box.setSuffix(' Volts')
 
         self.apply_button = QtWidgets.QPushButton('Apply')
@@ -80,17 +84,17 @@ class ApplyVoltagePage(QtWidgets.QWidget):
 
     @QtCore.pyqtSlot(float)
     def on_double_spin_box_valueChanged(self, value):
-        value = round(value, 2)
+        value = round(value, 3)
         self.voltage_to_be_applied = value
         if self.voltage_to_be_applied == self.current_voltage_applied:
             self.apply_button.setEnabled(False)
         elif not self.apply_button.isEnabled():
             self.apply_button.setEnabled(True)
-        self.horizontal_slider.setValue(value * 100 + 500)
+        self.horizontal_slider.setValue(round((value - self.min_voltage) * 1000))
 
     @QtCore.pyqtSlot(int)
     def on_horizontal_slider_valueChanged(self, value):
-        self.voltage_to_be_applied = round(value * 0.01 - 5, 2)
+        self.voltage_to_be_applied = round(value * 0.001 + self.min_voltage, 3)
         if self.voltage_to_be_applied == self.current_voltage_applied:
             self.apply_button.setEnabled(False)
         elif not self.apply_button.isEnabled():
@@ -101,6 +105,8 @@ class ApplyVoltagePage(QtWidgets.QWidget):
     def on_apply_button_clicked(self):
         # NOTE: self.voltage_to_be_applied must be inverted (since for whatever reason the
         # SEAL kit applies oppositely charged voltage)
+        # See this for reference: https://github.com/Ahsoka/beskar/blob/main/legacy/get_led_data_12.m#L324
+        # This is the implementation in the legacy software
         self.current_voltage_applied = self.voltage_to_be_applied
         self.apply_button.setEnabled(False)
         apply_voltage(self.parent.device_name, self.parent.voltage_offset + offset - self.voltage_to_be_applied)
@@ -111,14 +117,6 @@ class BeskarWindow(QtWidgets.QMainWindow):
         super().__init__()
 
         self.closing = False
-
-        self.create_options_menu()
-
-        self.apply_voltage_widget = ApplyVoltagePage(self)
-
-        self.splitter = QtWidgets.QSplitter(QtCore.Qt.Orientations.Horizontal)
-        self.splitter.addWidget(self.menu_group_box)
-        self.splitter.addWidget(self.apply_voltage_widget)
 
         system = System.local()
         self.enter_volts_popup = EnterVoltsPopup(self)
@@ -131,7 +129,15 @@ class BeskarWindow(QtWidgets.QMainWindow):
         elif len(system.devices) == 1:
             self.device_name = system.devices.device_names[0]
             apply_voltage(self.device_name)
-            self.enter_volts_popup.open()
+            self.enter_volts_popup.exec()
+
+        self.create_options_menu()
+
+        self.apply_voltage_widget = ApplyVoltagePage(self)
+
+        self.splitter = QtWidgets.QSplitter(QtCore.Qt.Orientations.Horizontal)
+        self.splitter.addWidget(self.menu_group_box)
+        self.splitter.addWidget(self.apply_voltage_widget)
 
         self.setCentralWidget(self.splitter)
         self.splitter.setSizes((1, 100_000))
