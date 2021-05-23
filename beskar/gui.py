@@ -37,6 +37,11 @@ class ApplyVoltagePage(QtWidgets.QWidget):
         self.double_spin_box.setDecimals(3)
         self.double_spin_box.setSuffix(' Volts')
 
+        self.warning_label = QtWidgets.QLabel(
+            '<b>WARNING:</b> This voltage may not be applied accurately'
+            ' due to limitations with the SEAL Kit.'
+        )
+
         self.apply_button = QtWidgets.QPushButton('Apply')
         self.apply_button.setObjectName('apply_button')
         self.apply_button.setEnabled(False)
@@ -54,6 +59,8 @@ class ApplyVoltagePage(QtWidgets.QWidget):
         self.interactable_layout.addWidget(self.apply_voltage_label, 0, QtCore.Qt.Alignment.AlignHCenter)
         self.interactable_layout.addItem(spacer1)
         self.interactable_layout.addLayout(interaction_hbox)
+        self.interactable_layout.addWidget(self.warning_label, alignment=QtCore.Qt.Alignment.AlignRight)
+        self.warning_label.hide()
         self.interactable_layout.addWidget(self.apply_button, 0, QtCore.Qt.Alignment.AlignRight)
         self.interactable_layout.addItem(spacer1)
 
@@ -86,6 +93,10 @@ class ApplyVoltagePage(QtWidgets.QWidget):
     def on_double_spin_box_valueChanged(self, value):
         value = round(value, 3)
         self.voltage_to_be_applied = value
+        if value >= 0.75 * self.max_voltage or value <= 0.75 * self.min_voltage:
+            self.warning_label.show()
+        else:
+            self.warning_label.hide()
         if self.voltage_to_be_applied == self.current_voltage_applied:
             self.apply_button.setEnabled(False)
         elif not self.apply_button.isEnabled():
