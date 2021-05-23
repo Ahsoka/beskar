@@ -112,6 +112,7 @@ class EnterVoltsPopup(QtWidgets.QDialog):
         super().__init__(parent)
 
         self.parent = parent
+        self.parent.voltage_offset = 0
 
         self.label = QtWidgets.QLabel(
             "Enter current reading on multimeter and "
