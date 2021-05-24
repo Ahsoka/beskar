@@ -1,4 +1,5 @@
 from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui
+from .utils import apply_voltage
 from .constants import offset
 
 import nidaqmx
