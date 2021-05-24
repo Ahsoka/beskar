@@ -205,7 +205,6 @@ class DarkCurrentPage(QtWidgets.QWidget):
             self.samples = samples
             self.y_axis.setRange(min(self.samples) * 0.9 ,max(self.samples) * 1.1)
             for num, sample in enumerate(self.samples):
-                print(f'Adding :{num + 1, sample}')
                 self.scatter.append(num + 1, sample)
 
     @QtCore.pyqtSlot()
