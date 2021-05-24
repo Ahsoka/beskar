@@ -1,5 +1,5 @@
 from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
-from PyQt6 import QtCore, QtCharts, QtWidgets
+from PyQt6 import QtCore, QtCharts, QtWidgets, QtGui
 from nidaqmx.system import System
 from .constants import offset
 from .utils import apply_voltage
@@ -151,6 +151,7 @@ class DarkCurrentPage(QtWidgets.QWidget):
         self.chart.legend().hide()
 
         self.chart_view = QtCharts.QChartView(self.chart)
+        self.chart_view.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
 
         self.refresh_button = QtWidgets.QPushButton('Refresh')
         self.refresh_button.setObjectName('refresh_button')
