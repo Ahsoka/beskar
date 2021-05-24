@@ -1,9 +1,10 @@
 from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
-from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtCharts, QtWidgets
 from nidaqmx.system import System
 from .constants import offset
 from .utils import apply_voltage
 
+import nidaqmx
 import lorem
 
 
@@ -121,6 +122,96 @@ class ApplyVoltagePage(QtWidgets.QWidget):
         apply_voltage(self.parent.device_name, self.parent.voltage_offset + offset - self.voltage_to_be_applied)
 
 
+class DarkCurrentPage(QtWidgets.QWidget):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.parent = parent
+
+        self.x_axis = QtCharts.QCategoryAxis()
+        self.x_axis.setRange(0.5, 10.5)
+        for num in range(10):
+            self.x_axis.append(str(num + 1), num + 1)
+        self.x_axis.setLabelsPosition(QtCharts.QCategoryAxis.AxisLabelsPosition.AxisLabelsPositionOnValue)
+        self.x_axis.setTitleText('Sample Number')
+
+        self.y_axis = QtCharts.QValueAxis()
+        self.y_axis.setTitleText('Voltage')
+
+        self.scatter = QtCharts.QScatterSeries()
+
+        self.chart = QtCharts.QChart()
+        self.chart.addSeries(self.scatter)
+        self.chart.addAxis(self.x_axis, QtCore.Qt.AlignmentFlag.AlignBottom)
+        self.chart.addAxis(self.y_axis, QtCore.Qt.AlignmentFlag.AlignLeft)
+        self.scatter.attachAxis(self.x_axis)
+        self.scatter.attachAxis(self.y_axis)
+        self.chart.setAnimationOptions(QtCharts.QChart.AnimationOption.SeriesAnimations)
+        self.chart.setTitle('<h1>Dark Current</h1>')
+        self.chart.legend().hide()
+
+        self.chart_view = QtCharts.QChartView(self.chart)
+
+        self.refresh_button = QtWidgets.QPushButton('Refresh')
+        self.refresh_button.setObjectName('refresh_button')
+
+        self.chart_layout = QtWidgets.QVBoxLayout()
+        self.chart_layout.addWidget(self.chart_view)
+        self.chart_layout.addWidget(self.refresh_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+
+        self.help_tab_header = QtWidgets.QLabel("<h1>About Dark Current</h1>")
+
+        self.help_tab_desc = QtWidgets.QLabel(lorem.text())
+        self.help_tab_desc.setWordWrap(True)
+
+        spacer1 = QtWidgets.QSpacerItem(
+            0, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
+        )
+
+        self.desc_layout = QtWidgets.QVBoxLayout()
+        self.desc_layout.addWidget(self.help_tab_header)
+        self.desc_layout.addWidget(self.help_tab_desc)
+        self.desc_layout.addItem(spacer1)
+
+        spacer2 = spacer2 = QtWidgets.QSpacerItem(
+            20, 0, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum
+        )
+
+        self.layout = QtWidgets.QHBoxLayout()
+        self.layout.addLayout(self.chart_layout)
+        self.layout.addItem(spacer2)
+        self.layout.addLayout(self.desc_layout)
+
+        self.setLayout(self.layout)
+
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    def update_data(self):
+        self.scatter.clear()
+        with nidaqmx.Task() as task:
+            task.ai_channels.add_ai_voltage_chan(
+                f"{self.parent.device_name}/ai1",
+                min_val=-10,
+                max_val=10
+            )
+            samples = task.read(number_of_samples_per_channel=10)
+            if not hasattr(self, 'samples'):
+                self.samples = samples
+            elif samples == self.samples:
+                self.chart.removeSeries(self.scatter)
+                self.chart.addSeries(self.scatter)
+                self.scatter.attachAxis(self.x_axis)
+                self.scatter.attachAxis(self.y_axis)
+            self.samples = samples
+            self.y_axis.setRange(min(self.samples) * 0.9 ,max(self.samples) * 1.1)
+            for num, sample in enumerate(self.samples):
+                print(f'Adding :{num + 1, sample}')
+                self.scatter.append(num + 1, sample)
+
+    @QtCore.pyqtSlot()
+    def on_refresh_button_clicked(self):
+        self.update_data()
+
 class BeskarWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -142,9 +233,15 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.apply_voltage_widget = ApplyVoltagePage(self)
 
+        self.dark_current_widget = DarkCurrentPage(self)
+
+        self.stacked_widget = QtWidgets.QStackedWidget()
+        self.stacked_widget.addWidget(self.apply_voltage_widget)
+        self.stacked_widget.addWidget(self.dark_current_widget)
+
         self.splitter = QtWidgets.QSplitter(QtCore.Qt.Orientation.Horizontal)
         self.splitter.addWidget(self.menu_group_box)
-        self.splitter.addWidget(self.apply_voltage_widget)
+        self.splitter.addWidget(self.stacked_widget)
 
         self.setCentralWidget(self.splitter)
         self.splitter.setSizes((1, 100_000))
@@ -157,6 +254,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         # TODO: Add description for each QCommandLinkButton
         self.apply_voltage_menu = QtWidgets.QCommandLinkButton('Apply Voltage')
+        self.apply_voltage_menu.setObjectName('apply_voltage_menu_button')
         self.apply_voltage_menu.setCheckable(True)
         self.apply_voltage_menu.setChecked(True)
 
@@ -165,6 +263,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
         )
 
         self.dark_current_menu = QtWidgets.QCommandLinkButton('Dark Current')
+        self.dark_current_menu.setObjectName('dark_current_menu_button')
         self.dark_current_menu.setCheckable(True)
 
         spacer2 = QtWidgets.QSpacerItem(
@@ -172,6 +271,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
         )
 
         self.scan_menu = QtWidgets.QCommandLinkButton('Scan')
+        self.scan_menu.setObjectName('scan_menu_button')
         self.scan_menu.setCheckable(True)
 
         spacer3 = QtWidgets.QSpacerItem(
@@ -188,3 +288,29 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.menu_group_box = QtWidgets.QGroupBox()
         self.menu_group_box.setLayout(self.vertical_menu_layout)
+
+    @QtCore.pyqtSlot()
+    def on_apply_voltage_menu_button_clicked(self):
+        self.apply_voltage_menu.setChecked(True)
+        self.dark_current_menu.setChecked(False)
+        self.scan_menu.setChecked(False)
+
+        self.stacked_widget.setCurrentIndex(0)
+
+    @QtCore.pyqtSlot()
+    def on_dark_current_menu_button_clicked(self):
+        self.dark_current_menu.setChecked(True)
+        self.apply_voltage_menu.setChecked(False)
+        self.scan_menu.setChecked(False)
+
+        self.stacked_widget.setCurrentIndex(1)
+
+        self.dark_current_widget.update_data()
+
+    @QtCore.pyqtSlot()
+    def on_scan_menu_button_clicked(self):
+        self.scan_menu.setChecked(True)
+        self.apply_voltage_menu.setChecked(False)
+        self.dark_current_menu.setChecked(False)
+
+        # TODO: Implement scan page
