@@ -139,6 +139,9 @@ class DarkCurrentPage(QtWidgets.QWidget):
         self.y_axis.setTitleText('Voltage')
 
         self.scatter = QtCharts.QScatterSeries()
+        # NOTE: Need to use .connect since for some reason
+        # since connectBySlots does not detect the slot
+        self.scatter.hovered.connect(self.on_scatter_hovered)
 
         self.chart = QtCharts.QChart()
         self.chart.addSeries(self.scatter)
@@ -211,6 +214,12 @@ class DarkCurrentPage(QtWidgets.QWidget):
     @QtCore.pyqtSlot()
     def on_refresh_button_clicked(self):
         self.update_data()
+
+    def on_scatter_hovered(self, point: QtCore.QPointF, state):
+        # TODO: Might want to add the ability to copy the values
+        QtWidgets.QToolTip.showText(
+            QtGui.QCursor.pos(), str((int(point.x()), point.y())), msecShowTime=10_000
+        )
 
 class BeskarWindow(QtWidgets.QMainWindow):
     def __init__(self):
