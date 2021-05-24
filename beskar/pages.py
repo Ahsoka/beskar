@@ -205,7 +205,7 @@ class DarkCurrentPage(QtWidgets.QWidget):
                 self.scatter.attachAxis(self.x_axis)
                 self.scatter.attachAxis(self.y_axis)
             self.samples = samples
-            self.y_axis.setRange(min(self.samples) * 0.9 ,max(self.samples) * 1.1)
+            self.y_axis.setRange(min(self.samples) * 0.9, max(self.samples) * 1.1)
             for num, sample in enumerate(self.samples):
                 self.scatter.append(num + 1, sample)
 
