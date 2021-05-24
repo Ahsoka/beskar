@@ -5,6 +5,7 @@ from .constants import offset
 import nidaqmx
 import lorem
 
+
 class ApplyVoltagePage(QtWidgets.QWidget):
     def __init__(self, parent):
         super().__init__(parent)
