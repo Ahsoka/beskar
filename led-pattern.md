@@ -66,7 +66,7 @@ LED Pattern
 63. 1, 1
 64. 8, 1
 
-(Pattern When Run A Second Time)
+(Pattern When Run A Second Time and onward)
 1. 7, 4
 2. 7, 4
 3. 2, 4
