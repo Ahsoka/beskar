@@ -1,4 +1,4 @@
-from typing import Generator, Tuple, Union
+from typing import Generator, Tuple, Union, Literal
 from .constants import offset
 
 import nidaqmx
@@ -27,3 +27,17 @@ def LED_position_gen(start_at_zero=False) -> Generator[Tuple[int, int], None, No
         for column in [4] + column_pattern:
             for row in row_pattern:
                 yield (row - offset, column - offset)
+
+def interact_with_LEDs(device_name: str, interaction: Literal['on', 'off', 'on&off']):
+    if interaction not in {'on', 'off', 'on&off'}:
+        raise ValueError(f"interaction must be 'on', 'off', or 'on&off', not '{interaction}'")
+
+    with nidaqmx.Task() as task:
+        task.do_channels.add_do_chan(f'{device_name}/port0/line0')
+        if interaction == 'on':
+            task.write(False)
+        elif interaction == 'off':
+            task.write(True)
+        elif interaction == 'on&off':
+            task.write(False)
+            task.write(True)
