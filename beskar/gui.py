@@ -1,5 +1,5 @@
 from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
-from .pages import ApplyVoltagePage, DarkCurrentPage
+from .pages import ApplyVoltagePage, DarkCurrentPage, ScanPage
 from PyQt6 import QtCore, QtWidgets
 from nidaqmx.system import System
 from .utils import apply_voltage
@@ -28,9 +28,12 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.dark_current_widget = DarkCurrentPage(self)
 
+        self.scan_widget = ScanPage(self)
+
         self.stacked_widget = QtWidgets.QStackedWidget()
         self.stacked_widget.addWidget(self.apply_voltage_widget)
         self.stacked_widget.addWidget(self.dark_current_widget)
+        self.stacked_widget.addWidget(self.scan_widget)
 
         self.splitter = QtWidgets.QSplitter(QtCore.Qt.Orientation.Horizontal)
         self.splitter.addWidget(self.menu_group_box)
@@ -106,4 +109,4 @@ class BeskarWindow(QtWidgets.QMainWindow):
         self.apply_voltage_menu.setChecked(False)
         self.dark_current_menu.setChecked(False)
 
-        # TODO: Implement scan page
+        self.stacked_widget.setCurrentIndex(2)

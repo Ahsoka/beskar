@@ -1,8 +1,12 @@
-from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui
-from .utils import apply_voltage
+from .utils import apply_voltage, interact_with_LEDs, LED_position_gen, TwoDQBarDataItem
+from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
 from .constants import offset
+from typing import List
 
+import statistics as stats
 import nidaqmx
+import numpy
+import time
 import lorem
 
 
@@ -224,3 +228,260 @@ class DarkCurrentPage(QtWidgets.QWidget):
         QtWidgets.QToolTip.showText(
             QtGui.QCursor.pos(), str((int(point.x()), point.y())), msecShowTime=10_000
         )
+
+
+class ScanPage(QtWidgets.QWidget):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.parent = parent
+
+        self.led_position = LED_position_gen(start_at_zero=True)
+
+        self.scans = 1
+
+        self.scan_label = QtWidgets.QLabel('<h1>Scan</h1>')
+
+        spacer1 = QtWidgets.QSpacerItem(
+            0, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
+        )
+
+        self.select_label = QtWidgets.QLabel(
+            'Select the number of scans you would like to do:'
+        )
+
+        self.spin_box = QtWidgets.QSpinBox()
+        self.spin_box.setObjectName('spin_box')
+        self.spin_box.setRange(1, 10)
+        self.spin_box.setSuffix(' Scan')
+
+        self.interaction_layout = QtWidgets.QHBoxLayout()
+        self.interaction_layout.addWidget(
+            self.select_label, stretch=10, alignment=QtCore.Qt.AlignmentFlag.AlignRight
+        )
+        self.interaction_layout.addWidget(
+            self.spin_box, alignment=QtCore.Qt.AlignmentFlag.AlignRight
+        )
+
+        self.ok_button = QtWidgets.QPushButton('OK')
+        self.ok_button.setObjectName('ok_button')
+
+        self.num_of_scan_layout = QtWidgets.QVBoxLayout()
+        self.num_of_scan_layout.addItem(spacer1)
+        self.num_of_scan_layout.addLayout(self.interaction_layout)
+        self.num_of_scan_layout.addWidget(
+            self.ok_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight
+        )
+        self.num_of_scan_layout.addItem(spacer1)
+
+        self.num_of_scan_layout_widget = QtWidgets.QWidget()
+        self.num_of_scan_layout_widget.setLayout(self.num_of_scan_layout)
+
+        self.bar_charts: List[
+            List[
+                QtDataVisualization.Q3DBars,
+                QtDataVisualization.QBar3DSeries,
+                TwoDQBarDataItem,
+                QtWidgets.QWidget
+            ]
+        ] = list()
+
+
+        self.bar_charts_tab = QtWidgets.QTabWidget()
+        self.bar_charts_tab.setObjectName('bar_charts_tab')
+
+        self.scanning_progress_label = QtWidgets.QLabel('Scanning progress:')
+        self.progress_bar = QtWidgets.QProgressBar()
+
+        self.progress_bar_layout = QtWidgets.QHBoxLayout()
+        self.progress_bar_layout.addWidget(self.scanning_progress_label)
+        self.progress_bar_layout.addWidget(self.progress_bar)
+
+        self.notice_for_reading = QtWidgets.QLabel(
+            'Even though it looks like nothing is happening, <b>data is still being read!</b> '
+            "The reason you can't see anything happening on screen is because the values being "
+            'read are zeros.'
+        )
+        self.notice_for_reading.setSizePolicy(
+            self.notice_for_reading.sizePolicy().horizontalPolicy(), QtWidgets.QSizePolicy.Policy.Fixed
+        )
+
+        self.another_scan_button = QtWidgets.QPushButton('Do another scan')
+        self.another_scan_button.setObjectName('another_scan_button')
+        self.another_scan_button.setEnabled(False)
+
+        self.bar_chart_layout = QtWidgets.QVBoxLayout()
+        self.bar_chart_layout.addWidget(self.bar_charts_tab)
+        self.bar_chart_layout.addLayout(self.progress_bar_layout)
+        self.bar_chart_layout.addWidget(self.notice_for_reading, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+        self.notice_for_reading.hide()
+        self.bar_chart_layout.addWidget(self.another_scan_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+
+
+
+        self.bar_chart_layout_widget = QtWidgets.QWidget()
+        self.bar_chart_layout_widget.setLayout(self.bar_chart_layout)
+
+        self.stacked_widget = QtWidgets.QStackedWidget()
+        self.stacked_widget.addWidget(self.num_of_scan_layout_widget)
+        self.stacked_widget.addWidget(self.bar_chart_layout_widget)
+
+        self.main_vbox_layout = QtWidgets.QVBoxLayout()
+        self.main_vbox_layout.addWidget(self.scan_label, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.main_vbox_layout.addWidget(self.stacked_widget)
+
+        self.help_tab_header = QtWidgets.QLabel('<h1>About Scanning</h1>')
+
+        self.help_tab_desc = QtWidgets.QLabel(lorem.text())
+        self.help_tab_desc.setWordWrap(True)
+
+        self.desc_layout = QtWidgets.QVBoxLayout()
+        self.desc_layout.addWidget(self.help_tab_header)
+        self.desc_layout.addWidget(self.help_tab_desc)
+        self.desc_layout.addItem(spacer1)
+
+        self.spacer2  = QtWidgets.QSpacerItem(
+            20, 0, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
+        )
+
+        self.layout = QtWidgets.QHBoxLayout()
+        self.layout.addLayout(self.main_vbox_layout)
+        self.layout.addItem(self.spacer2)
+        self.layout.addLayout(self.desc_layout)
+
+        self.setLayout(self.layout)
+
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    def create_bar_graph(self):
+        graph_components = [QtDataVisualization.Q3DBars(), QtDataVisualization.QBar3DSeries(), numpy.zeros((8, 8)).view(TwoDQBarDataItem)]
+        graph_components[0].addSeries(graph_components[1])
+        graph_components[0].rowAxis().setRange(0, 7)
+        graph_components[0].columnAxis().setRange(0, 7)
+        graph_components.append(QtWidgets.QWidget.createWindowContainer(graph_components[0]))
+
+        self.bar_charts.append(graph_components)
+
+        self.bar_charts_tab.addTab(self.bar_charts[len(self.bar_charts) - 1][3], f'Scan {len(self.bar_charts)}')
+
+    @QtCore.pyqtSlot(int)
+    def on_bar_charts_tab_tabBarClicked(self, tab):
+        if tab + 1 == len(self.bar_charts):
+            self.progress_bar.show()
+            self.scanning_progress_label.show()
+        else:
+            self.progress_bar.hide()
+            self.scanning_progress_label.hide()
+            self.notice_for_reading.hide()
+
+    @QtCore.pyqtSlot(int)
+    def on_spin_box_valueChanged(self, value):
+        self.scans = value
+        if value == 1:
+            self.spin_box.setSuffix(' Scan')
+        else:
+            self.spin_box.setSuffix(' Scans')
+
+    @QtCore.pyqtSlot()
+    def on_ok_button_clicked(self):
+        self.layout.removeItem(self.spacer2)
+
+        self.another_scan_button.setEnabled(False)
+
+        self.stacked_widget.setCurrentIndex(1)
+
+        differences = []
+
+        scan_offset = len(self.bar_charts_tab)
+
+        interact_with_LEDs(self.parent.device_name, 'on')
+
+        # NOTE: print statements are and will be important in
+        # solving issue #2
+
+        for scan_number in range(self.scans):
+            scan_number += scan_offset
+
+            self.create_bar_graph()
+            self.bar_charts_tab.setCurrentIndex(scan_number)
+
+            self.progress_bar.setValue(0)
+
+            self.parent.dark_current_widget.update_data()
+            dark_current = stats.mean(self.parent.dark_current_widget.samples)
+
+            led_position = next(self.led_position)
+            length = 64 if led_position == (1, 3) else 65
+            # print(f"length={length}")
+            self.progress_bar.setMaximum(length)
+
+            # Delay for signal to flash LEDs
+            start = time.time()
+            QtTest.QTest.qWait(533)
+            # print(f'First time: {time.time() - start} (should be close to 533)')
+
+            for progress in range(length):
+                loop_start = time.time()
+                with nidaqmx.Task() as task:
+                    task.ai_channels.add_ai_voltage_chan(
+                        f'{self.parent.device_name}/ai1', min_val=-10, max_val=10
+                    )
+                    samples = task.read(10)
+                    self.bar_charts[scan_number][2][led_position[0], led_position[1]] = max(samples) - dark_current
+                    self.bar_charts[scan_number][1].dataProxy().resetArray(
+                        self.bar_charts[scan_number][2].tolist(convert_to_bar_data=True)
+                    )
+
+                self.progress_bar.setValue(progress + 1)
+
+                led_position = next(self.led_position)
+
+                if self.bar_charts_tab.currentIndex() == scan_number:
+                    if self.bar_charts[scan_number][2].last_values_zero():
+                        self.notice_for_reading.show()
+                    else:
+                        self.notice_for_reading.hide()
+
+                computation_time = time.time() - loop_start
+                # print(f'writing to graph took: {computation_time}')
+
+                if progress == 0:
+                    expected_loop_time = 483
+                    # Delay between the first and second LED flash
+                    # start = time.time()
+                    QtTest.QTest.qWait(483 - computation_time * 1000)
+                    # print(f"Time: {time.time() - start}, should be close to 483")
+                elif progress == 1:
+                    expected_loop_time = 800
+                    # Delay between second and thrid LED flash
+                    start = time.time()
+                    QtTest.QTest.qWait(800 - 1 - computation_time * 1000)
+                    # print(f"Time: {time.time() - start} should be close to 800")
+                elif progress == 2:
+                    expected_loop_time = 850
+                    # Delay between third and fourth LED flash
+                    # start = time.time()
+                    QtTest.QTest.qWait(850 - 1 - computation_time * 1000)
+                    # print(f"Time: {time.time() - start} should be close to 850")
+                else:
+                    expected_loop_time = 867
+                    # Delay between all other LED flashes
+                    start = time.time()
+                    QtTest.QTest.qWait(867 - 1 - computation_time * 1000)
+                    # print(f"Time: {time.time() - start} should be close to 867")
+                actual_loop_time = (time.time() - loop_start) * 1000
+                differences.append(actual_loop_time - expected_loop_time)
+                # print(f'\n\n**loop time: {actual_loop_time} (should take {expected_loop_time})**\n\n')
+
+        interact_with_LEDs(self.parent.device_name, 'off')
+
+        self.notice_for_reading.hide()
+        # print(f'was off by {sum(differences)}')
+        # print(f'len(tab)={len(self.bar_charts_tab)}')
+
+        self.another_scan_button.setEnabled(True)
+
+    @QtCore.pyqtSlot()
+    def on_another_scan_button_clicked(self):
+        self.layout.insertItem(1, self.spacer2)
+        self.stacked_widget.setCurrentIndex(0)
