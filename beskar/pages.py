@@ -188,6 +188,8 @@ class DarkCurrentPage(QtWidgets.QWidget):
 
         QtCore.QMetaObject.connectSlotsByName(self)
 
+        self.update_data()
+
     def update_data(self):
         self.scatter.clear()
         with nidaqmx.Task() as task:
