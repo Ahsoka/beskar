@@ -1,7 +1,9 @@
-from typing import Generator, Tuple, Union, Literal
+from typing import Generator, Tuple, Union, Literal, List
+from PyQt6.QtDataVisualization import QBarDataItem
 from .constants import offset
 
 import nidaqmx
+import numpy
 
 def apply_voltage(device_name: str, voltage: Union[float, int] = offset):
     with nidaqmx.Task() as task:
@@ -41,3 +43,31 @@ def interact_with_LEDs(device_name: str, interaction: Literal['on', 'off', 'on&o
         elif interaction == 'on&off':
             task.write(False)
             task.write(True)
+
+class TwoDQBarDataItem(numpy.ndarray):
+    def tolist(self, convert_to_bar_data=False) -> Union[List[List[QBarDataItem]], List[List[int]]]:
+        if convert_to_bar_data:
+            return [list(
+                map(lambda item: QBarDataItem(item), listt)
+            ) for listt in super().tolist()]
+        else:
+            return super().tolist()
+
+    def __setitem__(self, key, value) -> None:
+        current_value = self[key]
+        if not hasattr(self, 'last_values_written'):
+            self.last_values_written = []
+        if current_value != 0:
+            value = (current_value + value) / 2
+        self.last_values_written.append(value)
+
+        super().__setitem__(key, value)
+
+    def last_values_zero(self, number_of_vals_to_check: int = 4):
+        if not hasattr(self, 'last_values_written'):
+            self.last_values_written = []
+        if number_of_vals_to_check < 0:
+            raise ValueError('number_of_vals_to_check must be a positive integer')
+
+        return (all(map(lambda item: item == 0, self.last_values_written[-4:])) and
+                len(self.last_values_written[-4:]) >= 4)
