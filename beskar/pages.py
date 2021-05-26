@@ -217,6 +217,10 @@ class DarkCurrentPage(QtWidgets.QWidget):
 
     def on_scatter_hovered(self, point: QtCore.QPointF, state):
         # TODO: Might want to add the ability to copy the values
+
+        # NOTE: This is a bit buggy at the moment and does not display for 10 seconds.
+        # Also only shows when the mouse is stationary.
+
         QtWidgets.QToolTip.showText(
             QtGui.QCursor.pos(), str((int(point.x()), point.y())), msecShowTime=10_000
         )
