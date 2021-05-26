@@ -1,4 +1,5 @@
 nidaqmx
+numpy
 PyQt6-DataVisualization
 PyQt6-Charts
 PyQt6>=6.1.0
