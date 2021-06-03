@@ -409,7 +409,7 @@ class ScanPage(QtWidgets.QWidget):
             dark_current = stats.mean(self.parent.dark_current_widget.samples)
 
             led_position = next(self.led_position)
-            length = 64 if led_position == (1, 3) else 65
+            length = 64 if len(self.led_position) == 3 else 65
             # print(f"length={length}")
             self.progress_bar.setMaximum(length)
 
