@@ -410,15 +410,12 @@ class ScanPage(QtWidgets.QWidget):
             dark_current = stats.mean(self.parent.dark_current_widget.samples)
 
             length = 64 if len(self.led_position) == 3 else 65
-            # print(f"length={length}")
             self.progress_bar.setMaximum(length)
 
             interact_with_LEDs(self.parent.device_name, 'on&off')
 
             # Delay for signal to flash LEDs
-            start = time.time()
             QtTest.QTest.qWait(412)
-            # print(f'First time: {time.time() - start} (should be close to 412)')
 
             for progress in range(length):
                 loop_start = time.time()
@@ -443,36 +440,20 @@ class ScanPage(QtWidgets.QWidget):
                         self.notice_for_reading.hide()
 
                 computation_time = time.time() - loop_start
-                # print(f'writing to graph took: {computation_time}')
 
                 if progress == 0:
-                    expected_loop_time = 492
                     # Delay between the first and second LED flash
-                    # start = time.time()
                     QtTest.QTest.qWait(492 - computation_time * 1000)
-                    # print(f"Time: {time.time() - start}, should be close to 492")
                 elif progress == 1:
-                    expected_loop_time = 820
                     # Delay between second and thrid LED flash
-                    start = time.time()
                     QtTest.QTest.qWait(820 - 1 - computation_time * 1000)
-                    # print(f"Time: {time.time() - start} should be close to 820")
-                    # print(f"Time: {time.time() - start} should be close to 850")
                 elif progress == length - 1 and scan_number != self.scans + scan_offset - 1:
                     QtTest.QTest.qWait(1000)
                 else:
-                    expected_loop_time = 860
                     # Delay between all other LED flashes
-                    start = time.time()
                     QtTest.QTest.qWait(860 - 1 - computation_time * 1000)
-                    # print(f"Time: {time.time() - start} should be close to 860")
-                actual_loop_time = (time.time() - loop_start) * 1000
-                differences.append(actual_loop_time - expected_loop_time)
-                # print(f'\n\n**loop time: {actual_loop_time} (should take {expected_loop_time})**\n\n')
 
         self.notice_for_reading.hide()
-        # print(f'was off by {sum(differences)}')
-        # print(f'len(tab)={len(self.bar_charts_tab)}')
 
         self.another_scan_button.setEnabled(True)
 
