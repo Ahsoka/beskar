@@ -236,7 +236,8 @@ class ScanPage(QtWidgets.QWidget):
 
         self.parent = parent
 
-        self.led_position = LED_position_gen(start_at_zero=True)
+        self.led_position_gen = LED_position_gen(start_at_zero=True)
+        self.led_position = next(self.led_position_gen)
 
         self.scans = 1
 
@@ -408,7 +409,6 @@ class ScanPage(QtWidgets.QWidget):
             self.parent.dark_current_widget.update_data()
             dark_current = stats.mean(self.parent.dark_current_widget.samples)
 
-            led_position = next(self.led_position)
             length = 64 if len(self.led_position) == 3 else 65
             # print(f"length={length}")
             self.progress_bar.setMaximum(length)
@@ -427,14 +427,14 @@ class ScanPage(QtWidgets.QWidget):
                         f'{self.parent.device_name}/ai1', min_val=-10, max_val=10
                     )
                     samples = task.read(10)
-                    self.bar_charts[scan_number][2][led_position[0], led_position[1]] = max(samples) - dark_current
+                    self.bar_charts[scan_number][2][self.led_position[0], self.led_position[1]] = max(samples) - dark_current
                     self.bar_charts[scan_number][1].dataProxy().resetArray(
                         self.bar_charts[scan_number][2].tolist(convert_to_bar_data=True)
                     )
 
                 self.progress_bar.setValue(progress + 1)
 
-                led_position = next(self.led_position)
+                self.led_position = next(self.led_position_gen)
 
                 if self.bar_charts_tab.currentIndex() == scan_number:
                     if self.bar_charts[scan_number][2].last_values_zero():
