@@ -394,8 +394,6 @@ class ScanPage(QtWidgets.QWidget):
 
         scan_offset = len(self.bar_charts_tab)
 
-        interact_with_LEDs(self.parent.device_name, 'on')
-
         # NOTE: print statements are and will be important in
         # solving issue #2
 
@@ -414,6 +412,8 @@ class ScanPage(QtWidgets.QWidget):
             length = 64 if led_position == (1, 3) else 65
             # print(f"length={length}")
             self.progress_bar.setMaximum(length)
+
+            interact_with_LEDs(self.parent.device_name, 'on&off')
 
             # Delay for signal to flash LEDs
             start = time.time()
@@ -463,6 +463,8 @@ class ScanPage(QtWidgets.QWidget):
                     # start = time.time()
                     QtTest.QTest.qWait(850 - 1 - computation_time * 1000)
                     # print(f"Time: {time.time() - start} should be close to 850")
+                elif progress == length - 1 and scan_number != self.scans + scan_offset - 1:
+                    QtTest.QTest.qWait(1000)
                 else:
                     expected_loop_time = 867
                     # Delay between all other LED flashes
@@ -472,8 +474,6 @@ class ScanPage(QtWidgets.QWidget):
                 actual_loop_time = (time.time() - loop_start) * 1000
                 differences.append(actual_loop_time - expected_loop_time)
                 # print(f'\n\n**loop time: {actual_loop_time} (should take {expected_loop_time})**\n\n')
-
-        interact_with_LEDs(self.parent.device_name, 'off')
 
         self.notice_for_reading.hide()
         # print(f'was off by {sum(differences)}')
