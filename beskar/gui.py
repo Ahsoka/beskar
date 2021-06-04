@@ -1,13 +1,23 @@
 from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
 from .pages import ApplyVoltagePage, DarkCurrentPage, ScanPage
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from nidaqmx.system import System
 from .utils import apply_voltage
+
+import pathlib
 
 
 class BeskarWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
+
+        try:
+            icon_path = next(pathlib.Path('.').glob('**/images/beskar-icon.ico'))
+            self.setWindowIcon(QtGui.QIcon(str(icon_path)))
+        except StopIteration:
+            # If this happens, somehow the icon was deleted from the install folder
+            # TODO: Connect to internet and reinstall icon
+            pass
 
         system = System.local()
         self.enter_volts_popup = EnterVoltsPopup(self)
