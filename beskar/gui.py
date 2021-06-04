@@ -3,6 +3,7 @@ from .pages import ApplyVoltagePage, DarkCurrentPage, ScanPage
 from PyQt6 import QtCore, QtWidgets, QtGui
 from nidaqmx.system import System
 from .utils import apply_voltage
+from . import __version__
 
 import pathlib
 
@@ -10,6 +11,8 @@ import pathlib
 class BeskarWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
+
+        self.setWindowTitle(f'Beskar {__version__}')
 
         try:
             icon_path = next(pathlib.Path('.').glob('**/images/beskar-icon.ico'))
