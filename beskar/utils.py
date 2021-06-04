@@ -44,6 +44,7 @@ def interact_with_LEDs(device_name: str, interaction: Literal['on', 'off', 'on&o
             task.write(False)
             task.write(True)
 
+
 class TwoDQBarDataItem(numpy.ndarray):
     def tolist(self, convert_to_bar_data=False) -> Union[List[List[QBarDataItem]], List[List[int]]]:
         if convert_to_bar_data:
