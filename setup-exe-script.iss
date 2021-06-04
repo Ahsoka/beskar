@@ -29,6 +29,7 @@ SetupIconFile=C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+LicenseFile=C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\LICENSE
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
