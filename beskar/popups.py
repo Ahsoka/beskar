@@ -41,7 +41,7 @@ class MultipleSEALKitsPopup(QtWidgets.QDialog):
          self.parent.device_name = self.combo_box.currentText()
          self.accept()
          apply_voltage(self.parent.device_name)
-         self.parent.enter_volts_popup.open()
+         self.parent.enter_volts_popup.exec()
 
     def closeEvent(self, close_event):
         sys.exit()
@@ -99,7 +99,7 @@ class NoSEALKitPopup(QtWidgets.QDialog):
             self.parent.device_name = self.combo_box.currentText()
             self.accept()
             apply_voltage(self.parent.device_name)
-            self.parent.enter_volts_popup.open()
+            self.parent.enter_volts_popup.exec()
         else:
             raise RuntimeError('This should never be triggered.')
 
