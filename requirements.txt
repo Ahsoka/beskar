@@ -1,7 +1,7 @@
 nidaqmx
 numpy
+PyQt6>=6.1.0
 PyQt6-DataVisualization
 PyQt6-Charts
-PyQt6>=6.1.0
 lorem # Only temporary will remove once the real text is typed
 pyinstaller
