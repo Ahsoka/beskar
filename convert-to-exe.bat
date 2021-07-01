@@ -1,5 +1,6 @@
 pyinstaller --name "Beskar" ^
     --clean ^
+    --noconfirm ^
     --icon "beskar-icon.ico" ^
     --paths "C:\ProgramData\Anaconda3\Lib\site-packages\PyQt6\Qt6\bin" ^
     --paths "C:\ProgramData\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\platforms" ^
