@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Beskar"
-#define MyAppVersion "v0.5.1-beta"
+#define MyAppVersion "v0.6.0-beta"
 #define MyAppPublisher "Ahsoka"
 #define MyAppURL "https://github.com/Ahsoka/beskar"
 #define MyAppExeName "Beskar.exe"
