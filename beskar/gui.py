@@ -12,6 +12,8 @@ class BeskarWindow(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
 
+        self.mocked = False
+
         self.setWindowTitle(f'Beskar {__version__}')
 
         try:

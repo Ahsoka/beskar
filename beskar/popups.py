@@ -4,6 +4,8 @@ from .utils import apply_voltage
 from .constants import offset
 
 import sys
+import lorem
+import random
 
 
 class MultipleSEALKitsPopup(QtWidgets.QDialog):
@@ -61,12 +63,19 @@ class NoSEALKitPopup(QtWidgets.QDialog):
         self.combo_box = QtWidgets.QComboBox()
         self.combo_box.setObjectName('combo_box')
 
-        self.push_button = QtWidgets.QPushButton('Refresh')
-        self.push_button.setObjectName('push_button')
+        self.refresh_push_button = QtWidgets.QPushButton('Refresh')
+        self.refresh_push_button.setObjectName('refresh_push_button')
+
+        self.mocked_mode_button = QtWidgets.QPushButton('Mocked Mode')
+        self.mocked_mode_button.setObjectName('mocked_mode_button')
+
+        self.buttons_layout = QtWidgets.QHBoxLayout()
+        self.buttons_layout.addWidget(self.refresh_push_button, stretch=10, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+        self.buttons_layout.addWidget(self.mocked_mode_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
         self.vertical_layout = QtWidgets.QVBoxLayout()
         self.vertical_layout.addWidget(self.label)
-        self.vertical_layout.addWidget(self.push_button, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        self.vertical_layout.addLayout(self.buttons_layout)
 
         self.setLayout(self.vertical_layout)
 
@@ -75,8 +84,8 @@ class NoSEALKitPopup(QtWidgets.QDialog):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     @QtCore.pyqtSlot()
-    def on_push_button_clicked(self):
-        if self.push_button.text() == 'Refresh':
+    def on_refresh_push_button_clicked(self):
+        if self.refresh_push_button.text() == 'Refresh':
             self.label.setText('Looking')
             for _ in range(5):
                 QtTest.QTest.qWait(100)
@@ -94,14 +103,22 @@ class NoSEALKitPopup(QtWidgets.QDialog):
                         "Several SEAL kits have been detected. Please select which one you would like to use and click 'OK'."
                     )
                 self.vertical_layout.insertWidget(1, self.combo_box)
-                self.push_button.setText('OK')
-        elif self.push_button.text() == 'OK':
+                self.refresh_push_button.setText('OK')
+        elif self.refresh_push_button.text() == 'OK':
             self.parent.device_name = self.combo_box.currentText()
             self.accept()
             apply_voltage(self.parent.device_name)
             self.parent.enter_volts_popup.exec()
         else:
             raise RuntimeError('This should never be triggered.')
+
+    @QtCore.pyqtSlot()
+    def on_mocked_mode_button_clicked(self):
+        self.parent.mocked = True
+        self.accept()
+        self.parent.voltage_offset = round(random.random(), 3)
+        mocked_popup = MockedModePopup(self.parent)
+        mocked_popup.open()
 
     def closeEvent(self, close_event):
         sys.exit()
@@ -163,3 +180,30 @@ class EnterVoltsPopup(QtWidgets.QDialog):
         self.parent.voltage_offset = value
         self.horizontal_slider.setValue(int(value * 1000))
         apply_voltage(self.parent.device_name, value + offset)
+
+
+class MockedModePopup(QtWidgets.QDialog):
+    def __init__(self, parent):
+        super().__init__(parent)
+
+        self.parent = parent
+
+        self.header = QtWidgets.QLabel('<h1>Mocked Mode</h1>')
+
+        self.description = QtWidgets.QLabel(lorem.text())
+
+        self.ok_button = QtWidgets.QPushButton('OK')
+        self.ok_button.setObjectName('ok_button')
+
+        self.main_layout = QtWidgets.QVBoxLayout()
+        self.main_layout.addWidget(self.header)
+        self.main_layout.addWidget(self.description)
+        self.main_layout.addWidget(self.ok_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+
+        self.setLayout(self.main_layout)
+
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    @QtCore.pyqtSlot()
+    def on_ok_button_clicked(self):
+        self.accept()

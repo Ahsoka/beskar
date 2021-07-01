@@ -5,6 +5,7 @@ from typing import List
 
 import statistics as stats
 import nidaqmx
+import random
 import numpy
 import time
 import lorem
@@ -121,7 +122,8 @@ class ApplyVoltagePage(QtWidgets.QWidget):
         # This is the implementation in the legacy software
         self.current_voltage_applied = self.voltage_to_be_applied
         self.apply_button.setEnabled(False)
-        apply_voltage(self.parent.device_name, self.parent.voltage_offset + offset - self.voltage_to_be_applied)
+        if not self.parent.mocked:
+            apply_voltage(self.parent.device_name, self.parent.voltage_offset + offset - self.voltage_to_be_applied)
 
 
 class DarkCurrentPage(QtWidgets.QWidget):
@@ -196,24 +198,27 @@ class DarkCurrentPage(QtWidgets.QWidget):
 
     def update_data(self):
         self.scatter.clear()
-        with nidaqmx.Task() as task:
-            task.ai_channels.add_ai_voltage_chan(
-                f"{self.parent.device_name}/ai1",
-                min_val=-10,
-                max_val=10
-            )
-            samples = task.read(number_of_samples_per_channel=10)
-            if not hasattr(self, 'samples'):
-                self.samples = samples
-            elif samples == self.samples:
-                self.chart.removeSeries(self.scatter)
-                self.chart.addSeries(self.scatter)
-                self.scatter.attachAxis(self.x_axis)
-                self.scatter.attachAxis(self.y_axis)
+        if self.parent.mocked:
+            samples = [random.random() * 0.6 for _ in range(10)]
+        else:
+            with nidaqmx.Task() as task:
+                task.ai_channels.add_ai_voltage_chan(
+                    f"{self.parent.device_name}/ai1",
+                    min_val=-10,
+                    max_val=10
+                )
+                samples = task.read(number_of_samples_per_channel=10)
+        if not hasattr(self, 'samples'):
             self.samples = samples
-            self.y_axis.setRange(min(self.samples) * 0.9, max(self.samples) * 1.1)
-            for num, sample in enumerate(self.samples):
-                self.scatter.append(num + 1, sample)
+        elif samples == self.samples:
+            self.chart.removeSeries(self.scatter)
+            self.chart.addSeries(self.scatter)
+            self.scatter.attachAxis(self.x_axis)
+            self.scatter.attachAxis(self.y_axis)
+        self.samples = samples
+        self.y_axis.setRange(min(self.samples) * 0.9, max(self.samples) * 1.1)
+        for num, sample in enumerate(self.samples):
+            self.scatter.append(num + 1, sample)
 
     @QtCore.pyqtSlot()
     def on_refresh_button_clicked(self):
@@ -412,22 +417,26 @@ class ScanPage(QtWidgets.QWidget):
             length = 64 if len(self.led_position) == 3 else 65
             self.progress_bar.setMaximum(length)
 
-            interact_with_LEDs(self.parent.device_name, 'on&off')
+            if not self.parent.mocked:
+                interact_with_LEDs(self.parent.device_name, 'on&off')
 
             # Delay for signal to flash LEDs
             QtTest.QTest.qWait(412)
 
             for progress in range(length):
                 loop_start = time.time()
-                with nidaqmx.Task() as task:
-                    task.ai_channels.add_ai_voltage_chan(
-                        f'{self.parent.device_name}/ai1', min_val=-10, max_val=10
-                    )
-                    samples = task.read(10)
-                    self.bar_charts[scan_number][2][self.led_position[0], self.led_position[1]] = max(samples) - dark_current
-                    self.bar_charts[scan_number][1].dataProxy().resetArray(
-                        self.bar_charts[scan_number][2].tolist(convert_to_bar_data=True)
-                    )
+                if self.parent.mocked:
+                    samples = [random.random() for _ in range(10)]
+                else:
+                    with nidaqmx.Task() as task:
+                        task.ai_channels.add_ai_voltage_chan(
+                            f'{self.parent.device_name}/ai1', min_val=-10, max_val=10
+                        )
+                        samples = task.read(10)
+                self.bar_charts[scan_number][2][self.led_position[0], self.led_position[1]] = max(samples) - dark_current
+                self.bar_charts[scan_number][1].dataProxy().resetArray(
+                    self.bar_charts[scan_number][2].tolist(convert_to_bar_data=True)
+                )
 
                 self.progress_bar.setValue(progress + 1)
 
