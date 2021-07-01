@@ -25,7 +25,7 @@ DisableProgramGroupPage=yes
 PrivilegesRequiredOverridesAllowed=commandline
 OutputDir=C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)
 OutputBaseFilename=beskar-install-v0.6.0-beta-64bit
-SetupIconFile=C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\beskar-icon.ico
+SetupIconFile=C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\images\beskar-icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
@@ -114,7 +114,7 @@ Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Sol
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\unicodedata.pyd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\VCRUNTIME140.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\VCRUNTIME140_1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\beskar-icon.ico"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\images\*"; DestDir: "{app}\images"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\numpy\*"; DestDir: "{app}\numpy"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\platforms\*"; DestDir: "{app}\platforms"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\PyQt6\*"; DestDir: "{app}\PyQt6"; Flags: ignoreversion recursesubdirs createallsubdirs
