@@ -1,7 +1,7 @@
 pyinstaller --name "Beskar" ^
     --clean ^
     --noconfirm ^
-    --icon "beskar-icon.ico" ^
+    --icon "beskar\images\beskar-icon.ico" ^
     --paths "C:\ProgramData\Anaconda3\Lib\site-packages\PyQt6\Qt6\bin" ^
     --paths "C:\ProgramData\Anaconda3\Lib\site-packages\PyQt6\Qt6\plugins\platforms" ^
     --hidden-import "PyQt6.sip" --hidden-import "PyQt6.QtPrintSupport" ^
