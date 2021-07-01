@@ -16,7 +16,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
         self.setWindowTitle(f'Beskar {__version__}')
 
         try:
-            icon_path = next(pathlib.Path('.').glob('**/images/beskar-icon.ico'))
+            icon_path = next(pathlib.Path('.').glob('**/images/beskar-icon.png'))
             self.setWindowIcon(QtGui.QIcon(str(icon_path)))
         except StopIteration:
             # If this happens, somehow the icon was deleted from the install folder
