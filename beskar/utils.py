@@ -1,5 +1,6 @@
 from typing import Generator, Tuple, Union, Literal, List
 from PyQt6.QtDataVisualization import QBarDataItem
+from nidaqmx.system import System
 from .constants import offset
 
 import nidaqmx
@@ -43,6 +44,22 @@ def interact_with_LEDs(device_name: str, interaction: Literal['on', 'off', 'on&o
         elif interaction == 'on&off':
             task.write(False)
             task.write(True)
+
+def get_number_of_devices(system=True):
+    try:
+        from __main__ import PyInstallerImportError
+        errors = (FileNotFoundError, PyInstallerImportError)
+    except ImportError:
+        errors = FileNotFoundError
+    the_system = System.local()
+    try:
+        num_of_devices = len(the_system.devices)
+    except errors:
+        num_of_devices = 0
+    if system:
+        return the_system, num_of_devices
+    else:
+        return num_of_devices
 
 
 class TwoDQBarDataItem(numpy.ndarray):

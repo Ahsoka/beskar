@@ -1,8 +1,7 @@
 from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
 from .pages import ApplyVoltagePage, DarkCurrentPage, ScanPage
+from .utils import apply_voltage, get_number_of_devices
 from PyQt6 import QtCore, QtWidgets, QtGui
-from nidaqmx.system import System
-from .utils import apply_voltage
 from . import __version__
 
 import pathlib
@@ -24,15 +23,15 @@ class BeskarWindow(QtWidgets.QMainWindow):
             # TODO: Connect to internet and reinstall icon
             pass
 
-        system = System.local()
+        system, num_of_devices = get_number_of_devices()
         self.enter_volts_popup = EnterVoltsPopup(self)
-        if len(system.devices) > 1:
+        if num_of_devices > 1:
             popup = MultipleSEALKitsPopup(self)
             popup.exec()
-        elif len(system.devices) == 0:
+        elif num_of_devices == 0:
             popup = NoSEALKitPopup(self)
             popup.exec()
-        elif len(system.devices) == 1:
+        elif num_of_devices == 1:
             self.device_name = system.devices.device_names[0]
             apply_voltage(self.device_name)
             self.enter_volts_popup.exec()

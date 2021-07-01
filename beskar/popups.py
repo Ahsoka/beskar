@@ -1,6 +1,6 @@
+from .utils import apply_voltage, get_number_of_devices
 from PyQt6 import QtCore, QtWidgets, QtTest
 from nidaqmx.system import System
-from .utils import apply_voltage
 from .constants import offset
 
 import sys
@@ -90,8 +90,8 @@ class NoSEALKitPopup(QtWidgets.QDialog):
             for _ in range(5):
                 QtTest.QTest.qWait(100)
                 self.label.setText(f"{self.label.text()}.")
-            system = System.local()
-            if len(system.devices) == 0:
+            system, num_of_devices = get_number_of_devices()
+            if num_of_devices == 0:
                 self.label.setText('SEAL kit not detected, please try refreshing again.')
             else:
                 for device_name in system.devices.device_names:
