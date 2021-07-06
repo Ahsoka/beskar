@@ -18,7 +18,17 @@ sentinel = object()
 class Settings:
     def __init__(self, location: Union[str, Literal[r'C:\Program Data']] = location):
         self.settings_path = pathlib.Path(location) / 'Beskar' / 'settings.json'
-        if not self.settings_path.exists():
+        if self.settings_path.exists():
+            file_healthy = True
+            with self.settings_path.open() as file:
+                try:
+                    json.load(file)
+                except json.JSONDecodeError:
+                    file_healthy = False
+            if not file_healthy:
+                with self.settings_path.open(mode='w') as file:
+                    json.dump({}, file)
+        else:
             self.create()
 
     def __getitem__(self, key):
