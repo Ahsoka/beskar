@@ -30,11 +30,13 @@ class Settings:
                 raise KeyError(key)
 
     def __setitem__(self, key, value):
-        with self.settings_path.open(mode='r+') as file:
+        with self.settings_path.open(mode='r') as file:
             try:
                 settings = json.load(file)
             except FileNotFoundError:
                 settings = {}
+
+        with self.settings_path.open(mode='w') as file:
             settings[key] = value
             json.dump(settings, file, indent=4)
 
