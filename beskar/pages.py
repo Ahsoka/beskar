@@ -91,6 +91,8 @@ class ApplyVoltagePage(QtWidgets.QWidget):
 
         QtCore.QMetaObject.connectSlotsByName(self)
 
+        self.double_spin_box.setValue(self.parent.settings.get('applied-voltage', 0))
+
     @QtCore.pyqtSlot(float)
     def on_double_spin_box_valueChanged(self, value):
         value = round(value, 3)
@@ -124,6 +126,8 @@ class ApplyVoltagePage(QtWidgets.QWidget):
         self.apply_button.setEnabled(False)
         if not self.parent.mocked:
             apply_voltage(self.parent.device_name, self.parent.voltage_offset + offset - self.voltage_to_be_applied)
+
+        self.parent.settings['applied-voltage'] = self.current_voltage_applied
 
 
 class DarkCurrentPage(QtWidgets.QWidget):
