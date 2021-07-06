@@ -191,6 +191,7 @@ class MockedModePopup(QtWidgets.QDialog):
         self.header = QtWidgets.QLabel('<h1>Mocked Mode</h1>')
 
         self.description = QtWidgets.QLabel(lorem.text())
+        self.description.setWordWrap(True)
 
         self.ok_button = QtWidgets.QPushButton('OK')
         self.ok_button.setObjectName('ok_button')
