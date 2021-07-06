@@ -168,6 +168,7 @@ class EnterVoltsPopup(QtWidgets.QDialog):
 
     @QtCore.pyqtSlot()
     def on_push_button_clicked(self):
+        self.parent.settings['voltage-offset'] = self.parent.voltage_offset
         self.accept()
 
     @QtCore.pyqtSlot(int)
@@ -181,6 +182,10 @@ class EnterVoltsPopup(QtWidgets.QDialog):
         self.parent.voltage_offset = value
         self.horizontal_slider.setValue(int(value * 1000))
         apply_voltage(self.parent.device_name, value + offset)
+
+    def exec(self):
+        self.double_spin_box.setValue(self.parent.settings.get('voltage-offset', 0))
+        return super().exec()
 
 
 class MockedModePopup(QtWidgets.QDialog):
