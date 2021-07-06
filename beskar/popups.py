@@ -117,8 +117,9 @@ class NoSEALKitPopup(QtWidgets.QDialog):
         self.parent.mocked = True
         self.accept()
         self.parent.voltage_offset = round(random.random(), 3)
-        mocked_popup = MockedModePopup(self.parent)
-        mocked_popup.open()
+        if self.parent.settings.get('show-mocked-mode', True):
+            mocked_popup = MockedModePopup(self.parent)
+            mocked_popup.open()
 
     def closeEvent(self, close_event):
         sys.exit()
@@ -188,10 +189,15 @@ class MockedModePopup(QtWidgets.QDialog):
 
         self.parent = parent
 
+        self.show_again = True
+
         self.header = QtWidgets.QLabel('<h1>Mocked Mode</h1>')
 
         self.description = QtWidgets.QLabel(lorem.text())
         self.description.setWordWrap(True)
+
+        self.dont_show_again = QtWidgets.QCheckBox("Don't show this message again.")
+        self.dont_show_again.setObjectName('check_box')
 
         self.ok_button = QtWidgets.QPushButton('OK')
         self.ok_button.setObjectName('ok_button')
@@ -199,6 +205,7 @@ class MockedModePopup(QtWidgets.QDialog):
         self.main_layout = QtWidgets.QVBoxLayout()
         self.main_layout.addWidget(self.header)
         self.main_layout.addWidget(self.description)
+        self.main_layout.addWidget(self.dont_show_again, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
         self.main_layout.addWidget(self.ok_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
         self.setLayout(self.main_layout)
@@ -207,4 +214,9 @@ class MockedModePopup(QtWidgets.QDialog):
 
     @QtCore.pyqtSlot()
     def on_ok_button_clicked(self):
+        self.parent.settings['show-mocked-mode'] = self.show_again
         self.accept()
+
+    @QtCore.pyqtSlot(int)
+    def on_check_box_stateChanged(self, state):
+        self.show_again = not bool(state)
