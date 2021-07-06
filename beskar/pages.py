@@ -363,6 +363,8 @@ class ScanPage(QtWidgets.QWidget):
 
         QtCore.QMetaObject.connectSlotsByName(self)
 
+        self.spin_box.setValue(self.parent.settings.get('scans', 1))
+
     def create_bar_graph(self):
         graph_components = [QtDataVisualization.Q3DBars(), QtDataVisualization.QBar3DSeries(), numpy.zeros((8, 8)).view(TwoDQBarDataItem)]
         graph_components[0].addSeries(graph_components[1])
@@ -399,6 +401,8 @@ class ScanPage(QtWidgets.QWidget):
         self.another_scan_button.setEnabled(False)
 
         self.stacked_widget.setCurrentIndex(1)
+
+        self.parent.settings['scans'] = self.scans
 
         scan_offset = len(self.bar_charts_tab)
 
