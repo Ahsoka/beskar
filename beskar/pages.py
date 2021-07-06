@@ -400,8 +400,6 @@ class ScanPage(QtWidgets.QWidget):
 
         self.stacked_widget.setCurrentIndex(1)
 
-        differences = []
-
         scan_offset = len(self.bar_charts_tab)
 
         # NOTE: print statements are and will be important in
