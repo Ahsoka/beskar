@@ -402,9 +402,6 @@ class ScanPage(QtWidgets.QWidget):
 
         scan_offset = len(self.bar_charts_tab)
 
-        # NOTE: print statements are and will be important in
-        # solving issue #2
-
         for scan_number in range(self.scans):
             scan_number += scan_offset
 
