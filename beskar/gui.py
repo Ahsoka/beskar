@@ -2,6 +2,7 @@ from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
 from .pages import ApplyVoltagePage, DarkCurrentPage, ScanPage
 from .utils import apply_voltage, get_number_of_devices
 from PyQt6 import QtCore, QtWidgets, QtGui
+from .settings import Settings
 from . import __version__
 
 import pathlib
@@ -12,6 +13,8 @@ class BeskarWindow(QtWidgets.QMainWindow):
         super().__init__()
 
         self.mocked = False
+
+        self.settings = Settings()
 
         self.setWindowTitle(f'Beskar {__version__}')
 
