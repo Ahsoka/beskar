@@ -1,5 +1,6 @@
 from typing import Generator, Tuple, Union, Literal, List
 from PyQt6.QtDataVisualization import QBarDataItem
+from nidaqmx._lib import DaqNotFoundError
 from nidaqmx.system import System
 from .constants import offset
 
@@ -46,11 +47,12 @@ def interact_with_LEDs(device_name: str, interaction: Literal['on', 'off', 'on&o
             task.write(True)
 
 def get_number_of_devices(system=True):
+    errors  = (FileNotFoundError, DaqNotFoundError)
     try:
         from __main__ import PyInstallerImportError
-        errors = (FileNotFoundError, PyInstallerImportError)
+        errors += PyInstallerImportError
     except ImportError:
-        errors = FileNotFoundError
+        pass
     the_system = System.local()
     try:
         num_of_devices = len(the_system.devices)
