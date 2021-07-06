@@ -13,6 +13,8 @@ except KeyError:
 if not location:
     location = r'C:\ProgramData'
 
+sentinel = object()
+
 class Settings:
     def __init__(self, location: Union[str, Literal[r'C:\Program Data']] = location):
         self.settings_path = pathlib.Path(location) / 'Beskar' / 'settings.json'
@@ -35,6 +37,15 @@ class Settings:
                 settings = {}
             settings[key] = value
             json.dump(settings, file, indent=4)
+
+    def get(self, key, default=sentinel):
+        try:
+            return self[key]
+        except KeyError:
+            if default is not sentinel:
+                return default
+            else:
+                raise
 
     def create(self):
         if not self.settings_path.parent.exists():
