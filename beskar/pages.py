@@ -25,17 +25,13 @@ class ApplyVoltagePage(QtWidgets.QWidget):
             0, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
         )
 
-        self.min_voltage = -round(5 - offset - self.parent.voltage_offset, 3)
-        self.max_voltage = -round(-offset - self.parent.voltage_offset, 3)
-
         self.horizontal_slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
         self.horizontal_slider.setObjectName('horizontal_slider')
         self.horizontal_slider.setMaximum(5000)
-        self.horizontal_slider.setValue(abs(int(self.min_voltage * 1000)))
+        self.horizontal_slider.setValue(2499)
 
         self.double_spin_box = QtWidgets.QDoubleSpinBox()
         self.double_spin_box.setObjectName('double_spin_box')
-        self.double_spin_box.setRange(self.min_voltage, self.max_voltage)
         self.double_spin_box.setSingleStep(0.001)
         self.double_spin_box.setDecimals(3)
         self.double_spin_box.setSuffix(' Volts')
@@ -91,8 +87,6 @@ class ApplyVoltagePage(QtWidgets.QWidget):
 
         QtCore.QMetaObject.connectSlotsByName(self)
 
-        self.double_spin_box.setValue(self.parent.settings.get('applied-voltage', 0))
-
     @QtCore.pyqtSlot(float)
     def on_double_spin_box_valueChanged(self, value):
         value = round(value, 3)
@@ -128,6 +122,18 @@ class ApplyVoltagePage(QtWidgets.QWidget):
             apply_voltage(self.parent.device_name, self.parent.voltage_offset + offset - self.voltage_to_be_applied)
 
         self.parent.settings['applied-voltage'] = self.current_voltage_applied
+
+    def set_min_and_max(self):
+        self.min_voltage = -round(5 - offset - self.parent.voltage_offset, 3)
+        self.max_voltage = -round(-offset - self.parent.voltage_offset, 3)
+
+        self.horizontal_slider.setValue(abs(int(self.min_voltage * 1000)))
+        self.double_spin_box.setRange(self.min_voltage, self.max_voltage)
+
+        settings_applied_voltage = self.parent.settings.get('applied-voltage', 0)
+        if (settings_applied_voltage <= self.max_voltage
+            and settings_applied_voltage >= self.min_voltage):
+            self.double_spin_box.setValue(settings_applied_voltage)
 
 
 class DarkCurrentPage(QtWidgets.QWidget):
@@ -197,8 +203,6 @@ class DarkCurrentPage(QtWidgets.QWidget):
         self.setLayout(self.layout)
 
         QtCore.QMetaObject.connectSlotsByName(self)
-
-        self.update_data()
 
     def update_data(self):
         self.scatter.clear()

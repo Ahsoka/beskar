@@ -14,6 +14,8 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.mocked = False
 
+        self.device_name = None
+
         self.settings = Settings()
 
         self.setWindowTitle(f'Beskar {__version__}')
@@ -25,19 +27,6 @@ class BeskarWindow(QtWidgets.QMainWindow):
             # If this happens, somehow the icon was deleted from the install folder
             # TODO: Connect to internet and reinstall icon
             pass
-
-        system, num_of_devices = get_number_of_devices()
-        self.enter_volts_popup = EnterVoltsPopup(self)
-        if num_of_devices > 1:
-            popup = MultipleSEALKitsPopup(self)
-            popup.exec()
-        elif num_of_devices == 0:
-            popup = NoSEALKitPopup(self)
-            popup.exec()
-        elif num_of_devices == 1:
-            self.device_name = system.devices.device_names[0]
-            apply_voltage(self.device_name)
-            self.enter_volts_popup.exec()
 
         self.create_options_menu()
 
@@ -59,6 +48,19 @@ class BeskarWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(self.splitter)
         self.splitter.setSizes((1, 100_000))
         self.showMaximized()
+
+        system, num_of_devices = get_number_of_devices()
+        self.enter_volts_popup = EnterVoltsPopup(self)
+        if num_of_devices > 1:
+            popup = MultipleSEALKitsPopup(self)
+            popup.open()
+        elif num_of_devices == 0:
+            popup = NoSEALKitPopup(self)
+            popup.open()
+        elif num_of_devices == 1:
+            self.device_name = system.devices.device_names[0]
+            apply_voltage(self.device_name)
+            self.enter_volts_popup.open()
 
         QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -130,6 +132,8 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
     @QtCore.pyqtSlot()
     def on_scan_menu_button_clicked(self):
+        self.dark_current_widget.update_data()
+
         self.scan_menu.setChecked(True)
         self.apply_voltage_menu.setChecked(False)
         self.dark_current_menu.setChecked(False)

@@ -43,7 +43,7 @@ class MultipleSEALKitsPopup(QtWidgets.QDialog):
          self.parent.device_name = self.combo_box.currentText()
          self.accept()
          apply_voltage(self.parent.device_name)
-         self.parent.enter_volts_popup.exec()
+         self.parent.enter_volts_popup.open()
 
     def closeEvent(self, close_event):
         sys.exit()
@@ -108,7 +108,7 @@ class NoSEALKitPopup(QtWidgets.QDialog):
             self.parent.device_name = self.combo_box.currentText()
             self.accept()
             apply_voltage(self.parent.device_name)
-            self.parent.enter_volts_popup.exec()
+            self.parent.enter_volts_popup.open()
         else:
             raise RuntimeError('This should never be triggered.')
 
@@ -117,6 +117,7 @@ class NoSEALKitPopup(QtWidgets.QDialog):
         self.parent.mocked = True
         self.accept()
         self.parent.voltage_offset = round(random.random(), 3)
+        self.parent.apply_voltage_widget.set_min_and_max()
         if self.parent.settings.get('show-mocked-mode', True):
             mocked_popup = MockedModePopup(self.parent)
             mocked_popup.open()
@@ -169,6 +170,7 @@ class EnterVoltsPopup(QtWidgets.QDialog):
     @QtCore.pyqtSlot()
     def on_push_button_clicked(self):
         self.parent.settings['voltage-offset'] = self.parent.voltage_offset
+        self.parent.apply_voltage_widget.set_min_and_max()
         self.accept()
 
     @QtCore.pyqtSlot(int)
@@ -183,9 +185,12 @@ class EnterVoltsPopup(QtWidgets.QDialog):
         self.horizontal_slider.setValue(int(value * 1000))
         apply_voltage(self.parent.device_name, value + offset)
 
-    def exec(self):
+    def open(self):
         self.double_spin_box.setValue(self.parent.settings.get('voltage-offset', 0))
-        return super().exec()
+        return super().open()
+
+    def closeEvent(self, close_event):
+        self.parent.apply_voltage_widget.set_min_and_max()
 
 
 class MockedModePopup(QtWidgets.QDialog):
