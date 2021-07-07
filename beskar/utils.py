@@ -50,7 +50,7 @@ def get_number_of_devices(system=True):
     errors  = (FileNotFoundError, DaqNotFoundError)
     try:
         from __main__ import PyInstallerImportError
-        errors += PyInstallerImportError
+        errors += (PyInstallerImportError,)
     except ImportError:
         pass
     the_system = System.local()
