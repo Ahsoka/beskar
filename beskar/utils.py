@@ -83,11 +83,9 @@ class TwoDQBarDataItem(numpy.ndarray):
 
         super().__setitem__(key, value)
 
-    def last_values_zero(self, number_of_vals_to_check: int = 4):
+    def last_values_zero(self):
         if not hasattr(self, 'last_values_written'):
             self.last_values_written = []
-        if number_of_vals_to_check < 0:
-            raise ValueError('number_of_vals_to_check must be a positive integer')
 
         return (all(map(lambda item: item == 0, self.last_values_written[-4:]))
                 and len(self.last_values_written[-4:]) >= 4)
