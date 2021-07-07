@@ -7,8 +7,8 @@ import statistics as stats
 import nidaqmx
 import random
 import numpy
-import time
 import lorem
+import time
 
 
 class ApplyVoltagePage(QtWidgets.QWidget):
