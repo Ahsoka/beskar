@@ -213,7 +213,7 @@ class MockedModePopup(QtWidgets.QDialog):
         self.ok_button.setObjectName('ok_button')
 
         self.main_layout = QtWidgets.QVBoxLayout()
-        self.main_layout.addWidget(self.header)
+        self.main_layout.addWidget(self.header, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
         self.main_layout.addWidget(self.description)
         self.main_layout.addWidget(self.dont_show_again, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
         self.main_layout.addWidget(self.ok_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
