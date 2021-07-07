@@ -89,5 +89,5 @@ class TwoDQBarDataItem(numpy.ndarray):
         if number_of_vals_to_check < 0:
             raise ValueError('number_of_vals_to_check must be a positive integer')
 
-        return (all(map(lambda item: item == 0, self.last_values_written[-4:])) and
-                len(self.last_values_written[-4:]) >= 4)
+        return (all(map(lambda item: item == 0, self.last_values_written[-4:]))
+                and len(self.last_values_written[-4:]) >= 4)
