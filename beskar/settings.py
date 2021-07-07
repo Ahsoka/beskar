@@ -40,15 +40,14 @@ class Settings:
                 raise KeyError(key)
 
     def __setitem__(self, key, value):
-        with self.settings_path.open(mode='r') as file:
-            try:
+        try:
+            with self.settings_path.open(mode='r') as file:
                 settings = json.load(file)
-            except FileNotFoundError:
-                settings = {}
+        except FileNotFoundError:
+            settings = {}
 
-        with self.settings_path.open(mode='w') as file:
-            settings[key] = value
-            json.dump(settings, file, indent=4)
+        settings[key] = value
+        self.create(settings, indent=4)
 
     def get(self, key, default=sentinel):
         try:
@@ -59,11 +58,13 @@ class Settings:
             else:
                 raise
 
-    def create(self):
+    def create(self, dumping=None, indent=None):
+        if dumping is None:
+            dumping = {}
         if not self.settings_path.parent.exists():
             self.settings_path.parent.mkdir()
         with self.settings_path.open(mode='w') as file:
-            json.dump({}, file)
+            json.dump(dumping, file, indent=indent)
 
     @contextmanager
     def check_or_create(self):
