@@ -3,3 +3,8 @@ __pycache__
 
 # VSCode
 .vscode
+
+# Compiled binaries from PyInstaller
+Beskar.spec
+build
+dist
