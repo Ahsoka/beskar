@@ -110,7 +110,6 @@ Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Sol
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Test.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\select.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\ucrtbase.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\unicodedata.pyd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\VCRUNTIME140.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\VCRUNTIME140_1.dll"; DestDir: "{app}"; Flags: ignoreversion
