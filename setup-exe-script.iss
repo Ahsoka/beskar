@@ -23,13 +23,13 @@ DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=commandline
-OutputDir=C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)
+OutputDir={#SourcePath}
 OutputBaseFilename=beskar-install-v0.7.0-beta-64bit
-SetupIconFile=C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\images\beskar-icon.ico
+SetupIconFile=dist\Beskar\images\beskar-icon.ico
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
-LicenseFile=C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\LICENSE
+LicenseFile=LICENSE
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -38,52 +38,52 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_asyncio.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_bz2.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_ctypes.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_decimal.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_hashlib.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_lzma.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_multiprocessing.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_overlapped.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_queue.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_socket.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_ssl.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\base_library.zip"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Beskar.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Beskar.exe.manifest"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\libcrypto-1_1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\libffi-7.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\libopenblas.GK7GX5KEQ4F6UYO3P26ULGBQYHGQO7J4.gfortran-win_amd64.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\libssl-1_1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\MSVCP140.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\MSVCP140_1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\pyexpat.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\python3.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\python38.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Charts.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Core.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6DataVisualization.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Network.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6OpenGL.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6OpenGLWidgets.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6PrintSupport.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Qml.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6QmlModels.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Quick.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Test.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\select.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\unicodedata.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\VCRUNTIME140.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\VCRUNTIME140_1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\images\*"; DestDir: "{app}\images"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\numpy\*"; DestDir: "{app}\numpy"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\platforms\*"; DestDir: "{app}\platforms"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\PyQt6\*"; DestDir: "{app}\PyQt6"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\styles\*"; DestDir: "{app}\styles"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "dist\Beskar\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\_asyncio.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\_bz2.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\_ctypes.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\_decimal.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\_hashlib.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\_lzma.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\_multiprocessing.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\_overlapped.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\_queue.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\_socket.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\_ssl.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\base_library.zip"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Beskar.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Beskar.exe.manifest"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\libcrypto-1_1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\libffi-7.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\libopenblas.GK7GX5KEQ4F6UYO3P26ULGBQYHGQO7J4.gfortran-win_amd64.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\libssl-1_1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\MSVCP140.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\MSVCP140_1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\pyexpat.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\python3.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\python38.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6Charts.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6Core.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6DataVisualization.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6Network.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6OpenGL.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6OpenGLWidgets.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6PrintSupport.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6Qml.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6QmlModels.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6Quick.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6Test.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\Qt6Widgets.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\select.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\unicodedata.pyd"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\VCRUNTIME140.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\VCRUNTIME140_1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\images\*"; DestDir: "{app}\images"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "dist\Beskar\numpy\*"; DestDir: "{app}\numpy"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "dist\Beskar\platforms\*"; DestDir: "{app}\platforms"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "dist\Beskar\PyQt6\*"; DestDir: "{app}\PyQt6"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "dist\Beskar\styles\*"; DestDir: "{app}\styles"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
