@@ -1,6 +1,7 @@
 from .utils import apply_voltage, interact_with_LEDs, LED_position_gen, TwoDQBarDataItem
 from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
 from .constants import offset
+from fractions import Fraction
 from typing import List
 
 import statistics as stats
@@ -74,8 +75,14 @@ class ApplyVoltagePage(QtWidgets.QWidget):
         self.desc_layout.addWidget(self.help_tab_desc)
         self.desc_layout.addItem(spacer1)
 
+        screen_size = QtWidgets.QApplication.primaryScreen().size()
+        if Fraction(screen_size.height(), screen_size.width()) >= Fraction(64, 27):
+            spacer2_policy = QtWidgets.QSizePolicy.Policy.MinimumExpanding
+        else:
+            spacer2_policy = QtWidgets.QSizePolicy.Policy.Minimum
+
         spacer2 = QtWidgets.QSpacerItem(
-            20, 0, QtWidgets.QSizePolicy.Policy.MinimumExpanding, QtWidgets.QSizePolicy.Policy.Minimum
+            20, 0, spacer2_policy, QtWidgets.QSizePolicy.Policy.Minimum
         )
 
         self.layout = QtWidgets.QHBoxLayout()
