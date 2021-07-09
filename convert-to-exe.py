@@ -13,7 +13,7 @@ if __name__ == '__main__':
         '--noconfirm',
         '--icon', r'beskar\images\beskar-icon.ico',
         '--paths', f'{pyqt6_dir / "Qt6" / "bin"}',
-        f'--paths', f'{pyqt6_dir / "Qt6" / "plugins" / "platforms"}',
+        '--paths', f'{pyqt6_dir / "Qt6" / "plugins" / "platforms"}',
         '--hidden-import', 'PyQt6.sip',
         '--hidden-import', 'PyQt6.QtPrintSupport',
         '--add-data', 'beskar\images;images',
