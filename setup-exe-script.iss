@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Beskar"
-#define MyAppVersion "v0.7.0-beta"
+#define MyAppVersion "v0.7.1-beta"
 #define MyAppPublisher "Ahsoka"
 #define MyAppURL "https://github.com/Ahsoka/beskar"
 #define MyAppExeName "Beskar.exe"
@@ -24,7 +24,7 @@ DisableProgramGroupPage=yes
 ;PrivilegesRequired=lowest
 PrivilegesRequiredOverridesAllowed=commandline
 OutputDir={#SourcePath}
-OutputBaseFilename=beskar-install-v0.7.0-beta-64bit
+OutputBaseFilename=beskar-install-v0.7.1-beta-64bit
 SetupIconFile=dist\Beskar\images\beskar-icon.ico
 Compression=lzma
 SolidCompression=yes
