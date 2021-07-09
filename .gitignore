@@ -8,3 +8,6 @@ __pycache__
 Beskar.spec
 build
 dist
+
+# Beskar Setup EXEs
+beskar-install*.exe
