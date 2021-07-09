@@ -5,19 +5,21 @@ import pathlib
 import json
 import os
 
-location = None
-try:
-    location = os.environ['PROGRAMDATA']
-except KeyError:
-    location = None
-if not location:
-    location = r'C:\ProgramData'
-
 sentinel = object()
 
 class Settings:
-    def __init__(self, location: Union[str, Literal[r'C:\Program Data']] = location):
-        self.settings_path = pathlib.Path(location) / 'Beskar' / 'settings.json'
+    def __init__(self, location: Union[str, Literal[r'C:\Program Data']] = None):
+        if os.name == 'nt':
+            if location is None:
+                try:
+                    location = os.environ['PROGRAMDATA']
+                except KeyError:
+                    location = None
+                if not location:
+                    location = r'C:\ProgramData'
+            self.settings_path = pathlib.Path(location) / 'Beskar' / 'settings.json'
+        else:
+            self.settings_path = pathlib.Path('settings.json')
         if self.settings_path.exists():
             file_healthy = True
             with self.settings_path.open() as file:
