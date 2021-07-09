@@ -43,7 +43,6 @@ Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Sol
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_bz2.pyd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_ctypes.pyd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_decimal.pyd"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_elementtree.pyd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_hashlib.pyd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_lzma.pyd"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\_multiprocessing.pyd"; DestDir: "{app}"; Flags: ignoreversion
