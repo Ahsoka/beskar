@@ -53,7 +53,7 @@ Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Sol
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\base_library.zip"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Beskar.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Beskar.exe.manifest"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\libcrypto-1_1-x64.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\libcrypto-1_1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\libffi-7.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\libopenblas.GK7GX5KEQ4F6UYO3P26ULGBQYHGQO7J4.gfortran-win_amd64.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\libssl-1_1-x64.dll"; DestDir: "{app}"; Flags: ignoreversion
