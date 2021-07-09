@@ -66,6 +66,7 @@ Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Sol
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Core.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6DataVisualization.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Gui.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6Network.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6OpenGL.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6OpenGLWidgets.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "C:\Users\AA12 Louqe\Google Drive\Coding\Github Repositories\Beskar (Solar Army)\dist\Beskar\Qt6PrintSupport.dll"; DestDir: "{app}"; Flags: ignoreversion
