@@ -1,7 +1,7 @@
 from .utils import BaseInteractable, TwoDQBarDataItem, apply_voltage, get_image, interact_with_LEDs, LED_position_gen
 from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
-from .constants import offset
 from fractions import Fraction
+from .constants import offset
 from typing import List
 
 import statistics as stats
@@ -126,7 +126,10 @@ class ApplyVoltagePage(BasePage):
         self.current_voltage_applied = self.voltage_to_be_applied
         self.apply_button.setEnabled(False)
         if not self.main_window.mocked:
-            apply_voltage(self.main_window.device_name, self.main_window.voltage_offset + offset - self.voltage_to_be_applied)
+            apply_voltage(
+                self.main_window.device_name,
+                self.main_window.voltage_offset + offset - self.voltage_to_be_applied
+            )
 
         self.main_window.settings['applied-voltage'] = self.current_voltage_applied
 
@@ -391,7 +394,11 @@ class ScanPage(BasePage):
         self.spin_box.setValue(self.main_window.settings.get('scans', 1))
 
     def create_bar_graph(self):
-        graph_components = [QtDataVisualization.Q3DBars(), QtDataVisualization.QBar3DSeries(), numpy.zeros((8, 8)).view(TwoDQBarDataItem)]
+        graph_components = [
+            QtDataVisualization.Q3DBars(),
+            QtDataVisualization.QBar3DSeries(),
+            numpy.zeros((8, 8)).view(TwoDQBarDataItem)
+        ]
         graph_components[0].addSeries(graph_components[1])
         graph_components[0].rowAxis().setRange(0, 7)
         graph_components[0].columnAxis().setRange(0, 7)
@@ -463,7 +470,9 @@ class ScanPage(BasePage):
                             f'{self.main_window.device_name}/ai1', min_val=-10, max_val=10
                         )
                         samples = task.read(10)
-                self.bar_charts[scan_number][2][self.led_position[0], self.led_position[1]] = max(samples) - dark_current
+                self.bar_charts[scan_number][2][
+                    self.led_position[0], self.led_position[1]
+                ] = max(samples) - dark_current
                 self.bar_charts[scan_number][1].dataProxy().resetArray(
                     self.bar_charts[scan_number][2].tolist(convert_to_bar_data=True)
                 )
