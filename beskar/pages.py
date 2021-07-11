@@ -1,15 +1,17 @@
-from .utils import BaseInteractable, apply_voltage, interact_with_LEDs, LED_position_gen, TwoDQBarDataItem
+from .utils import BaseInteractable, TwoDQBarDataItem, apply_voltage, get_image, interact_with_LEDs, LED_position_gen
 from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
 from .constants import offset
 from fractions import Fraction
 from typing import List
 
 import statistics as stats
+import pathlib
 import nidaqmx
 import random
 import numpy
 import lorem
 import time
+import csv
 
 
 class BasePage(BaseInteractable, QtWidgets.QWidget):
@@ -315,18 +317,25 @@ class ScanPage(BasePage):
                 self.notice_for_reading.sizePolicy().horizontalPolicy(), QtWidgets.QSizePolicy.Policy.Fixed
             )
 
+            self.save_button = QtWidgets.QPushButton('Save scan')
+            self.save_button.setObjectName('save_button')
+            self.save_button.setEnabled(False)
+
             self.another_scan_button = QtWidgets.QPushButton('Do another scan')
             self.another_scan_button.setObjectName('another_scan_button')
             self.another_scan_button.setEnabled(False)
+
+            self.buttons_layout = QtWidgets.QHBoxLayout()
+            self.buttons_layout.addWidget(self.save_button)
+            self.buttons_layout.addWidget(self.another_scan_button)
 
             self.bar_chart_layout = QtWidgets.QVBoxLayout()
             self.bar_chart_layout.addWidget(self.bar_charts_tab)
             self.bar_chart_layout.addLayout(self.progress_bar_layout)
             self.bar_chart_layout.addWidget(self.notice_for_reading, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
             self.notice_for_reading.hide()
-            self.bar_chart_layout.addWidget(self.another_scan_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-
-
+            self.bar_chart_layout.addLayout(self.buttons_layout)
+            # self.bar_chart_layout.addWidget(self.another_scan_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
             self.bar_chart_layout_widget = QtWidgets.QWidget()
             self.bar_chart_layout_widget.setLayout(self.bar_chart_layout)
@@ -358,6 +367,27 @@ class ScanPage(BasePage):
             self.main_layout.addItem(self.spacer2)
             self.main_layout.addLayout(self.desc_layout)
 
+            self.file_dialog = QtWidgets.QFileDialog(
+                self.main_window,
+                caption=f'Saving Scan',
+                filter='CSV File (*.csv);;Screenshot (*.png)'
+            )
+            # NOTE: For som reason the connectSlotsByName is
+            # not working for some reason
+            # self.file_dialog.setObjectName('file_dialog')
+            self.file_dialog.filterSelected.connect(self.on_file_dialog_filterSelected)
+            self.file_dialog.accepted.connect(self.on_file_dialog_accepted)
+            self.file_dialog.setAcceptMode(QtWidgets.QFileDialog.AcceptMode.AcceptSave)
+
+            self.warning_screenshot_dialog = QtWidgets.QMessageBox(
+                QtWidgets.QMessageBox.Icon.Warning,
+                'Screenshots may not work properly',
+                'Screenshots are still in beta and may not accurately '
+                'capture the current view.',
+                QtWidgets.QMessageBox.StandardButton.Ok,
+                self.main_window
+            )
+
         self.spin_box.setValue(self.main_window.settings.get('scans', 1))
 
     def create_bar_graph(self):
@@ -376,10 +406,12 @@ class ScanPage(BasePage):
         if tab + 1 == len(self.bar_charts):
             self.progress_bar.show()
             self.scanning_progress_label.show()
+            self.save_button.setEnabled(False)
         else:
             self.progress_bar.hide()
             self.scanning_progress_label.hide()
             self.notice_for_reading.hide()
+            self.save_button.setEnabled(True)
 
     @QtCore.pyqtSlot(int)
     def on_spin_box_valueChanged(self, value):
@@ -462,7 +494,51 @@ class ScanPage(BasePage):
 
         self.notice_for_reading.hide()
 
+        self.save_button.setEnabled(True)
         self.another_scan_button.setEnabled(True)
+
+    @QtCore.pyqtSlot()
+    def on_save_button_clicked(self):
+        self.file_dialog.setLabelText(
+            QtWidgets.QFileDialog.DialogLabel.Accept,
+            f'Save Scan {self.bar_charts_tab.currentIndex() + 1}'
+        )
+
+        if not self.main_window.white_icon:
+            white_icon_path = get_image('beskar-icon-white.png')
+            if white_icon_path:
+                self.main_window.white_icon = QtGui.QIcon(white_icon_path)
+
+        if self.main_window.white_icon:
+            self.main_window.setWindowIcon(self.main_window.white_icon)
+
+        self.file_dialog.open()
+
+        QtTest.QTest.qWait(800)
+        if self.main_window.icon:
+            self.main_window.setWindowIcon(self.main_window.icon)
+
+    @QtCore.pyqtSlot(str)
+    def on_file_dialog_filterSelected(self, file_filter: str):
+        if '.png' in file_filter:
+            self.warning_screenshot_dialog.open()
+
+
+    @QtCore.pyqtSlot()
+    def on_file_dialog_accepted(self):
+        file_ext = self.file_dialog.selectedNameFilter()
+        selected = pathlib.Path(self.file_dialog.selectedFiles()[0])
+        current_tab = self.bar_charts_tab.currentIndex()
+        if '.csv' in file_ext:
+            with selected.open(mode='w', newline='') as file:
+                writer = csv.writer(file, csv.excel)
+                writer.writerow([f'Column {num + 1}' for num in range(8)])
+                writer.writerows(self.bar_charts[current_tab][2])
+        elif '.png' in file_ext:
+            q3dbar = self.bar_charts[current_tab][0]
+            q3dbar.renderToImage().save(str(selected))
+        else:
+            raise RuntimeError(f'This should never be triggered: {file_ext=}')
 
     @QtCore.pyqtSlot()
     def on_another_scan_button_clicked(self):
