@@ -6,6 +6,7 @@ from PyQt6.QtCore import QMetaObject
 from nidaqmx.system import System
 from .constants import offset
 
+import pathlib
 import nidaqmx
 import numpy
 
@@ -64,6 +65,15 @@ def get_number_of_devices(system=True):
         return the_system, num_of_devices
     else:
         return num_of_devices
+
+def get_image(image_path: str) -> Union[str, None]:
+    try:
+        icon_path = next(pathlib.Path('.').glob(f'**/images/{image_path}'))
+        return str(icon_path)
+    except StopIteration:
+        # If this happens, somehow the icon was deleted from the install folder
+        # TODO: Connect to internet and reinstall icon
+        pass
 
 
 class TwoDQBarDataItem(numpy.ndarray):
