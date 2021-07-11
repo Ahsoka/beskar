@@ -1,11 +1,9 @@
 from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
+from .utils import apply_voltage, get_image, get_number_of_devices
 from .pages import ApplyVoltagePage, DarkCurrentPage, ScanPage
-from .utils import apply_voltage, get_number_of_devices
 from PyQt6 import QtCore, QtWidgets, QtGui
 from .settings import Settings
 from . import __version__
-
-import pathlib
 
 
 class BeskarWindow(QtWidgets.QMainWindow):
@@ -20,13 +18,13 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.setWindowTitle(f'Beskar {__version__}')
 
-        try:
-            icon_path = next(pathlib.Path('.').glob('**/images/beskar-icon.png'))
-            self.setWindowIcon(QtGui.QIcon(str(icon_path)))
-        except StopIteration:
-            # If this happens, somehow the icon was deleted from the install folder
-            # TODO: Connect to internet and reinstall icon
-            pass
+        icon_path = get_image('beskar-icon.png')
+        self.icon = None
+        if icon_path:
+            self.icon = QtGui.QIcon(icon_path)
+            self.setWindowIcon(self.icon)
+
+        self.white_icon =  None
 
         self.create_options_menu()
 
