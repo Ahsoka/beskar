@@ -5,6 +5,7 @@ from .constants import offset
 from typing import List
 
 import statistics as stats
+import darkdetect
 import pathlib
 import nidaqmx
 import random
@@ -513,19 +514,21 @@ class ScanPage(BasePage):
             f'Save Scan {self.bar_charts_tab.currentIndex() + 1}'
         )
 
-        if not self.main_window.white_icon:
-            white_icon_path = get_image('beskar-icon-white.png')
-            if white_icon_path:
-                self.main_window.white_icon = QtGui.QIcon(white_icon_path)
+        if darkdetect.isDark():
+            if not self.main_window.white_icon:
+                white_icon_path = get_image('beskar-icon-white.png')
+                if white_icon_path:
+                    self.main_window.white_icon = QtGui.QIcon(white_icon_path)
 
-        if self.main_window.white_icon:
-            self.main_window.setWindowIcon(self.main_window.white_icon)
+            if self.main_window.white_icon:
+                self.main_window.setWindowIcon(self.main_window.white_icon)
 
         self.file_dialog.open()
 
-        QtTest.QTest.qWait(800)
-        if self.main_window.icon:
-            self.main_window.setWindowIcon(self.main_window.icon)
+        if darkdetect.isDark():
+            QtTest.QTest.qWait(800)
+            if self.main_window.icon:
+                self.main_window.setWindowIcon(self.main_window.icon)
 
     @QtCore.pyqtSlot(str)
     def on_file_dialog_filterSelected(self, file_filter: str):
