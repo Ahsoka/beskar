@@ -16,7 +16,7 @@ if __name__ == '__main__':
         '--paths', f'{pyqt6_dir / "Qt6" / "plugins" / "platforms"}',
         '--hidden-import', 'PyQt6.sip',
         '--hidden-import', 'PyQt6.QtPrintSupport',
-        '--add-data', 'beskar\images;images',
+        '--add-data', r'beskar\images;images',
         '--add-data', f'{pyqt6_dir / "Qt6" / "plugins" / "platforms"};platforms',
         '--add-data', f'{pyqt6_dir / "Qt6" / "plugins" / "styles"};styles'
     ])
