@@ -1,4 +1,4 @@
-from .utils import apply_voltage, get_number_of_devices
+from .utils import BaseInteractable, apply_voltage, get_number_of_devices
 from PyQt6 import QtCore, QtWidgets, QtTest
 from nidaqmx.system import System
 from .constants import offset
@@ -6,6 +6,11 @@ from .constants import offset
 import sys
 import lorem
 import random
+
+
+class BasePopup(BaseInteractable, QtWidgets.QDialog):
+    def super_(self):
+        super().__init__(self.main_window)
 
 
 class MultipleSEALKitsPopup(QtWidgets.QDialog):
