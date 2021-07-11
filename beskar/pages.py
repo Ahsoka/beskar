@@ -1,4 +1,4 @@
-from .utils import apply_voltage, interact_with_LEDs, LED_position_gen, TwoDQBarDataItem
+from .utils import BaseInteractable, apply_voltage, interact_with_LEDs, LED_position_gen, TwoDQBarDataItem
 from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
 from .constants import offset
 from fractions import Fraction
@@ -10,6 +10,11 @@ import random
 import numpy
 import lorem
 import time
+
+
+class BasePage(BaseInteractable):
+    def super_(self):
+        super().__init__()
 
 
 class ApplyVoltagePage(QtWidgets.QWidget):
