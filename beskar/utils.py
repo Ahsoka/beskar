@@ -1,6 +1,8 @@
 from typing import Generator, Tuple, Union, Literal, List
 from PyQt6.QtDataVisualization import QBarDataItem
 from nidaqmx._lib import DaqNotFoundError
+from contextlib import contextmanager
+from PyQt6.QtCore import QMetaObject
 from nidaqmx.system import System
 from .constants import offset
 
@@ -89,3 +91,13 @@ class TwoDQBarDataItem(numpy.ndarray):
 
         return (all(map(lambda item: item == 0, self.last_values_written[-4:]))
                 and len(self.last_values_written[-4:]) >= 4)
+
+
+class BaseInteractable:
+    @contextmanager
+    def init(self, main_window):
+        self.main_window = main_window
+        self.super_()
+        yield
+        self.setLayout(self.main_layout)
+        QMetaObject.connectSlotsByName(self)
