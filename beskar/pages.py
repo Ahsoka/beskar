@@ -32,6 +32,7 @@ class ApplyVoltagePage(BasePage):
             )
 
             self.horizontal_slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
+            self.horizontal_slider.setMinimumWidth(393)
             self.horizontal_slider.setObjectName('horizontal_slider')
             self.horizontal_slider.setMaximum(5000)
             self.horizontal_slider.setValue(2499)
