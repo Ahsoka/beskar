@@ -515,6 +515,18 @@ class ScanPage(BasePage):
             f'Save Scan {self.bar_charts_tab.currentIndex() + 1}'
         )
 
+        # NOTE: If the OS is in dark mode, when a file dialog
+        # is displayed it will be all black. For some reason
+        # using the .setWindowIcon method does not change the
+        # icon.  The only way to change the file dialog icon
+        # is to change the main application icon. So in order
+        # for the icon to visible against a black background we
+        # must use the beskar-icon-white.png icon. The code below
+        # will temporarily set the main application icon to the white
+        # icon, while the file dialog is being created so that the
+        # file dialog inherits this icon as its icon. Once the file
+        # dialog is created the original icon is set to the main window.
+
         if darkdetect.isDark():
             if not self.main_window.white_icon:
                 white_icon_path = get_image('beskar-icon-white.png')
