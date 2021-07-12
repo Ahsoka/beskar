@@ -560,6 +560,7 @@ class ScanPage(BasePage):
                 writer.writerow([f'Column {num + 1}' for num in range(8)])
                 writer.writerows(self.bar_charts[current_tab][2])
         elif '.png' in file_ext:
+            # TODO: Fix inconsistent and/or bad screenshots
             q3dbar = self.bar_charts[current_tab][0]
             q3dbar.renderToImage().save(str(selected))
         else:
