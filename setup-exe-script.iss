@@ -22,7 +22,7 @@ DefaultDirName={autopf64}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
 ;PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=commandline
+PrivilegesRequiredOverridesAllowed=commandline dialog
 OutputDir={#SourcePath}
 OutputBaseFilename=beskar-install-v0.7.1-beta-64bit
 SetupIconFile=dist\Beskar\images\beskar-icon.ico
