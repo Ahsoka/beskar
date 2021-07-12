@@ -81,7 +81,7 @@ class ApplyVoltagePage(BasePage):
             self.desc_layout.addItem(spacer1)
 
             screen_size = QtWidgets.QApplication.primaryScreen().size()
-            if Fraction(screen_size.height(), screen_size.width()) >= Fraction(64, 27):
+            if Fraction(screen_size.width(), screen_size.height()) >= Fraction(64, 27):
                 spacer2_policy = QtWidgets.QSizePolicy.Policy.MinimumExpanding
             else:
                 spacer2_policy = QtWidgets.QSizePolicy.Policy.Minimum
