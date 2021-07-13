@@ -66,10 +66,13 @@ def get_number_of_devices(system=True):
     else:
         return num_of_devices
 
-def get_file(file_path: str, dir='images') -> Union[str, None]:
+def get_file(file_path: str, dir='images', path=False) -> Union[pathlib.Path, str, None]:
     try:
         icon_path = next(pathlib.Path('.').glob(f'**/{dir}/{file_path}'))
-        return str(icon_path)
+        if path:
+            return icon_path
+        else:
+            return str(icon_path)
     except StopIteration:
         # If this happens, somehow the icon was deleted from the install folder
         # TODO: Connect to internet and reinstall icon
