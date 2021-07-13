@@ -1,5 +1,5 @@
 from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
-from .utils import apply_voltage, get_image, get_number_of_devices
+from .utils import apply_voltage, get_file, get_number_of_devices
 from .pages import ApplyVoltagePage, DarkCurrentPage, ScanPage
 from PyQt6 import QtCore, QtWidgets, QtGui
 from .settings import Settings
@@ -18,7 +18,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.setWindowTitle(f'Beskar {__version__}')
 
-        icon_path = get_image('beskar-icon.png')
+        icon_path = get_file('beskar-icon.png')
         self.icon = None
         if icon_path:
             self.icon = QtGui.QIcon(icon_path)

@@ -1,4 +1,4 @@
-from .utils import BaseInteractable, TwoDQBarDataItem, apply_voltage, get_image, interact_with_LEDs, LED_position_gen
+from .utils import BaseInteractable, TwoDQBarDataItem, apply_voltage, get_file, interact_with_LEDs, LED_position_gen
 from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
 from fractions import Fraction
 from .constants import offset
@@ -529,7 +529,7 @@ class ScanPage(BasePage):
 
         if darkdetect.isDark():
             if not self.main_window.white_icon:
-                white_icon_path = get_image('beskar-icon-white.png')
+                white_icon_path = get_file('beskar-icon-white.png')
                 if white_icon_path:
                     self.main_window.white_icon = QtGui.QIcon(white_icon_path)
 
