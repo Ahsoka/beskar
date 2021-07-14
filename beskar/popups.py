@@ -1,10 +1,9 @@
-from .utils import BaseInteractable, apply_voltage, get_number_of_devices
+from .utils import BaseInteractable, apply_voltage, get_number_of_devices, get_file
 from PyQt6 import QtCore, QtWidgets, QtTest
 from nidaqmx.system import System
 from .constants import offset
 
 import sys
-import lorem
 import random
 
 
@@ -183,10 +182,13 @@ class MockedModePopup(BasePopup):
         with self.init(main_window):
             self.show_again = True
 
-            self.header = QtWidgets.QLabel('<h1>Mocked Mode</h1>')
+            self.setFixedSize(350, 225)
 
-            self.description = QtWidgets.QLabel(lorem.text())
-            self.description.setWordWrap(True)
+            # NOTE: This file must exist or the program will crash
+            with get_file('mocked-mode.md', 'desc', path=True).open() as file:
+                self.text = QtWidgets.QLabel(file.read())
+                self.text.setWordWrap(True)
+                self.text.setTextFormat(QtCore.Qt.TextFormat.RichText)
 
             self.dont_show_again = QtWidgets.QCheckBox("Don't show this message again.")
             self.dont_show_again.setObjectName('check_box')
@@ -195,8 +197,7 @@ class MockedModePopup(BasePopup):
             self.ok_button.setObjectName('ok_button')
 
             self.main_layout = QtWidgets.QVBoxLayout()
-            self.main_layout.addWidget(self.header, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
-            self.main_layout.addWidget(self.description)
+            self.main_layout.addWidget(self.text)
             self.main_layout.addWidget(self.dont_show_again, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
             self.main_layout.addWidget(self.ok_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
