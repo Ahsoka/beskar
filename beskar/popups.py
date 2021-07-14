@@ -200,6 +200,9 @@ class MockedModePopup(BasePopup):
             self.main_layout.addWidget(self.dont_show_again, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
             self.main_layout.addWidget(self.ok_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
+    def closeEvent(self, close_event):
+        self.main_window.settings['show-mocked-mode'] = self.show_again
+
     @QtCore.pyqtSlot()
     def on_ok_button_clicked(self):
         self.main_window.settings['show-mocked-mode'] = self.show_again
