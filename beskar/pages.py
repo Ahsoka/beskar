@@ -280,15 +280,28 @@ class ScanPage(BasePage):
                 self.spin_box, alignment=QtCore.Qt.AlignmentFlag.AlignRight
             )
 
+            self.go_back_button = QtWidgets.QPushButton('Go back to scans')
+            self.go_back_button.setObjectName('go_back_button')
+            self.go_back_button.hide()
+
             self.ok_button = QtWidgets.QPushButton('OK')
             self.ok_button.setObjectName('ok_button')
+
+            self.num_of_scan_buttons_layout = QtWidgets.QHBoxLayout()
+            self.num_of_scan_buttons_layout.addWidget(
+                self.go_back_button,
+                stretch=10,
+                alignment=QtCore.Qt.AlignmentFlag.AlignRight
+            )
+            self.num_of_scan_buttons_layout.addWidget(
+                self.ok_button,
+                alignment=QtCore.Qt.AlignmentFlag.AlignRight
+            )
 
             self.num_of_scan_layout = QtWidgets.QVBoxLayout()
             self.num_of_scan_layout.addItem(spacer1)
             self.num_of_scan_layout.addLayout(self.interaction_layout)
-            self.num_of_scan_layout.addWidget(
-                self.ok_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight
-            )
+            self.num_of_scan_layout.addLayout(self.num_of_scan_buttons_layout)
             self.num_of_scan_layout.addItem(spacer1)
 
             self.num_of_scan_layout_widget = QtWidgets.QWidget()
@@ -506,6 +519,9 @@ class ScanPage(BasePage):
 
         self.notice_for_reading.hide()
 
+        if self.go_back_button.isHidden():
+            self.go_back_button.show()
+
         self.save_button.setEnabled(True)
         self.another_scan_button.setEnabled(True)
 
@@ -549,7 +565,6 @@ class ScanPage(BasePage):
         if '.png' in file_filter:
             self.warning_screenshot_dialog.open()
 
-
     @QtCore.pyqtSlot()
     def on_file_dialog_accepted(self):
         file_ext = self.file_dialog.selectedNameFilter()
@@ -571,3 +586,8 @@ class ScanPage(BasePage):
     def on_another_scan_button_clicked(self):
         self.main_layout.insertItem(1, self.spacer2)
         self.stacked_widget.setCurrentIndex(0)
+
+    @QtCore.pyqtSlot()
+    def on_go_back_button_clicked(self):
+        self.main_layout.removeItem(self.spacer2)
+        self.stacked_widget.setCurrentIndex(1)
