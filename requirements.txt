@@ -3,6 +3,5 @@ numpy
 PyQt6>=6.1.0
 PyQt6-DataVisualization
 PyQt6-Charts
-lorem # Only temporary will remove once the real text is typed
 darkdetect
 pyinstaller
