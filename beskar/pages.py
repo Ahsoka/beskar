@@ -10,7 +10,6 @@ import pathlib
 import nidaqmx
 import random
 import numpy
-import lorem
 import time
 import csv
 
