@@ -332,8 +332,8 @@ class ScanPage(BasePage):
             self.another_scan_button.setEnabled(False)
 
             self.buttons_layout = QtWidgets.QHBoxLayout()
-            self.buttons_layout.addWidget(self.save_button)
-            self.buttons_layout.addWidget(self.another_scan_button)
+            self.buttons_layout.addWidget(self.save_button, stretch=10, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+            self.buttons_layout.addWidget(self.another_scan_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
             self.bar_chart_layout = QtWidgets.QVBoxLayout()
             self.bar_chart_layout.addWidget(self.bar_charts_tab)
