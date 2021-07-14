@@ -1,6 +1,6 @@
 from .utils import BaseInteractable, TwoDQBarDataItem, apply_voltage, get_file, interact_with_LEDs, LED_position_gen
 from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
-from .constants import offset, help_tab_fixed_width
+from .constants import offset, help_tab_fixed_width, help_tab_margins
 from fractions import Fraction
 from typing import List
 
@@ -79,7 +79,7 @@ class ApplyVoltagePage(BasePage):
             self.desc_layout = QtWidgets.QVBoxLayout()
             self.desc_layout.addWidget(self.help_tab)
             self.desc_layout.addItem(spacer1)
-            self.desc_layout.setContentsMargins(0, 10, 10, 0)
+            self.desc_layout.setContentsMargins(help_tab_margins)
 
             screen_size = QtWidgets.QApplication.primaryScreen().size()
             if Fraction(screen_size.width(), screen_size.height()) >= Fraction(64, 27):
@@ -199,7 +199,7 @@ class DarkCurrentPage(BasePage):
             self.desc_layout = QtWidgets.QVBoxLayout()
             self.desc_layout.addWidget(self.help_tab)
             self.desc_layout.addItem(spacer1)
-            self.desc_layout.setContentsMargins(0, 10, 10, 0)
+            self.desc_layout.setContentsMargins(help_tab_margins)
 
             spacer2 = spacer2 = QtWidgets.QSpacerItem(
                 20, 0, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum
@@ -379,6 +379,7 @@ class ScanPage(BasePage):
             self.desc_layout = QtWidgets.QVBoxLayout()
             self.desc_layout.addWidget(self.help_tab)
             self.desc_layout.addItem(spacer1)
+            self.desc_layout.setContentsMargins(help_tab_margins)
 
             self.spacer2  = QtWidgets.QSpacerItem(
                 20, 0, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
