@@ -327,7 +327,7 @@ class ScanPage(BasePage):
             self.save_button.setObjectName('save_button')
             self.save_button.setEnabled(False)
 
-            self.another_scan_button = QtWidgets.QPushButton('Do another scan')
+            self.another_scan_button = QtWidgets.QPushButton('Do another scan(s)')
             self.another_scan_button.setObjectName('another_scan_button')
             self.another_scan_button.setEnabled(False)
 
