@@ -355,14 +355,15 @@ class ScanPage(BasePage):
             self.main_vbox_layout.addWidget(self.scan_label, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
             self.main_vbox_layout.addWidget(self.stacked_widget)
 
-            self.help_tab_header = QtWidgets.QLabel('<h1>About Scanning</h1>')
-
-            self.help_tab_desc = QtWidgets.QLabel(lorem.text())
-            self.help_tab_desc.setWordWrap(True)
+            with get_file('scan.md', 'desc', path=True).open() as file:
+                self.help_tab = QtWidgets.QLabel(file.read())
+                self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
+                self.help_tab.setOpenExternalLinks(True)
+                self.help_tab.setFixedWidth(275)
+                self.help_tab.setWordWrap(True)
 
             self.desc_layout = QtWidgets.QVBoxLayout()
-            self.desc_layout.addWidget(self.help_tab_header)
-            self.desc_layout.addWidget(self.help_tab_desc)
+            self.desc_layout.addWidget(self.help_tab)
             self.desc_layout.addItem(spacer1)
 
             self.spacer2  = QtWidgets.QSpacerItem(
