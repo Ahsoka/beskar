@@ -59,9 +59,7 @@ class ApplyVoltagePage(BasePage):
             self.interactable_layout = QtWidgets.QVBoxLayout()
             self.interactable_layout.contentsMargins().setLeft(1000)
             self.interactable_layout.contentsMargins().setRight(1000)
-            self.interactable_layout.setContentsMargins(
-                self.interactable_layout.contentsMargins()
-            )
+            self.interactable_layout.setContentsMargins(10, 10, 0, 0)
             self.interactable_layout.addWidget(self.apply_voltage_label, 0, QtCore.Qt.AlignmentFlag.AlignHCenter)
             self.interactable_layout.addItem(spacer1)
             self.interactable_layout.addLayout(interaction_hbox)
@@ -70,16 +68,19 @@ class ApplyVoltagePage(BasePage):
             self.interactable_layout.addWidget(self.apply_button, 0, QtCore.Qt.AlignmentFlag.AlignRight)
             self.interactable_layout.addItem(spacer1)
 
-            self.help_tab_header = QtWidgets.QLabel("<h1>About Apply Voltage</h1>")
-
-            self.help_tab_desc = QtWidgets.QLabel(lorem.text())
-            self.help_tab_desc.setWordWrap(True)
+            with get_file('apply-voltage.md', 'desc', path=True).open() as file:
+                # NOTE: Currently if the user compress the window vertically the text
+                # will not be fully visualable. Might want to add limitations so that
+                # this can't happen.
+                self.help_tab = QtWidgets.QLabel(file.read())
+                self.help_tab.setFixedWidth(275)
+                self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
+                self.help_tab.setWordWrap(True)
 
             self.desc_layout = QtWidgets.QVBoxLayout()
-            self.desc_layout.addWidget(self.help_tab_header)
-            # self.desc_layout.addItem(spacer1)
-            self.desc_layout.addWidget(self.help_tab_desc)
+            self.desc_layout.addWidget(self.help_tab)
             self.desc_layout.addItem(spacer1)
+            self.desc_layout.setContentsMargins(0, 10, 10, 0)
 
             screen_size = QtWidgets.QApplication.primaryScreen().size()
             if Fraction(screen_size.width(), screen_size.height()) >= Fraction(64, 27):
