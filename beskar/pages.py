@@ -257,6 +257,8 @@ class ScanPage(BasePage):
 
             self.scans = 1
 
+            self.scanning_in_progress = False
+
             self.scan_label = QtWidgets.QLabel('<h1>Scan</h1>')
 
             spacer1 = QtWidgets.QSpacerItem(
@@ -429,7 +431,7 @@ class ScanPage(BasePage):
         if tab + 1 == len(self.bar_charts):
             self.progress_bar.show()
             self.scanning_progress_label.show()
-            self.save_button.setEnabled(False)
+            self.save_button.setEnabled(not self.scanning_in_progress)
         else:
             self.progress_bar.hide()
             self.scanning_progress_label.hide()
@@ -446,6 +448,8 @@ class ScanPage(BasePage):
 
     @QtCore.pyqtSlot()
     def on_ok_button_clicked(self):
+        self.scanning_in_progress = True
+
         self.main_layout.removeItem(self.spacer2)
 
         self.another_scan_button.setEnabled(False)
@@ -516,6 +520,8 @@ class ScanPage(BasePage):
                 else:
                     # Delay between all other LED flashes
                     QtTest.QTest.qWait(860 - 1 - computation_time * 1000)
+
+        self.scanning_in_progress = False
 
         self.notice_for_reading.hide()
 
