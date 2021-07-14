@@ -187,19 +187,20 @@ class DarkCurrentPage(BasePage):
             self.chart_layout.addWidget(self.chart_view)
             self.chart_layout.addWidget(self.refresh_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
-            self.help_tab_header = QtWidgets.QLabel("<h1>About Dark Current</h1>")
-
-            self.help_tab_desc = QtWidgets.QLabel(lorem.text())
-            self.help_tab_desc.setWordWrap(True)
+            with get_file('dark-current.md', 'desc', path=True).open() as file:
+                self.help_tab = QtWidgets.QLabel(file.read())
+                self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
+                self.help_tab.setFixedWidth(275)
+                self.help_tab.setWordWrap(True)
 
             spacer1 = QtWidgets.QSpacerItem(
                 0, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
             )
 
             self.desc_layout = QtWidgets.QVBoxLayout()
-            self.desc_layout.addWidget(self.help_tab_header)
-            self.desc_layout.addWidget(self.help_tab_desc)
+            self.desc_layout.addWidget(self.help_tab)
             self.desc_layout.addItem(spacer1)
+            self.desc_layout.setContentsMargins(0, 10, 10, 0)
 
             spacer2 = spacer2 = QtWidgets.QSpacerItem(
                 20, 0, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum
