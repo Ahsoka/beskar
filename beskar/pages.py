@@ -1,7 +1,7 @@
 from .utils import BaseInteractable, TwoDQBarDataItem, apply_voltage, get_file, interact_with_LEDs, LED_position_gen
 from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
+from .constants import offset, help_tab_fixed_width
 from fractions import Fraction
-from .constants import offset
 from typing import List
 
 import statistics as stats
@@ -72,7 +72,7 @@ class ApplyVoltagePage(BasePage):
                 # will not be fully visualable. Might want to add limitations so that
                 # this can't happen.
                 self.help_tab = QtWidgets.QLabel(file.read())
-                self.help_tab.setFixedWidth(275)
+                self.help_tab.setFixedWidth(help_tab_fixed_width)
                 self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
                 self.help_tab.setWordWrap(True)
 
@@ -189,7 +189,7 @@ class DarkCurrentPage(BasePage):
             with get_file('dark-current.md', 'desc', path=True).open() as file:
                 self.help_tab = QtWidgets.QLabel(file.read())
                 self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
-                self.help_tab.setFixedWidth(275)
+                self.help_tab.setFixedWidth(help_tab_fixed_width)
                 self.help_tab.setWordWrap(True)
 
             spacer1 = QtWidgets.QSpacerItem(
@@ -358,7 +358,7 @@ class ScanPage(BasePage):
                 self.help_tab = QtWidgets.QLabel(file.read())
                 self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
                 self.help_tab.setOpenExternalLinks(True)
-                self.help_tab.setFixedWidth(275)
+                self.help_tab.setFixedWidth(help_tab_fixed_width)
                 self.help_tab.setWordWrap(True)
 
             self.desc_layout = QtWidgets.QVBoxLayout()
