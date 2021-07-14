@@ -425,7 +425,7 @@ class ScanPage(BasePage):
         self.bar_charts_tab.addTab(self.bar_charts[len(self.bar_charts) - 1][3], f'Scan {len(self.bar_charts)}')
 
     @QtCore.pyqtSlot(int)
-    def on_bar_charts_tab_tabBarClicked(self, tab):
+    def on_bar_charts_tab_currentChanged(self, tab):
         if tab + 1 == len(self.bar_charts):
             self.progress_bar.show()
             self.scanning_progress_label.show()
