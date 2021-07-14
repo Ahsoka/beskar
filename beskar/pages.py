@@ -379,8 +379,7 @@ class ScanPage(BasePage):
                 caption=f'Saving Scan',
                 filter='CSV File (*.csv);;Screenshot (*.png)'
             )
-            # NOTE: For som reason the connectSlotsByName is
-            # not working for some reason
+            # NOTE: For some reason connectSlotsByName is not working
             # self.file_dialog.setObjectName('file_dialog')
             self.file_dialog.filterSelected.connect(self.on_file_dialog_filterSelected)
             self.file_dialog.accepted.connect(self.on_file_dialog_accepted)
