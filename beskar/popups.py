@@ -46,6 +46,8 @@ class MultipleSEALKitsPopup(BasePopup):
             self.main_layout.addWidget(self.combo_box)
             self.main_layout.addLayout(self.buttons_layout)
 
+            self.setFixedHeight(95)
+
             # NOTE: Need to use .connect since for some reason
             # since connectBySlots does not detect the slot
             self.finished.connect(self.finishing)
