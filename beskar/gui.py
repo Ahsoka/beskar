@@ -104,6 +104,10 @@ class BeskarWindow(QtWidgets.QMainWindow):
         self.menu_group_box = QtWidgets.QGroupBox()
         self.menu_group_box.setLayout(self.vertical_menu_layout)
 
+    def closeEvent(self, close_event: QtGui.QCloseEvent) -> None:
+        self.exiting = True
+        super().closeEvent(close_event)
+
     @QtCore.pyqtSlot()
     def on_apply_voltage_menu_button_clicked(self):
         self.apply_voltage_menu.setChecked(True)

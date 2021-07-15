@@ -482,6 +482,8 @@ class ScanPage(BasePage):
             QtTest.QTest.qWait(412)
 
             for progress in range(length):
+                if self.main_window.exiting:
+                    return
                 loop_start = time.time()
                 if self.main_window.mocked:
                     samples = [random.random() for _ in range(10)]
