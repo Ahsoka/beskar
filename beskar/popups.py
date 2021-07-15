@@ -3,7 +3,6 @@ from PyQt6 import QtCore, QtWidgets, QtTest, QtGui
 from nidaqmx.system import System
 from .constants import offset
 
-import sys
 import random
 
 
@@ -25,25 +24,39 @@ class MultipleSEALKitsPopup(BasePopup):
             for device_name in System.local().devices.device_names:
                 self.combo_box.addItem(device_name)
 
-            self.push_button = QtWidgets.QPushButton('OK')
-            self.push_button.setObjectName('push_button')
+            self.ok_button = QtWidgets.QPushButton('OK')
+            self.ok_button.setObjectName('ok_button')
+
+            self.quit_button = QtWidgets.QPushButton('Quit')
+            self.quit_button.setObjectName('quit_button')
+
+            self.buttons_layout = QtWidgets.QHBoxLayout()
+            self.buttons_layout.addWidget(
+                self.ok_button,
+                stretch=10,
+                alignment=QtCore.Qt.AlignmentFlag.AlignRight
+            )
+            self.buttons_layout.addWidget(
+                self.quit_button,
+                alignment=QtCore.Qt.AlignmentFlag.AlignRight
+            )
 
             self.main_layout = QtWidgets.QVBoxLayout()
             self.main_layout.addWidget(self.label)
             self.main_layout.addWidget(self.combo_box)
-            self.main_layout.addWidget(self.push_button, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-
-            # self.setWindowFlag(QtCore.Qt.WindowFlags.WindowCloseButtonHint, on=False)
+            self.main_layout.addLayout(self.buttons_layout)
 
     @QtCore.pyqtSlot()
-    def on_push_button_clicked(self):
+    def on_ok_button_clicked(self):
          self.main_window.device_name = self.combo_box.currentText()
          self.accept()
          apply_voltage(self.main_window.device_name)
          self.main_window.enter_volts_popup.open()
 
-    def closeEvent(self, close_event):
-        sys.exit()
+    QtCore.pyqtSlot()
+    def on_quit_button_clicked(self):
+        self.reject()
+        QtCore.QCoreApplication.quit()
 
 
 class NoSEALKitPopup(BasePopup):
