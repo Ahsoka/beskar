@@ -63,15 +63,19 @@ class NoSEALKitPopup(BasePopup):
             self.mocked_mode_button = QtWidgets.QPushButton('Mocked Mode')
             self.mocked_mode_button.setObjectName('mocked_mode_button')
 
+            self.quit_button = QtWidgets.QPushButton('Quit')
+            self.quit_button.setObjectName('quit_button')
+
             self.buttons_layout = QtWidgets.QHBoxLayout()
-            self.buttons_layout.addWidget(self.refresh_push_button, stretch=10, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-            self.buttons_layout.addWidget(self.mocked_mode_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+            self.buttons_layout.addWidget(self.refresh_push_button)
+            self.buttons_layout.addWidget(self.mocked_mode_button)
+            self.buttons_layout.addWidget(self.quit_button)
 
             self.main_layout = QtWidgets.QVBoxLayout()
             self.main_layout.addWidget(self.label)
             self.main_layout.addLayout(self.buttons_layout)
 
-            # self.setWindowFlag(QtCore.Qt.WindowFlags.WindowCloseButtonHint, on=False)
+            self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, on=False)
 
     @QtCore.pyqtSlot()
     def on_refresh_push_button_clicked(self):
@@ -112,8 +116,10 @@ class NoSEALKitPopup(BasePopup):
             mocked_popup = MockedModePopup(self.main_window)
             mocked_popup.open()
 
-    def closeEvent(self, close_event):
-        sys.exit()
+    @QtCore.pyqtSlot()
+    def on_quit_button_clicked(self):
+        self.reject()
+        QtCore.QCoreApplication.quit()
 
 
 class EnterVoltsPopup(BasePopup):
