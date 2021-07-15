@@ -77,6 +77,8 @@ class NoSEALKitPopup(BasePopup):
 
             self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, on=False)
 
+            self.setFixedSize(311, 68)
+
     @QtCore.pyqtSlot()
     def on_refresh_push_button_clicked(self):
         if self.refresh_push_button.text() == 'Refresh':
