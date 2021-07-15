@@ -1,5 +1,5 @@
 from .utils import BaseInteractable, apply_voltage, get_number_of_devices, get_file
-from PyQt6 import QtCore, QtWidgets, QtTest
+from PyQt6 import QtCore, QtWidgets, QtTest, QtGui
 from nidaqmx.system import System
 from .constants import offset
 
@@ -107,6 +107,10 @@ class NoSEALKitPopup(BasePopup):
             self.main_window.enter_volts_popup.open()
         else:
             raise RuntimeError('This should never be triggered.')
+
+    def keyPressEvent(self, key_event: QtGui.QKeyEvent) -> None:
+        if key_event.key() != QtCore.Qt.Key.Key_Escape:
+            super().keyPressEvent(key_event)
 
     @QtCore.pyqtSlot()
     def on_mocked_mode_button_clicked(self):
