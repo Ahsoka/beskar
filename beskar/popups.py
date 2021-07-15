@@ -46,17 +46,25 @@ class MultipleSEALKitsPopup(BasePopup):
             self.main_layout.addWidget(self.combo_box)
             self.main_layout.addLayout(self.buttons_layout)
 
+            # NOTE: Need to use .connect since for some reason
+            # since connectBySlots does not detect the slot
+            self.finished.connect(self.finishing)
+
     @QtCore.pyqtSlot()
     def on_ok_button_clicked(self):
-         self.main_window.device_name = self.combo_box.currentText()
          self.accept()
-         apply_voltage(self.main_window.device_name)
-         self.main_window.enter_volts_popup.open()
 
     QtCore.pyqtSlot()
     def on_quit_button_clicked(self):
+        self.main_window.exiting = True
         self.reject()
         QtCore.QCoreApplication.quit()
+
+    def finishing(self, result):
+        if not self.main_window.exiting:
+            self.main_window.device_name = self.combo_box.currentText()
+            apply_voltage(self.main_window.device_name)
+            self.main_window.enter_volts_popup.open()
 
 
 class NoSEALKitPopup(BasePopup):

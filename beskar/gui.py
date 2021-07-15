@@ -16,6 +16,8 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.settings = Settings()
 
+        self.exiting = False
+
         self.setWindowTitle(f'Beskar {__version__}')
 
         icon_path = get_file('beskar-icon.png')
