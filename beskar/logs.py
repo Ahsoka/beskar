@@ -4,6 +4,7 @@ import pathlib
 
 # NOTE: Adapted from: https://github.com/Ahsoka/bdaybot/blob/master/bdaybot/logs.py
 
+
 class PrettyFormatter(logging.Formatter):
     def __init__(self, *args, style='%', **kwargs):
         if style != '%':
@@ -34,6 +35,7 @@ class PrettyFormatter(logging.Formatter):
         returning = (" " * spaces) +  unparsed[:end_loc] + unparsed[end_loc:]
         # print(f"returning == unparsed = {unparsed == returning}")
         return returning
+
 
 def file_renamer(filename: str):
     split = filename.split('.')
