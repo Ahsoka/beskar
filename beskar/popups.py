@@ -2,6 +2,7 @@ from .utils import BaseInteractable, apply_voltage, get_number_of_devices, get_f
 from PyQt6 import QtCore, QtWidgets, QtTest, QtGui
 from nidaqmx.system import System
 from .constants import offset
+from . import sys_info
 
 import random
 
@@ -259,3 +260,71 @@ class MockedModePopup(BasePopup):
     @QtCore.pyqtSlot(int)
     def on_check_box_stateChanged(self, state):
         self.show_again = not bool(state)
+
+
+class ErrorPopup(BasePopup):
+    def __init__(self, main_window, traceback: str):
+        with self.init(main_window):
+            self.sending = True
+
+            self.uh_oh_label = QtWidgets.QLabel(
+                '<b>Uh oh. A fatal error has occured in Beskar.</b><br>'
+                'The following information will be sent in crash report to the developer.'
+            )
+
+            self.os_name_label = QtWidgets.QLabel(
+                f"<b>OS Name:</b> {sys_info['name']}"
+            )
+
+            self.os_version_label = QtWidgets.QLabel(
+                f"<b>OS Version:</b> {sys_info['version']}"
+            )
+
+            self.os_theme_label = QtWidgets.QLabel(
+                f"<b>OS Theme:</b> {sys_info['theme']}"
+            )
+
+            self.sys_info_layout = QtWidgets.QVBoxLayout()
+            self.sys_info_layout.addWidget(self.os_name_label)
+            self.sys_info_layout.addWidget(self.os_version_label)
+            self.sys_info_layout.addWidget(self.os_theme_label)
+
+            self.sys_info_group_box = QtWidgets.QGroupBox('System Information')
+            self.sys_info_group_box.setLayout(self.sys_info_layout)
+
+            self.error_traceback = QtWidgets.QPlainTextEdit(traceback)
+            self.error_traceback.setReadOnly(True)
+
+            self.error_traceback_layout = QtWidgets.QVBoxLayout()
+            self.error_traceback_layout.addWidget(self.error_traceback)
+
+            self.error_traceback_group_box = QtWidgets.QGroupBox('Error Traceback')
+            self.error_traceback_group_box.setLayout(self.error_traceback_layout)
+
+            self.dont_send_crash_report = QtWidgets.QCheckBox(
+                "Don't send crash report."
+            )
+            self.dont_send_crash_report.setObjectName('dont_send_crash_button')
+
+            self.close_button = QtWidgets.QPushButton('Close')
+            self.close_button.setObjectName('close_button')
+
+            self.main_layout = QtWidgets.QVBoxLayout()
+            self.main_layout.addWidget(self.uh_oh_label)
+            self.main_layout.addWidget(self.sys_info_group_box)
+            self.main_layout.addWidget(self.error_traceback_group_box)
+            self.main_layout.addWidget(self.dont_send_crash_report)
+            self.main_layout.addWidget(
+                self.close_button,
+                alignment=QtCore.Qt.AlignmentFlag.AlignRight
+            )
+
+            self.setWindowTitle('Crash Report')
+
+    @QtCore.pyqtSlot()
+    def on_close_button_clicked(self):
+        self.accept()
+
+    @QtCore.pyqtSlot(int)
+    def on_dont_send_crash_button_stateChanged(self, state):
+        self.sending = not bool(state)
