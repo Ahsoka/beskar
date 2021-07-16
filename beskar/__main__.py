@@ -30,10 +30,6 @@ def handle_exception(exc_type, exc_value, trace):
     sys.exit(1)
 
 def main():
-    window.show()
-    sys.exit(app.exec())
-
-if __name__ == '__main__':
     for logger_name in map(
         lambda name: f'beskar.{name}',
         ('gui', 'pages', 'popups', 'settings', 'utils')
@@ -45,4 +41,9 @@ if __name__ == '__main__':
         )
 
     sys.excepthook = handle_exception
+
+    window.show()
+    sys.exit(app.exec())
+
+if __name__ == '__main__':
     main()
