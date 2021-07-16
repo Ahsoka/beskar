@@ -4,4 +4,5 @@ PyQt6>=6.1.0
 PyQt6-DataVisualization
 PyQt6-Charts
 darkdetect
+sentry-sdk
 pyinstaller
