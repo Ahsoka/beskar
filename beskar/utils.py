@@ -49,8 +49,9 @@ def interact_with_LEDs(device_name: str, interaction: Literal['on', 'off', 'on&o
             task.write(False)
             task.write(True)
 
-def get_number_of_devices(system=True):
+def get_number_of_devices(system=True, drivers=False):
     errors  = (FileNotFoundError, DaqNotFoundError)
+    has_drivers = True
     try:
         from __main__ import PyInstallerImportError
         errors += (PyInstallerImportError,)
@@ -61,8 +62,13 @@ def get_number_of_devices(system=True):
         num_of_devices = len(the_system.devices)
     except errors:
         num_of_devices = 0
-    if system:
+        has_drivers = False
+    if system and drivers:
+        return the_system, num_of_devices, has_drivers
+    elif system:
         return the_system, num_of_devices
+    elif drivers:
+        return the_system, has_drivers
     else:
         return num_of_devices
 

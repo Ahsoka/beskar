@@ -75,7 +75,15 @@ class NoSEALKitPopup(BasePopup):
             self.label = QtWidgets.QLabel(
                 "SEAL kit not detected, please make sure it's plugged in"
             )
-            self.label.setObjectName('label')
+
+            self.no_drivers = QtWidgets.QLabel(
+                '<b>WARNING:</b> Drivers are not detected on this computer. '
+                'In order to connect with the SEAL kit you must install the drivers from '
+                '<a href="https://www.ni.com/en-us/support/downloads/drivers/download.ni-daqmx.html#348669">here</a>.'
+            )
+            self.no_drivers.setOpenExternalLinks(True)
+            self.no_drivers.setWordWrap(True)
+            self.no_drivers.hide()
 
             self.combo_box = QtWidgets.QComboBox()
             self.combo_box.setObjectName('combo_box')
@@ -96,11 +104,12 @@ class NoSEALKitPopup(BasePopup):
 
             self.main_layout = QtWidgets.QVBoxLayout()
             self.main_layout.addWidget(self.label)
+            self.main_layout.addWidget(self.no_drivers)
             self.main_layout.addLayout(self.buttons_layout)
 
             self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, on=False)
 
-            self.setFixedSize(311, 68)
+            self.setFixedSize(315, 68)
 
     @QtCore.pyqtSlot()
     def on_refresh_push_button_clicked(self):
@@ -109,7 +118,10 @@ class NoSEALKitPopup(BasePopup):
             for _ in range(5):
                 QtTest.QTest.qWait(100)
                 self.label.setText(f"{self.label.text()}.")
-            system, num_of_devices = get_number_of_devices()
+            system, num_of_devices, has_drivers = get_number_of_devices(drivers=True)
+            if not has_drivers and self.no_drivers.isHidden():
+                self.setFixedHeight(130)
+                self.no_drivers.show()
             if num_of_devices == 0:
                 self.label.setText('SEAL kit not detected, please try refreshing again.')
             else:
