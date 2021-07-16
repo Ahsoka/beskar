@@ -22,6 +22,10 @@ def before_breadcrumbs(crumb, hint):
     return crumb
 
 sentry_sdk.init(
+    # Testing URL:
+    # 'https://2645d9e6da7f4ae684bbfc162b78267f@o921203.ingest.sentry.io/5867522',
+
+    # Production URL:
     'https://f6c12472ccb949aaa9cc7c752f8aeb9a@o921203.ingest.sentry.io/5867524',
     environment='production' if getattr(sys, 'frozen', False) else 'development',
     integrations=(LoggingIntegration(logging.DEBUG, None),),
