@@ -11,6 +11,7 @@ if __name__ == '__main__':
         '--name', 'Beskar',
         '--clean',
         '--noconfirm',
+        '--noconsole',
         '--icon', r'beskar\images\beskar-icon.ico',
         '--paths', f'{pyqt6_dir / "Qt6" / "bin"}',
         '--paths', f'{pyqt6_dir / "Qt6" / "plugins" / "platforms"}',
