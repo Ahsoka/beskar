@@ -18,5 +18,6 @@ if __name__ == '__main__':
         '--hidden-import', 'PyQt6.QtPrintSupport',
         '--add-data', r'beskar\images;images',
         '--add-data', f'{pyqt6_dir / "Qt6" / "plugins" / "platforms"};platforms',
-        '--add-data', f'{pyqt6_dir / "Qt6" / "plugins" / "styles"};styles'
+        '--add-data', f'{pyqt6_dir / "Qt6" / "plugins" / "styles"};styles',
+        '--add-data', r'beskar\desc;desc'
     ])
