@@ -5,6 +5,10 @@ from PyQt6 import QtCore, QtWidgets, QtGui
 from .settings import Settings
 from . import __version__
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 class BeskarWindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -54,13 +58,16 @@ class BeskarWindow(QtWidgets.QMainWindow):
         if num_of_devices > 1:
             popup = MultipleSEALKitsPopup(self)
             popup.open()
+            logger.info('Opened MultipleSEALKitPopup from BeskarWindow.')
         elif num_of_devices == 0:
             popup = NoSEALKitPopup(self)
             popup.open()
+            logger.info('Opened NoSEALKitPopup from BeskarWindow.')
         elif num_of_devices == 1:
             self.device_name = system.devices.device_names[0]
             apply_voltage(self.device_name)
             self.enter_volts_popup.open()
+            logger.info('Opened EnterVoltsPopup from BeskarWindow.')
 
         QtCore.QMetaObject.connectSlotsByName(self)
 
@@ -126,13 +133,10 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.dark_current_widget.update_data()
 
-        if max(self.dark_current_widget.samples) > 1:
-            QtWidgets.QMessageBox.warning(
-                self,
-                'Unusually High Dark Current',
-                'These dark current values are unusually high values.'
-                ' There might be something wrong with the SEAL kit you are using.'
-            )
+        self.high_dark_current(
+            'These dark current values are unusually high values. '
+            'There might be something wrong with the SEAL kit you are using.'
+        )
 
     @QtCore.pyqtSlot()
     def on_scan_menu_button_clicked(self):
@@ -144,10 +148,12 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.stacked_widget.setCurrentIndex(2)
 
+        self.high_dark_current(
+            'Scanning may not be accurate due to unusually high dark current values. '
+            'There might be something wrong with the SEAL kit you are using.'
+        )
+
+    def high_dark_current(self, msg: str, title: str = 'Unusually High Dark Current'):
         if max(self.dark_current_widget.samples) > 1:
-             QtWidgets.QMessageBox.warning(
-                self,
-                'Unusually High Dark Current',
-                'Scanning may not be accurate due to unusually high dark current values. '
-                'There might be something wrong with the SEAL kit your using.'
-            )
+            logger.warning('Unusually high dark current detected.')
+            QtWidgets.QMessageBox.warning(self, title, msg)

@@ -5,6 +5,9 @@ from .constants import offset
 from . import sys_info
 
 import random
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class BasePopup(BaseInteractable, QtWidgets.QDialog):
@@ -23,6 +26,7 @@ class MultipleSEALKitsPopup(BasePopup):
             self.combo_box = QtWidgets.QComboBox()
             self.combo_box.setObjectName('combo_box')
             for device_name in System.local().devices.device_names:
+                logger.info(f'Detected {device_name}.')
                 self.combo_box.addItem(device_name)
 
             self.ok_button = QtWidgets.QPushButton('OK')
@@ -56,18 +60,22 @@ class MultipleSEALKitsPopup(BasePopup):
     @QtCore.pyqtSlot()
     def on_ok_button_clicked(self):
          self.accept()
+         logger.info('Accepted MultipleSEALKitPopup via OK button.')
 
     QtCore.pyqtSlot()
     def on_quit_button_clicked(self):
         self.main_window.exiting = True
         self.reject()
+        logger.info('Rejected MultipleSEALKitPopup via quit button.')
         QtCore.QCoreApplication.quit()
 
     def finishing(self, result):
         if not self.main_window.exiting:
             self.main_window.device_name = self.combo_box.currentText()
+            logger.info(f'Selected {self.main_window.device_name} as the SEAL kit.')
             apply_voltage(self.main_window.device_name)
             self.main_window.enter_volts_popup.open()
+            logger.info('EnterVoltsPopup opened from MultipleSEALKitPopup.')
 
 
 class NoSEALKitPopup(BasePopup):
@@ -121,6 +129,7 @@ class NoSEALKitPopup(BasePopup):
                 self.label.setText(f"{self.label.text()}.")
             system, num_of_devices, has_drivers = get_number_of_devices(drivers=True)
             if not has_drivers and self.no_drivers.isHidden():
+                logger.warning('No drivers detected.')
                 self.setFixedHeight(130)
                 self.no_drivers.show()
             if num_of_devices == 0:
@@ -141,6 +150,7 @@ class NoSEALKitPopup(BasePopup):
             self.accept()
             apply_voltage(self.main_window.device_name)
             self.main_window.enter_volts_popup.open()
+            logger.info('EnterVoltsPopup opened from NoSEALKitPopup.')
         else:
             raise RuntimeError('This should never be triggered.')
 
@@ -151,16 +161,19 @@ class NoSEALKitPopup(BasePopup):
     @QtCore.pyqtSlot()
     def on_mocked_mode_button_clicked(self):
         self.main_window.mocked = True
+        logger.info('Mocked mode activated.')
         self.accept()
         self.main_window.voltage_offset = round(random.random(), 3)
         self.main_window.apply_voltage_widget.set_min_and_max()
         if self.main_window.settings.get('show-mocked-mode', True):
             mocked_popup = MockedModePopup(self.main_window)
             mocked_popup.open()
+            logger.info('MockedModePopup opened from NoSEALKitPopup.')
 
     @QtCore.pyqtSlot()
     def on_quit_button_clicked(self):
         self.reject()
+        logger.info('Rejected NoSEALKitPopup via quit button.')
         QtCore.QCoreApplication.quit()
 
 
@@ -204,6 +217,7 @@ class EnterVoltsPopup(BasePopup):
         self.main_window.settings['voltage-offset'] = self.main_window.voltage_offset
         self.main_window.apply_voltage_widget.set_min_and_max()
         self.accept()
+        logger.info('Accepted EnterVoltsPopup via OK button.')
 
     @QtCore.pyqtSlot(int)
     def on_horizontal_slider_valueChanged(self, position):
@@ -256,6 +270,7 @@ class MockedModePopup(BasePopup):
     def on_ok_button_clicked(self):
         self.main_window.settings['show-mocked-mode'] = self.show_again
         self.accept()
+        logger.info('Accepted MockedModePopup via OK button.')
 
     @QtCore.pyqtSlot(int)
     def on_check_box_stateChanged(self, state):
@@ -324,6 +339,7 @@ class ErrorPopup(BasePopup):
     @QtCore.pyqtSlot()
     def on_close_button_clicked(self):
         self.accept()
+        logger.info('ErrorPopup accepted via Close button.')
 
     @QtCore.pyqtSlot(int)
     def on_dont_send_crash_button_stateChanged(self, state):

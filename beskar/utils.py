@@ -6,14 +6,19 @@ from PyQt6.QtCore import QMetaObject
 from nidaqmx.system import System
 from .constants import offset
 
+import logging
 import pathlib
 import nidaqmx
 import numpy
+
+logger = logging.getLogger(__name__)
 
 def apply_voltage(device_name: str, voltage: Union[float, int] = offset):
     with nidaqmx.Task() as task:
         task.ao_channels.add_ao_voltage_chan(f'{device_name}/ao0', min_val=0, max_val=5)
         task.write(voltage)
+
+    logger.info(f'{voltage} has been applied to the SEAL kit.')
 
 def LED_position_gen(start_at_zero: bool = False) -> Generator[Union[Tuple[int, int], Tuple[int, int, None]], None, None]:
     offset = 1 if start_at_zero else 0
@@ -82,7 +87,7 @@ def get_file(file_path: str, dir='images', path=False) -> Union[pathlib.Path, st
     except StopIteration:
         # If this happens, somehow the icon was deleted from the install folder
         # TODO: Connect to internet and reinstall icon
-        pass
+        logger.warning(f'{file_path} was not detected, may be fatal.')
 
 
 class TwoDQBarDataItem(numpy.ndarray):

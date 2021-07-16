@@ -6,12 +6,15 @@ from typing import List
 
 import statistics as stats
 import darkdetect
-import pathlib
+import logging
 import nidaqmx
-import random
+import pathlib
 import numpy
+import random
 import time
 import csv
+
+logger = logging.getLogger(__name__)
 
 
 class BasePage(BaseInteractable, QtWidgets.QWidget):
@@ -127,6 +130,10 @@ class ApplyVoltagePage(BasePage):
         # This is the implementation in the legacy software
         self.current_voltage_applied = self.voltage_to_be_applied
         self.apply_button.setEnabled(False)
+
+        if self.warning_label.isVisible():
+            logger.warning('Abnormally high voltage is about to be applied.')
+
         if not self.main_window.mocked:
             apply_voltage(
                 self.main_window.device_name,
@@ -138,6 +145,9 @@ class ApplyVoltagePage(BasePage):
     def set_min_and_max(self):
         self.min_voltage = -round(5 - offset - self.main_window.voltage_offset, 3)
         self.max_voltage = -round(-offset - self.main_window.voltage_offset, 3)
+
+        logger.info(f'self.min_voltage set to {self.min_voltage}.')
+        logger.info(f'self.max_voltage set to {self.max_voltage}.')
 
         self.horizontal_slider.setValue(abs(int(self.min_voltage * 1000)))
         self.double_spin_box.setRange(self.min_voltage, self.max_voltage)
@@ -233,6 +243,8 @@ class DarkCurrentPage(BasePage):
         self.y_axis.setRange(min(self.samples) * 0.9, max(self.samples) * 1.1)
         for num, sample in enumerate(self.samples):
             self.scatter.append(num + 1, sample)
+
+        logger.info('Updated dark current readings.')
 
     @QtCore.pyqtSlot()
     def on_refresh_button_clicked(self):
@@ -461,6 +473,8 @@ class ScanPage(BasePage):
 
         scan_offset = len(self.bar_charts_tab)
 
+        logger.info(f'{self.scans} have been initiated.')
+
         for scan_number in range(self.scans):
             scan_number += scan_offset
 
@@ -506,6 +520,7 @@ class ScanPage(BasePage):
 
                 if self.bar_charts_tab.currentIndex() == scan_number:
                     if self.bar_charts[scan_number][2].last_values_zero():
+                        logger.info('The last four values read from the SEAL kit have been zeros.')
                         self.notice_for_reading.show()
                     else:
                         self.notice_for_reading.hide()
@@ -590,6 +605,8 @@ class ScanPage(BasePage):
             q3dbar.renderToImage().save(str(selected))
         else:
             raise RuntimeError(f'This should never be triggered: {file_ext=}')
+
+        logger.info(f'{selected} has been created in order to save Scan {current_tab}.')
 
     @QtCore.pyqtSlot()
     def on_another_scan_button_clicked(self):

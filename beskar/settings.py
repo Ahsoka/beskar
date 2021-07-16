@@ -1,11 +1,33 @@
 from contextlib import contextmanager
 from typing import Literal, Union
 
+import logging
 import pathlib
 import json
 import os
 
 sentinel = object()
+
+logger = logging.getLogger(__name__)
+
+if os.name == 'nt':
+    location = os.environ.get('APPDATA')
+    if location:
+        app_data = pathlib.Path(location)
+    else:
+        app_data = pathlib.Path.home() / 'AppData' / 'Roaming'
+    logging_dir = app_data / 'Beskar' / 'logs'
+    if not logging_dir.parent.exists():
+        logging_dir.parent.mkdir()
+    if not logging_dir.exists():
+        logging_dir.mkdir()
+else:
+    logging_dir = pathlib.Path('logs')
+    if not logging_dir.exists():
+        logging_dir.mkdir()
+
+logger.info(f'Logging directory set to {logging_dir}.')
+
 
 class Settings:
     def __init__(self, location: Union[str, Literal[r'C:\Program Data']] = None):
@@ -33,6 +55,8 @@ class Settings:
         else:
             self.create()
 
+        logger.info(f'Settings file path set to {self.settings_path}.')
+
     def __getitem__(self, key):
         with self.check_or_create() as exists:
             if exists:
@@ -50,6 +74,7 @@ class Settings:
 
         settings[key] = value
         self.create(settings, indent=4)
+        logger.info(f'Settings {key!r} has been set to {value}.')
 
     def get(self, key, default=sentinel):
         try:
