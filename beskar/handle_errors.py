@@ -10,6 +10,13 @@ import inspect
 import logging
 import sys
 
+def send_error_report(exc_info, flush=True):
+    hub = Hub.current
+    if hub.client is not None:
+        hub.capture_event(*event_from_exception(exc_info))
+        if flush:
+            hub.flush()
+
 def handle_exception(exc_type, exc_value, trace):
     try:
         exc_tuple = (exc_type, exc_value, trace)
@@ -19,10 +26,7 @@ def handle_exception(exc_type, exc_value, trace):
         popup.exec()
 
         if popup.sending:
-            hub = Hub.current
-            if hub.client is not None:
-                hub.capture_event(*event_from_exception(exc_tuple))
-                hub.flush()
+            send_error_report(exc_tuple)
 
         stacks = inspect.stack()
         if len(stacks) >= 2:
@@ -57,5 +61,14 @@ def handle_exception(exc_type, exc_value, trace):
         logger.critical('The following error occured:', exc_info=exc_tuple)
 
         QCoreApplication.quit()
+    except Exception as second_error:
+        second_error.__context__ = exc_value
+        if popup.sending:
+            send_error_report(second_error)
+        logger = logging.getLogger('beskar.unknown')
+        logger.error(
+            'Two exceptions occured in handle_exception:',
+            exc_info=second_error
+        )
     finally:
         sys.exit(1)
