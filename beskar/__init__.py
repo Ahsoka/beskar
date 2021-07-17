@@ -8,6 +8,27 @@ import platform
 import darkdetect
 import sentry_sdk
 
+if getattr(sys, 'frozen', False):
+    from .source import FrozenImporter, get_source_internet
+
+    logger = logging.getLogger('beskar.source')
+
+    for importer in sys.meta_path:
+        if isinstance(importer, FrozenImporter):
+            logger.info(
+                "Detected PyInstaller's FrozenImporter class."
+            )
+            break
+    else:
+        logger.warning(
+            "Failed to detect PyInstaller's FrozenImporter class."
+        )
+        importer = None
+
+    if importer is not None:
+        FrozenImporter.get_source = get_source_internet
+        logger.info('Overrided FrozenImporter get_source function')
+
 sys_info = {
     'name': platform.system(),
     'version': platform.version(),
