@@ -6,4 +6,4 @@ help_tab_fixed_width = 275
 
 help_tab_margins = QMargins(0, 10, 10, 0)
 
-__version__ = 'v0.8.0-beta'
+__version__ = 'v1.0.0'
