@@ -41,7 +41,11 @@ def file_renamer(filename: str):
     split = filename.split('.')
     return ".".join(split[:-3] + [split[-1], split[-2]])
 
-def setUpLogger(name, fmt, logs_dir: pathlib.Path, files=True):
+def setUpLogger(
+    name,
+    logs_dir: pathlib.Path,
+    fmt='%(levelname)s | %(name)s: [%(funcName)s()] %(message)s'
+):
     # Init the logger
     logger = logging.getLogger(name)
     logger.setLevel(logging.DEBUG)

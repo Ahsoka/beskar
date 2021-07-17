@@ -54,11 +54,7 @@ def main():
         lambda name: f'beskar.{name}',
         ('gui', 'pages', 'popups', 'settings', 'utils', 'unknown')
     ):
-        setUpLogger(
-            logger_name,
-            '%(levelname)s | %(name)s: [%(funcName)s()] %(message)s',
-            logging_dir
-        )
+        setUpLogger(logger_name, logging_dir)
 
     sys.excepthook = handle_exception
 
