@@ -44,7 +44,8 @@ def file_renamer(filename: str):
 def setUpLogger(
     name,
     logs_dir: pathlib.Path,
-    fmt='%(levelname)s | %(name)s: [%(funcName)s()] %(message)s'
+    fmt='%(levelname)s | %(name)s: [%(funcName)s()] %(message)s',
+    file_name: str = None
 ):
     # Init the logger
     logger = logging.getLogger(name)
@@ -54,11 +55,16 @@ def setUpLogger(
     pretty = PrettyFormatter(fmt=fmt)
 
     # Create a handler that records all activity
-    everything = logging.handlers.TimedRotatingFileHandler(
-        logs_dir / f'{format(datetime.datetime.today(), "%Y-%m-%d")}.log',
-        when='midnight',
-        encoding='UTF-8'
-    )
+    if isinstance(file_name, str):
+        everything = logging.FileHandler(logs_dir / file_name, encoding='UTF-8')
+    elif file_name is None:
+        everything = logging.handlers.TimedRotatingFileHandler(
+            logs_dir / f'{format(datetime.datetime.today(), "%Y-%m-%d")}.log',
+            when='midnight',
+            encoding='UTF-8'
+        )
+    else:
+        raise TypeError(f"{file_name} must be str type, '{type(file_name)}'.")
     # Do not use loggging.NOTSET, does not work for some reason
     # use logging.DEBUG if you want the lowest level
     everything.setLevel(logging.DEBUG)
