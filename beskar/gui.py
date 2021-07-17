@@ -53,6 +53,9 @@ class BeskarWindow(QtWidgets.QMainWindow):
         self.splitter.setSizes((1, 100_000))
         self.showMaximized()
 
+        QtCore.QMetaObject.connectSlotsByName(self)
+
+    def show(self) -> None:
         system, num_of_devices = get_number_of_devices()
         self.enter_volts_popup = EnterVoltsPopup(self)
         if num_of_devices > 1:
@@ -68,8 +71,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
             apply_voltage(self.device_name)
             self.enter_volts_popup.open()
             logger.info('Opened EnterVoltsPopup from BeskarWindow.')
-
-        QtCore.QMetaObject.connectSlotsByName(self)
+        super().show()
 
     def create_options_menu(self):
         space_between_buttons = 20
