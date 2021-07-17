@@ -321,6 +321,12 @@ class ErrorPopup(BasePopup):
             )
             self.dont_send_crash_report.setObjectName('dont_send_crash_button')
 
+            self.github_notice = QtWidgets.QLabel(
+                "If you don't want to automatically send a crash report please "
+                'file a GitHub issue <a href="https://github.com/Ahsoka/beskar/issues/new">here</a>.'
+            )
+            self.github_notice.setOpenExternalLinks(True)
+
             self.close_button = QtWidgets.QPushButton('Close')
             self.close_button.setObjectName('close_button')
 
@@ -328,6 +334,7 @@ class ErrorPopup(BasePopup):
             self.main_layout.addWidget(self.uh_oh_label)
             self.main_layout.addWidget(self.sys_info_group_box)
             self.main_layout.addWidget(self.error_traceback_group_box)
+            self.main_layout.addWidget(self.github_notice)
             self.main_layout.addWidget(self.dont_send_crash_report)
             self.main_layout.addWidget(
                 self.close_button,
