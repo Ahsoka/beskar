@@ -59,8 +59,6 @@ def handle_exception(exc_type, exc_value, trace):
             )
 
         logger.critical('The following error occured:', exc_info=exc_tuple)
-
-        QCoreApplication.quit()
     except Exception as second_error:
         second_error.__context__ = exc_value
         if popup.sending:
@@ -71,4 +69,12 @@ def handle_exception(exc_type, exc_value, trace):
             exc_info=second_error
         )
     finally:
-        sys.exit(1)
+        try:
+            # NOTE: Trying to close the application even
+            # if there is an error in the try block above
+            # however, despite this we MUST exit the app
+            # no matter what. In an abudance of caution
+            # wrap this in a try finally block.
+            QCoreApplication.quit()
+        finally:
+            sys.exit(1)
