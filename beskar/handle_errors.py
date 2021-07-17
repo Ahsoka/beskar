@@ -24,13 +24,26 @@ def handle_exception(exc_type, exc_value, trace):
                 hub.capture_event(*event_from_exception(exc_tuple))
                 hub.flush()
 
-        stack = inspect.stack()[1]
-        module = inspect.getmodule(stack.frame)
-        if module:
-            module_name = module.__name__
+        stacks = inspect.stack()
+        if len(stacks) >= 2:
+            stack = stacks[1]
+            module = inspect.getmodule(stack.frame)
+            if module:
+                module_name = module.__name__
+            else:
+                path = pathlib.Path(stack.filename)
+                module_name = f"{path.parent.name}.{path.stem}"
         else:
-            path = pathlib.Path(stack.filename)
-            module_name = f"{path.parent.name}.{path.stem}"
+            for filename in map(
+                lambda frame: frame.filename,
+                reversed(traceback.extract_tb(exc_tuple[-1]))
+            ):
+                path = pathlib.Path(filename)
+                if path.parent.name == 'beskar' and not path.stem.startswith('__'):
+                    module_name = f"beskar.{path.stem}"
+                    break
+            else:
+                module_name = None
 
         if module_name in sys.modules:
             logger = logging.getLogger(module_name)
