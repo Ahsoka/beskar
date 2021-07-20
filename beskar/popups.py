@@ -167,6 +167,7 @@ class NoSEALKitPopup(BasePopup):
     def on_mocked_mode_button_clicked(self):
         self.main_window.mocked = True
         logger.info('Mocked mode activated.')
+        self.main_window.setWindowTitle(f"{self.main_window.windowTitle()} - Mocked Mode")
         self.accept()
         self.main_window.voltage_offset = round(random.random(), 3)
         self.main_window.apply_voltage_widget.set_min_and_max()
@@ -269,6 +270,8 @@ class MockedModePopup(BasePopup):
             self.main_layout.addWidget(self.text)
             self.main_layout.addWidget(self.dont_show_again, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
             self.main_layout.addWidget(self.ok_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+
+            self.setWindowTitle('Mocked Mode')
 
     def closeEvent(self, close_event):
         self.main_window.settings['show-mocked-mode'] = self.show_again
