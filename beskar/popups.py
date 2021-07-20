@@ -122,6 +122,8 @@ class NoSEALKitPopup(BasePopup):
 
             self.setFixedSize(315, 68)
 
+            self.setWindowTitle('No SEAL Kit Detected')
+
     @QtCore.pyqtSlot()
     def on_refresh_push_button_clicked(self):
         if self.refresh_push_button.text() == 'Refresh':
@@ -137,6 +139,7 @@ class NoSEALKitPopup(BasePopup):
             if num_of_devices == 0:
                 self.label.setText('SEAL kit not detected, please try refreshing again.')
             else:
+                self.setWindowTitle('SEAL Kit Detected')
                 for device_name in system.devices.device_names:
                     self.combo_box.addItem(device_name)
                 if len(system.devices.device_names) == 1:
