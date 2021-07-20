@@ -591,6 +591,10 @@ class ScanPage(BasePage):
 
     @QtCore.pyqtSlot()
     def on_file_dialog_accepted(self):
+        # NOTE: The file dialog automatically handles
+        # attempting to write to folders that require
+        # elevate privileges to write to.
+
         file_ext = self.file_dialog.selectedNameFilter()
         selected = pathlib.Path(self.file_dialog.selectedFiles()[0])
         current_tab = self.bar_charts_tab.currentIndex()
