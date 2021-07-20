@@ -86,7 +86,11 @@ def get_file(file_path: str, dir='images', path=False) -> Union[pathlib.Path, st
             return str(icon_path)
     except StopIteration:
         # If this happens, somehow the icon was deleted from the install folder
-        # TODO: Connect to internet and reinstall icon
+        # TODO: Connect to internet and reinstall missing asset
+        # NOTE: Reinstalling missing asset is more difficult that initially
+        # presumed since it will require writing to a location that requires
+        # escalated privileges to write to. Perhaps this could be solved by saving
+        # the assets in non escalated privileges folder such as %appdata%
         logger.warning(f'{file_path} was not detected, may be fatal.')
 
 
