@@ -53,6 +53,8 @@ class MultipleSEALKitsPopup(BasePopup):
 
             self.setFixedHeight(95)
 
+            self.setWindowTitle('Select a SEAL Kit')
+
             # NOTE: Need to use .connect since for some reason
             # since connectBySlots does not detect the slot
             self.finished.connect(self.finishing)
