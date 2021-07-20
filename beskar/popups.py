@@ -217,6 +217,8 @@ class EnterVoltsPopup(BasePopup):
             self.main_layout.addLayout(self.middle_horizontal_layout)
             self.main_layout.addWidget(self.push_button, 0, QtCore.Qt.AlignmentFlag.AlignRight)
 
+            self.setWindowTitle('Select Offset Voltage')
+
     @QtCore.pyqtSlot()
     def on_push_button_clicked(self):
         self.main_window.settings['voltage-offset'] = self.main_window.voltage_offset
