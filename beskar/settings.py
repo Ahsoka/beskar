@@ -1,4 +1,5 @@
 from contextlib import contextmanager
+from .constants import __version__
 from typing import Literal, Union
 
 import logging
@@ -16,13 +17,18 @@ if os.name == 'nt':
         app_data = pathlib.Path(location)
     else:
         app_data = pathlib.Path.home() / 'AppData' / 'Roaming'
-    logging_dir = app_data / 'Beskar' / 'logs'
+    logging_dir = app_data / 'Beskar' / __version__ / 'logs'
+
+    if not logging_dir.parents[1].exists():
+        logging_dir.parents[1].mkdir()
     if not logging_dir.parent.exists():
         logging_dir.parent.mkdir()
     if not logging_dir.exists():
         logging_dir.mkdir()
 else:
-    logging_dir = pathlib.Path('logs')
+    logging_dir = pathlib.Path(f'{__version__}/logs')
+    if not logging_dir.parent.exists():
+        logging_dir.parent.mkdir()
     if not logging_dir.exists():
         logging_dir.mkdir()
 
