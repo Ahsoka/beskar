@@ -351,6 +351,11 @@ class ErrorPopup(BasePopup):
                 alignment=QtCore.Qt.AlignmentFlag.AlignRight
             )
 
+            icon_path = get_file('warning.png')
+            # Icon attribution: https://www.flaticon.com/authors/gregor-cresnar
+            if icon_path:
+                self.setWindowIcon(QtGui.QIcon(icon_path))
+
             self.setWindowTitle('Crash Report')
 
     @QtCore.pyqtSlot()
