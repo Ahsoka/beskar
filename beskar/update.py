@@ -84,6 +84,7 @@ def on_toaster_interaction(notification_id, action_id, setup_exe, update_checker
             toaster = create_toaster(
                 second_line='Thanks for checking out the update notes!',
                 third_line="This will be here for when you are ready to update!",
+                toaster_type=zroya.TemplateType.Text4,
                 whats_new=False
             )
             show(toaster, update_checker, setup_exe)
