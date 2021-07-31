@@ -2,6 +2,7 @@ from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
 from .utils import apply_voltage, get_file, get_number_of_devices
 from .pages import ApplyVoltagePage, DarkCurrentPage, ScanPage
 from PyQt6 import QtCore, QtWidgets, QtGui
+from .update import UpdateChecker
 from . import __version__
 
 import logging
@@ -53,6 +54,13 @@ class BeskarWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def show(self) -> None:
+        from .handle_errors import handle_exception
+
+        self.update_thread = UpdateChecker()
+        self.update_thread.raise_exception.connect(lambda tup: handle_exception(*tup))
+        self.update_thread.close_all_windows.connect(QtWidgets.QApplication.closeAllWindows)
+        self.update_thread.start()
+
         system, num_of_devices = get_number_of_devices()
         self.enter_volts_popup = EnterVoltsPopup(self)
         if num_of_devices > 1:
@@ -68,6 +76,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
             apply_voltage(self.device_name)
             self.enter_volts_popup.open()
             logger.info('Opened EnterVoltsPopup from BeskarWindow.')
+
         super().show()
 
     def create_options_menu(self):
