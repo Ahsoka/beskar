@@ -151,6 +151,17 @@ def show(
         toasters.append(toaster_id)
     return toaster_id
 
+def close_toasters():
+    for toaster_id in toasters:
+        # NOTE: The version of zroya on PyPi currently has a bug
+        # in it that prevents the `hide` function from working correctly.
+        # I was able to rebuild a new version of zroya with a working
+        # hide function thanks to this issue: https://github.com/malja/zroya/issues/14
+        if zroya.hide(nid=toaster_id):
+            logger.info(f'Successfully closed toaster {toaster_id}.')
+        else:
+            logger.warning(f'Failed to close toaster {toaster_id}.')
+
 
 class UpdateChecker(QThread):
     raise_exception = pyqtSignal(tuple)
