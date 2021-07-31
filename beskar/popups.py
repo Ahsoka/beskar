@@ -366,3 +366,7 @@ class ErrorPopup(BasePopup):
     @QtCore.pyqtSlot(int)
     def on_dont_send_crash_button_stateChanged(self, state):
         self.sending = not bool(state)
+
+    def showEvent(self, show_event: QtGui.QShowEvent) -> None:
+        self.activateWindow()
+        super().showEvent(show_event)
