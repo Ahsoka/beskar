@@ -2,8 +2,8 @@ from .utils import get_file, error_to_exc_tuple
 from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtWidgets import QApplication
 from urllib3.exceptions import HTTPError
+from typing import Callable, Union, List
 from .constants import __version__
-from typing import Callable, Union
 from . import settings
 
 import re
@@ -23,6 +23,8 @@ pool = urllib3.PoolManager(num_pools=2)
 setup_exe_dir = settings.settings_path.parent / 'setup-exes'
 
 latest_url = 'https://github.com/Ahsoka/beskar/releases/latest'
+
+toasters: List[int] = []
 
 @functools.lru_cache
 def zroya_init(
@@ -144,7 +146,10 @@ def show(
     if on_fail:
         kwargs['on_fail'] = on_fail
 
-    return zroya.show(toaster, **kwargs)
+    toaster_id = zroya.show(toaster, **kwargs)
+    if isinstance(toaster_id, int):
+        toasters.append(toaster_id)
+    return toaster_id
 
 
 class UpdateChecker(QThread):
