@@ -194,7 +194,7 @@ class UpdateChecker(QThread):
                     if exe.is_file():
                         exe.unlink()
             else:
-                msg = f'Failed to connect to the internet and check for any updates.',
+                msg = f'Failed to connect to the internet and check for any updates.'
             logger.warning(msg, exc_info=error)
         except IndexError as error:
             logger.error(
