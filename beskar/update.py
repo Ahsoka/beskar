@@ -26,6 +26,9 @@ latest_url = 'https://github.com/Ahsoka/beskar/releases/latest'
 
 toasters: List[int] = []
 
+def get_exe_file_name(version: str):
+    return f'beskar-install-{version}-64bit.exe'
+
 @functools.lru_cache
 def zroya_init(
     app_name='Beskar',
@@ -48,7 +51,7 @@ def zroya_init(
     return init
 
 def download(version):
-    filename = f'beskar-install-{version}-64bit.exe'
+    filename = get_exe_file_name(version)
 
     download = pool.request(
         'GET',
