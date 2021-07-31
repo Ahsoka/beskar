@@ -158,7 +158,7 @@ class UpdateChecker(QThread):
             downloading = False
             request = pool.request('GET', latest_url)
             match = re.search(r'v\d+.\d+.\d+', request.geturl())
-            if match[0] > __version__:
+            if match and match[0] > __version__:
                 new_version = match[0]
                 logger.info(f'New version {new_version} of Beskar was detected.')
                 downloading = True
