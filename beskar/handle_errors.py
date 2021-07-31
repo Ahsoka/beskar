@@ -2,7 +2,6 @@ from sentry_sdk.utils import event_from_exception
 from PyQt6.QtCore import QCoreApplication
 from .popups import ErrorPopup
 from sentry_sdk import Hub
-from . import window
 
 import traceback
 import pathlib
@@ -22,7 +21,7 @@ def handle_exception(exc_type, exc_value, trace):
         exc_tuple = (exc_type, exc_value, trace)
         error_message = ''.join(traceback.format_exception(*exc_tuple))
 
-        popup = ErrorPopup(window, error_message)
+        popup = ErrorPopup(error_message)
         popup.exec()
 
         if popup.sending:

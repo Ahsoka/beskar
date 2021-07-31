@@ -288,8 +288,8 @@ class MockedModePopup(BasePopup):
 
 
 class ErrorPopup(BasePopup):
-    def __init__(self, main_window, traceback: str):
-        with self.init(main_window):
+    def __init__(self, traceback: str):
+        with self.init():
             self.sending = True
 
             self.uh_oh_label = QtWidgets.QLabel(
