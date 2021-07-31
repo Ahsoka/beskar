@@ -3,6 +3,7 @@ from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTes
 from .constants import offset, help_tab_fixed_width, help_tab_margins
 from fractions import Fraction
 from typing import List
+from . import settings
 
 import statistics as stats
 import darkdetect
@@ -140,7 +141,7 @@ class ApplyVoltagePage(BasePage):
                 self.main_window.voltage_offset + offset - self.voltage_to_be_applied
             )
 
-        self.main_window.settings['applied-voltage'] = self.current_voltage_applied
+        settings['applied-voltage'] = self.current_voltage_applied
 
     def set_min_and_max(self):
         self.min_voltage = -round(5 - offset - self.main_window.voltage_offset, 3)
@@ -152,7 +153,7 @@ class ApplyVoltagePage(BasePage):
         self.horizontal_slider.setValue(abs(int(self.min_voltage * 1000)))
         self.double_spin_box.setRange(self.min_voltage, self.max_voltage)
 
-        settings_applied_voltage = self.main_window.settings.get('applied-voltage', 0)
+        settings_applied_voltage = settings.get('applied-voltage', 0)
         if (settings_applied_voltage <= self.max_voltage
             and settings_applied_voltage >= self.min_voltage):
             self.double_spin_box.setValue(settings_applied_voltage)
@@ -422,7 +423,7 @@ class ScanPage(BasePage):
                 self.main_window
             )
 
-        self.spin_box.setValue(self.main_window.settings.get('scans', 1))
+        self.spin_box.setValue(settings.get('scans', 1))
 
     def create_bar_graph(self):
         graph_components = [
@@ -469,7 +470,7 @@ class ScanPage(BasePage):
 
         self.stacked_widget.setCurrentIndex(1)
 
-        self.main_window.settings['scans'] = self.scans
+        settings['scans'] = self.scans
 
         scan_offset = len(self.bar_charts_tab)
 

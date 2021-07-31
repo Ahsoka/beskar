@@ -1,6 +1,7 @@
 from sentry_sdk.integrations.logging import LoggingIntegration
 from PyQt6.QtWidgets import QApplication
 from .constants import __version__
+from .settings import Settings
 
 import sys
 import logging
@@ -55,6 +56,8 @@ sentry_sdk.init(
     traces_sample_rate=1.0,
     release=__version__
 )
+
+settings = Settings()
 
 from .gui import BeskarWindow
 

@@ -1,8 +1,8 @@
 from .utils import BaseInteractable, apply_voltage, get_number_of_devices, get_file
 from PyQt6 import QtCore, QtWidgets, QtTest, QtGui
 from nidaqmx.system import System
+from . import sys_info, settings
 from .constants import offset
-from . import sys_info
 
 import random
 import logging
@@ -171,7 +171,7 @@ class NoSEALKitPopup(BasePopup):
         self.accept()
         self.main_window.voltage_offset = round(random.random(), 3)
         self.main_window.apply_voltage_widget.set_min_and_max()
-        if self.main_window.settings.get('show-mocked-mode', True):
+        if settings.get('show-mocked-mode', True):
             mocked_popup = MockedModePopup(self.main_window)
             mocked_popup.open()
             logger.info('MockedModePopup opened from NoSEALKitPopup.')
@@ -222,7 +222,7 @@ class EnterVoltsPopup(BasePopup):
 
     @QtCore.pyqtSlot()
     def on_push_button_clicked(self):
-        self.main_window.settings['voltage-offset'] = self.main_window.voltage_offset
+        settings['voltage-offset'] = self.main_window.voltage_offset
         self.main_window.apply_voltage_widget.set_min_and_max()
         self.accept()
         logger.info('Accepted EnterVoltsPopup via OK button.')
@@ -240,7 +240,7 @@ class EnterVoltsPopup(BasePopup):
         apply_voltage(self.main_window.device_name, value + offset)
 
     def open(self):
-        self.double_spin_box.setValue(self.main_window.settings.get('voltage-offset', 0))
+        self.double_spin_box.setValue(settings.get('voltage-offset', 0))
         return super().open()
 
     def closeEvent(self, close_event):
@@ -274,11 +274,11 @@ class MockedModePopup(BasePopup):
             self.setWindowTitle('Mocked Mode')
 
     def closeEvent(self, close_event):
-        self.main_window.settings['show-mocked-mode'] = self.show_again
+        settings['show-mocked-mode'] = self.show_again
 
     @QtCore.pyqtSlot()
     def on_ok_button_clicked(self):
-        self.main_window.settings['show-mocked-mode'] = self.show_again
+        settings['show-mocked-mode'] = self.show_again
         self.accept()
         logger.info('Accepted MockedModePopup via OK button.')
 
