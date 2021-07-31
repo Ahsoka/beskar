@@ -69,8 +69,6 @@ def download(version):
             exe.write(chunk)
         download.release_conn()
 
-    return filename
-
 def on_toaster_interaction(notification_id, action_id, setup_exe, update_checker: 'UpdateChecker'):
     try:
         if action_id == 0:
