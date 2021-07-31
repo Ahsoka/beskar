@@ -7,8 +7,6 @@ import pathlib
 import json
 import os
 
-sentinel = object()
-
 logger = logging.getLogger(__name__)
 
 if os.name == 'nt':
@@ -82,14 +80,11 @@ class Settings:
         self.create(settings, indent=4)
         logger.info(f'Settings {key!r} has been set to {value}.')
 
-    def get(self, key, default=sentinel):
+    def get(self, key, default=None):
         try:
             return self[key]
         except KeyError:
-            if default is not sentinel:
-                return default
-            else:
-                raise
+            return default
 
     def create(self, dumping=None, indent=None):
         if dumping is None:
