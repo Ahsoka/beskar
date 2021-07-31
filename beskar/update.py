@@ -8,6 +8,7 @@ from . import settings
 
 import re
 import zroya
+import hashlib
 import urllib3
 import logging
 import warnings
@@ -182,14 +183,36 @@ class UpdateChecker(QThread):
             if match and match[0] > __version__:
                 new_version = match[0]
                 logger.info(f'New version {new_version} of Beskar was detected.')
-                downloading = True
-                setup_exe_filename = download(new_version)
-                logger.info(f'Succesfully installed the setup exe for {new_version}.')
-                toaster = create_toaster(new_version=new_version)
-                if show(toaster, self, setup_exe_filename):
-                    logger.info('Toaster notification for the available update was succesfully shown.')
-                else:
-                    logger.warning('Failed to show toaster notification for the avaliable update.')
+                setup_exe = setup_exe_dir / get_exe_file_name(new_version)
+                if setup_exe.exists():
+                    # SHA256 code from:
+                    # https://www.quickprogrammingtips.com/python/how-to-calculate-sha256-hash-of-a-file-in-python.html
+                    sha256_hash = hashlib.sha256()
+                    with setup_exe.open(mode='rb') as file:
+                        for chunk in iter(lambda: file.read(4096), b''):
+                            sha256_hash.update(chunk)
+                    try:
+                        setup_exe_filename = get_exe_file_name(new_version)
+                        if pool.request(
+                            'GET',
+                            f'https://raw.githubusercontent.com/Ahsoka/beskar/main/sha256-hashes/{new_version}.txt'
+                        ).data.decode('UTF-8')[:-1] == sha256_hash.hexdigest():
+                            logger.info(f'Detected the setup exe for version {new_version} is already installed.')
+                        else:
+                            downloading = True
+                            download(new_version)
+                            logger.info(f'Succesfully installed the setup exe for {new_version}.')
+
+                        toaster = create_toaster(new_version=new_version)
+                        if show(toaster, self, setup_exe_filename):
+                            logger.info('Toaster notification for the available update was succesfully shown.')
+                        else:
+                            logger.warning('Failed to show toaster notification for the avaliable update.')
+                    except UnicodeDecodeError as error:
+                        logger.warning(
+                            f'Error occured while trying to decode the SHA256 hash for {new_version}.',
+                            exc_info=error
+                        )
         except HTTPError as error:
             if downloading:
                 msg = f'Error occured while downloading the setup-exe.'
