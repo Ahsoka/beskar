@@ -5,6 +5,7 @@ from PyQt6 import QtCore, QtWidgets, QtGui
 from .update import UpdateChecker
 from . import __version__
 
+import os
 import logging
 
 logger = logging.getLogger(__name__)
@@ -54,12 +55,13 @@ class BeskarWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def show(self) -> None:
-        from .handle_errors import handle_exception
+        if os.name == 'nt':
+            from .handle_errors import handle_exception
 
-        self.update_thread = UpdateChecker()
-        self.update_thread.raise_exception.connect(lambda tup: handle_exception(*tup))
-        self.update_thread.close_all_windows.connect(QtWidgets.QApplication.closeAllWindows)
-        self.update_thread.start()
+            self.update_thread = UpdateChecker()
+            self.update_thread.raise_exception.connect(lambda tup: handle_exception(*tup))
+            self.update_thread.close_all_windows.connect(QtWidgets.QApplication.closeAllWindows)
+            self.update_thread.start()
 
         system, num_of_devices = get_number_of_devices()
         self.enter_volts_popup = EnterVoltsPopup(self)
