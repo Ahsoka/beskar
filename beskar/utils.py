@@ -93,6 +93,9 @@ def get_file(file_path: str, dir='images', path=False) -> Union[pathlib.Path, st
         # the assets in non escalated privileges folder such as %appdata%
         logger.warning(f'{file_path} was not detected, may be fatal.')
 
+def error_to_exc_tuple(error: Exception):
+    return (type(error), error, error.__traceback__)
+
 
 class TwoDQBarDataItem(numpy.ndarray):
     def tolist(self, convert_to_bar_data=False) -> Union[List[List[QBarDataItem]], List[List[int]]]:
