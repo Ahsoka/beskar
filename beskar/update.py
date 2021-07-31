@@ -3,7 +3,7 @@ from PyQt6.QtCore import QThread, pyqtSignal
 from PyQt6.QtWidgets import QApplication
 from urllib3.exceptions import HTTPError
 from .constants import __version__
-from typing import Callable
+from typing import Callable, Union
 from . import settings
 
 import re
@@ -132,7 +132,7 @@ def show(
     on_action: Callable = on_toaster_interaction,
     on_dismiss: Callable = None,
     on_fail: Callable = None
-) -> bool:
+) -> Union[bool, int]:
     on_action_partial = functools.partial(on_action, setup_exe=setup_exe_filename, update_checker=update_checker)
 
     kwargs = {
