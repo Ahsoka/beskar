@@ -6,3 +6,4 @@ PyQt6-Charts
 darkdetect
 sentry-sdk
 pyinstaller
+zroya
