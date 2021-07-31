@@ -96,10 +96,11 @@ def create_toaster(
     new_version: str = None,
     third_line: str = None,
     update_action: bool = True,
-    whats_new: bool = True
+    whats_new: bool = True,
+    toaster_type=zroya.TemplateType.ImageAndText4
 ):
     if zroya_init():
-        toaster = zroya.Template(zroya.TemplateType.ImageAndText4)
+        toaster = zroya.Template(toaster_type)
         toaster.setFirstLine(first_line)
         toaster.setSecondLine(second_line)
         if third_line:
