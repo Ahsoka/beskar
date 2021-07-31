@@ -123,7 +123,7 @@ class TwoDQBarDataItem(numpy.ndarray):
 
 class BaseInteractable:
     @contextmanager
-    def init(self, main_window):
+    def init(self, main_window=None):
         self.main_window = main_window
         self.super_()
         yield
