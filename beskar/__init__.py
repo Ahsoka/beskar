@@ -35,8 +35,9 @@ sys_info = {
     'version': platform.version(),
     'theme': darkdetect.theme()
 }
-
 sentry_sdk.set_context('os', sys_info)
+
+sentry_sdk.set_context('app', {'app_version': __version__})
 
 def before_breadcrumbs(crumb, hint):
     if crumb['message'] == 'The following error occured:':
