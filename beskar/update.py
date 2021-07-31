@@ -182,7 +182,7 @@ class UpdateChecker(QThread):
             logger.warning(msg, exc_info=error)
         except IndexError as error:
             logger.error(
-                'Ignoring IndexError with re.Match object, this should not have happen.',
+                'Ignoring IndexError with re.Match object, this should not have happened.',
                 exc_info=error
             )
         except Exception as error:
