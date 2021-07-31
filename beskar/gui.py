@@ -1,8 +1,8 @@
 from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
 from .utils import apply_voltage, get_file, get_number_of_devices
 from .pages import ApplyVoltagePage, DarkCurrentPage, ScanPage
+from .update import UpdateChecker, close_toasters
 from PyQt6 import QtCore, QtWidgets, QtGui
-from .update import UpdateChecker
 from . import __version__
 
 import os
@@ -57,10 +57,12 @@ class BeskarWindow(QtWidgets.QMainWindow):
     def show(self) -> None:
         if os.name == 'nt':
             from .handle_errors import handle_exception
+            from . import app
 
             self.update_thread = UpdateChecker()
             self.update_thread.raise_exception.connect(lambda tup: handle_exception(*tup))
             self.update_thread.close_all_windows.connect(QtWidgets.QApplication.closeAllWindows)
+            app.aboutToQuit.connect(close_toasters)
             self.update_thread.start()
 
         system, num_of_devices = get_number_of_devices()
