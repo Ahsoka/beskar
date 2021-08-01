@@ -14,6 +14,7 @@ AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 ;AppVerName={#MyAppName} {#MyAppVersion}
 AppPublisher={#MyAppPublisher}
+; Is actually support link not app publisher link
 AppPublisherURL="https://github.com/Ahsoka"
 AppSupportURL="https://github.com/Ahsoka/beskar/issues"
 AppUpdatesURL="https://github.com/Ahsoka/beskar/releases/latest"
