@@ -17,7 +17,7 @@ AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
 AppPublisherURL="https://github.com/Ahsoka"
 AppSupportURL="https://github.com/Ahsoka/beskar/issues"
-AppUpdatesURL={#MyAppURL}
+AppUpdatesURL="https://github.com/Ahsoka/beskar/releases/latest"
 DefaultDirName={autopf64}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only.)
