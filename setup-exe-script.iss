@@ -4,7 +4,6 @@
 #define MyAppName "Beskar"
 #define MyAppVersion "v1.0.0"
 #define MyAppPublisher "Ahsoka"
-#define MyAppURL "https://github.com/Ahsoka/beskar"
 #define MyAppExeName "Beskar.exe"
 
 [Setup]
