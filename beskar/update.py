@@ -184,6 +184,8 @@ class UpdateChecker(QThread):
         try:
             downloading = False
             need_to_install = True
+            check_hash = False
+
             request = pool.request('GET', latest_url)
             match = re.search(r'v\d+.\d+.\d+', request.geturl())
             if match and match[0] > __version__:
@@ -199,6 +201,7 @@ class UpdateChecker(QThread):
                         for chunk in iter(lambda: file.read(4096), b''):
                             sha256_hash.update(chunk)
                     try:
+                        check_hash = True
                         if pool.request(
                             'GET',
                             f'https://raw.githubusercontent.com/Ahsoka/beskar/main/sha256-hashes/{new_version}.txt'
@@ -227,6 +230,8 @@ class UpdateChecker(QThread):
                 for exe in setup_exe_dir.iterdir():
                     if exe.is_file():
                         exe.unlink()
+            elif check_hash:
+                msg = 'Error occured while trying to retreive SHA256 hash.'
             else:
                 msg = f'Failed to connect to the internet and check for any updates.'
             logger.warning(msg, exc_info=error)
