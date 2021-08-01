@@ -226,14 +226,14 @@ class UpdateChecker(QThread):
                     logger.warning('Failed to show toaster notification for the avaliable update.')
         except HTTPError as error:
             if downloading:
-                msg = f'Error occured while downloading the setup-exe.'
+                msg = 'Error occured while downloading the setup-exe.'
                 for exe in setup_exe_dir.iterdir():
                     if exe.is_file():
                         exe.unlink()
             elif check_hash:
                 msg = 'Error occured while trying to retreive SHA256 hash.'
             else:
-                msg = f'Failed to connect to the internet and check for any updates.'
+                msg = 'Failed to connect to the internet and check for any updates.'
             logger.warning(msg, exc_info=error)
         except IndexError as error:
             logger.error(
