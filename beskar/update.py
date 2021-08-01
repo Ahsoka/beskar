@@ -17,6 +17,13 @@ import darkdetect
 import subprocess
 import webbrowser
 
+# NOTE: Recently discovered the winrt package
+# which allows access to Windows UWP Namespaces
+# directly in Python. This would enable even more
+# control over toasters than with zroya/WinToaster
+# If you are up for it, see here: https://pypi.org/project/winrt
+# and here: https://github.com/Microsoft/xlang/tree/master/src/package/pywinrt/projection
+
 logger = logging.getLogger(__name__)
 
 pool = urllib3.PoolManager(num_pools=2)
