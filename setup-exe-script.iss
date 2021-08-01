@@ -51,6 +51,7 @@ Source: "dist\Beskar\styles\*"; DestDir: "{app}\styles"; Flags: ignoreversion re
 
 [Icons]
 Name: "{autoprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\images\beskar-icon.ico"; AppUserModelID: "Ahsoka.Beskar.main.{#MyAppVersion}"
+Name: "{userprograms}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; IconFilename: "{app}\images\beskar-icon.ico"; AppUserModelID: "Ahsoka.Beskar.main.{#MyAppVersion}"
 Name: "{autodesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon; IconFilename: "{app}\images\beskar-icon.ico"
 
 [Run]
