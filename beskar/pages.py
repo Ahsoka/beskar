@@ -474,7 +474,7 @@ class ScanPage(BasePage):
 
         scan_offset = len(self.bar_charts_tab)
 
-        logger.info(f'{self.scans} have been initiated.')
+        logger.info(f'{self.scans} scans have been initiated.')
 
         for scan_number in range(self.scans):
             scan_number += scan_offset
