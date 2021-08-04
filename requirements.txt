@@ -1,8 +1,6 @@
 nidaqmx
 numpy
-PyQt6>=6.1.0
-PyQt6-DataVisualization
-PyQt6-Charts
+PySide6
 darkdetect
 sentry-sdk
 pyinstaller
