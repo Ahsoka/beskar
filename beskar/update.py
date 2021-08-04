@@ -1,6 +1,6 @@
 from .utils import get_file, error_to_exc_tuple
-from PyQt6.QtCore import QThread, pyqtSignal
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtCore import QThread, Signal
+from PySide6.QtWidgets import QApplication
 from urllib3.exceptions import HTTPError
 from typing import Callable, Union, List
 from .constants import __version__
@@ -173,9 +173,9 @@ def close_toasters():
 
 
 class UpdateChecker(QThread):
-    raise_exception = pyqtSignal(tuple)
+    raise_exception = Signal(tuple)
 
-    close_all_windows = pyqtSignal()
+    close_all_windows = Signal()
 
     def run(self):
         self.check_for_update()

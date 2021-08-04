@@ -1,5 +1,5 @@
 from sentry_sdk.utils import event_from_exception
-from PyQt6.QtCore import QCoreApplication
+from PySide6.QtCore import QCoreApplication
 from .popups import ErrorPopup
 from sentry_sdk import Hub
 
@@ -11,7 +11,7 @@ import sys
 
 def send_error_report(exc_info, flush=True):
     hub = Hub.current
-    if hub.client is not None:
+    if hub.client is not None and False:
         hub.capture_event(*event_from_exception(exc_info))
         if flush:
             hub.flush()

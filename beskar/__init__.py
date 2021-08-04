@@ -1,9 +1,11 @@
 from sentry_sdk.integrations.logging import LoggingIntegration
-from PyQt6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication
+from PySide6.QtTest import QTest
 from .constants import __version__
 from .settings import Settings
 
 import sys
+import time
 import logging
 import platform
 import darkdetect
@@ -29,6 +31,15 @@ if getattr(sys, 'frozen', False):
     if importer is not None:
         FrozenImporter.get_source = get_source_internet
         logger.info('Overrided FrozenImporter get_source function')
+
+@staticmethod
+def qWait(total: int):
+    miliseconds_total = total / 1000
+    start = time.perf_counter()
+    while time.perf_counter() - start < miliseconds_total:
+        QApplication.processEvents()
+
+QTest.qWait = qWait
 
 sys_info = {
     'name': platform.system(),

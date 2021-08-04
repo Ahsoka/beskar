@@ -1,4 +1,4 @@
-from PyQt6.QtCore import QMargins
+from PySide6.QtCore import QMargins
 
 offset = 2.5 # Voltage offset for applying voltage
 

@@ -2,7 +2,7 @@ from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
 from .utils import apply_voltage, get_file, get_number_of_devices
 from .pages import ApplyVoltagePage, DarkCurrentPage, ScanPage
 from .update import UpdateChecker, close_toasters
-from PyQt6 import QtCore, QtWidgets, QtGui
+from PySide6 import QtCore, QtWidgets, QtGui
 from . import __version__
 
 import os
@@ -88,6 +88,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         # TODO: Add description for each QCommandLinkButton
         self.apply_voltage_menu = QtWidgets.QCommandLinkButton('Apply Voltage')
+        # self.apply_voltage_menu.setIcon(QtGui.QIcon(r'C:\Users\AA12 Louqe\Downloads\thunderbolt.svg'))
         self.apply_voltage_menu.setObjectName('apply_voltage_menu_button')
         self.apply_voltage_menu.setCheckable(True)
         self.apply_voltage_menu.setChecked(True)
@@ -127,7 +128,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
         self.exiting = True
         super().closeEvent(close_event)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_apply_voltage_menu_button_clicked(self):
         self.apply_voltage_menu.setChecked(True)
         self.dark_current_menu.setChecked(False)
@@ -135,7 +136,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.stacked_widget.setCurrentIndex(0)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_dark_current_menu_button_clicked(self):
         self.dark_current_menu.setChecked(True)
         self.apply_voltage_menu.setChecked(False)
@@ -150,7 +151,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
             'There might be something wrong with the SEAL kit you are using.'
         )
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_scan_menu_button_clicked(self):
         self.dark_current_widget.update_data()
 

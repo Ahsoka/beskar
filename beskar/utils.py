@@ -1,8 +1,8 @@
 from typing import Generator, Tuple, Union, Literal, List
-from PyQt6.QtDataVisualization import QBarDataItem
+from PySide6.QtDataVisualization import QBarDataItem
 from nidaqmx._lib import DaqNotFoundError
 from contextlib import contextmanager
-from PyQt6.QtCore import QMetaObject
+from PySide6.QtCore import QMetaObject
 from nidaqmx.system import System
 from .constants import offset
 

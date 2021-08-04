@@ -1,5 +1,5 @@
 from .utils import BaseInteractable, apply_voltage, get_number_of_devices, get_file
-from PyQt6 import QtCore, QtWidgets, QtTest, QtGui
+from PySide6 import QtCore, QtWidgets, QtTest, QtGui
 from nidaqmx.system import System
 from . import sys_info, settings
 from .constants import offset
@@ -59,12 +59,12 @@ class MultipleSEALKitsPopup(BasePopup):
             # since connectBySlots does not detect the slot
             self.finished.connect(self.finishing)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_ok_button_clicked(self):
          self.accept()
          logger.info('Accepted MultipleSEALKitPopup via OK button.')
 
-    QtCore.pyqtSlot()
+    QtCore.Slot()
     def on_quit_button_clicked(self):
         self.main_window.exiting = True
         self.reject()
@@ -124,7 +124,7 @@ class NoSEALKitPopup(BasePopup):
 
             self.setWindowTitle('No SEAL Kit Detected')
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_refresh_push_button_clicked(self):
         if self.refresh_push_button.text() == 'Refresh':
             self.label.setText('Looking')
@@ -163,7 +163,7 @@ class NoSEALKitPopup(BasePopup):
         if key_event.key() != QtCore.Qt.Key.Key_Escape:
             super().keyPressEvent(key_event)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_mocked_mode_button_clicked(self):
         self.main_window.mocked = True
         logger.info('Mocked mode activated.')
@@ -176,7 +176,7 @@ class NoSEALKitPopup(BasePopup):
             mocked_popup.open()
             logger.info('MockedModePopup opened from NoSEALKitPopup.')
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_quit_button_clicked(self):
         self.reject()
         logger.info('Rejected NoSEALKitPopup via quit button.')
@@ -220,20 +220,20 @@ class EnterVoltsPopup(BasePopup):
 
             self.setWindowTitle('Select Offset Voltage')
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_push_button_clicked(self):
         settings['voltage-offset'] = self.main_window.voltage_offset
         self.main_window.apply_voltage_widget.set_min_and_max()
         self.accept()
         logger.info('Accepted EnterVoltsPopup via OK button.')
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def on_horizontal_slider_valueChanged(self, position):
         self.main_window.voltage_offset = voltage = position / 1000
         self.double_spin_box.setValue(voltage)
         apply_voltage(self.main_window.device_name, voltage + offset)
 
-    @QtCore.pyqtSlot(float)
+    @QtCore.Slot(float)
     def on_double_spin_box_valueChanged(self, value):
         self.main_window.voltage_offset = value
         self.horizontal_slider.setValue(int(value * 1000))
@@ -276,13 +276,13 @@ class MockedModePopup(BasePopup):
     def closeEvent(self, close_event):
         settings['show-mocked-mode'] = self.show_again
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_ok_button_clicked(self):
         settings['show-mocked-mode'] = self.show_again
         self.accept()
         logger.info('Accepted MockedModePopup via OK button.')
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def on_check_box_stateChanged(self, state):
         self.show_again = not bool(state)
 
@@ -358,12 +358,12 @@ class ErrorPopup(BasePopup):
 
             self.setWindowTitle('Crash Report')
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_close_button_clicked(self):
         self.accept()
         logger.info('ErrorPopup accepted via Close button.')
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def on_dont_send_crash_button_stateChanged(self, state):
         self.sending = not bool(state)
 

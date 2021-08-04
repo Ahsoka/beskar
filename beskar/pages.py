@@ -1,5 +1,5 @@
 from .utils import BaseInteractable, TwoDQBarDataItem, apply_voltage, get_file, interact_with_LEDs, LED_position_gen
-from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
+from PySide6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
 from .constants import offset, help_tab_fixed_width, help_tab_margins
 from fractions import Fraction
 from typing import List
@@ -100,7 +100,7 @@ class ApplyVoltagePage(BasePage):
             self.main_layout.addItem(spacer2)
             self.main_layout.addLayout(self.desc_layout)
 
-    @QtCore.pyqtSlot(float)
+    @QtCore.Slot(float)
     def on_double_spin_box_valueChanged(self, value):
         value = round(value, 3)
         self.voltage_to_be_applied = value
@@ -114,7 +114,7 @@ class ApplyVoltagePage(BasePage):
             self.apply_button.setEnabled(True)
         self.horizontal_slider.setValue(round((value - self.min_voltage) * 1000))
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def on_horizontal_slider_valueChanged(self, value):
         self.voltage_to_be_applied = round(value * 0.001 + self.min_voltage, 3)
         if self.voltage_to_be_applied == self.current_voltage_applied:
@@ -123,7 +123,7 @@ class ApplyVoltagePage(BasePage):
             self.apply_button.setEnabled(True)
         self.double_spin_box.setValue(self.voltage_to_be_applied)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_apply_button_clicked(self):
         # NOTE: self.voltage_to_be_applied must be inverted (since for whatever reason the
         # SEAL kit applies oppositely charged voltage)
@@ -247,7 +247,7 @@ class DarkCurrentPage(BasePage):
 
         logger.info('Updated dark current readings.')
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_refresh_button_clicked(self):
         self.update_data()
 
@@ -431,7 +431,10 @@ class ScanPage(BasePage):
             QtDataVisualization.QBar3DSeries(),
             numpy.zeros((8, 8)).view(TwoDQBarDataItem)
         ]
+        for _ in range(8):
+            graph_components[1].dataProxy().addRow([QtDataVisualization.QBarDataItem(0.0) for _ in range(8)])
         graph_components[0].addSeries(graph_components[1])
+        # graph_components[0].setActiveTheme()
         graph_components[0].rowAxis().setRange(0, 7)
         graph_components[0].columnAxis().setRange(0, 7)
         graph_components.append(QtWidgets.QWidget.createWindowContainer(graph_components[0]))
@@ -440,7 +443,7 @@ class ScanPage(BasePage):
 
         self.bar_charts_tab.addTab(self.bar_charts[len(self.bar_charts) - 1][3], f'Scan {len(self.bar_charts)}')
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def on_bar_charts_tab_currentChanged(self, tab):
         if tab + 1 == len(self.bar_charts):
             self.progress_bar.show()
@@ -452,7 +455,7 @@ class ScanPage(BasePage):
             self.notice_for_reading.hide()
             self.save_button.setEnabled(True)
 
-    @QtCore.pyqtSlot(int)
+    @QtCore.Slot(int)
     def on_spin_box_valueChanged(self, value):
         self.scans = value
         if value == 1:
@@ -460,7 +463,7 @@ class ScanPage(BasePage):
         else:
             self.spin_box.setSuffix(' Scans')
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_ok_button_clicked(self):
         self.scanning_in_progress = True
 
@@ -472,7 +475,7 @@ class ScanPage(BasePage):
 
         settings['scans'] = self.scans
 
-        scan_offset = len(self.bar_charts_tab)
+        scan_offset = self.bar_charts_tab.count()
 
         logger.info(f'{self.scans} scans have been initiated.')
 
@@ -508,11 +511,17 @@ class ScanPage(BasePage):
                             f'{self.main_window.device_name}/ai1', min_val=-10, max_val=10
                         )
                         samples = task.read(10)
+
+                value = max(samples) - dark_current
                 self.bar_charts[scan_number][2][
                     self.led_position[0], self.led_position[1]
-                ] = max(samples) - dark_current
-                self.bar_charts[scan_number][1].dataProxy().resetArray(
-                    self.bar_charts[scan_number][2].tolist(convert_to_bar_data=True)
+                ] = value
+
+                print(f'setting value to {value} at position {self.led_position}')
+                self.bar_charts[scan_number][1].dataProxy().setItem(
+                    self.led_position[0],
+                    self.led_position[1],
+                    value
                 )
 
                 self.progress_bar.setValue(progress + 1)
@@ -531,14 +540,18 @@ class ScanPage(BasePage):
                 if progress == 0:
                     # Delay between the first and second LED flash
                     QtTest.QTest.qWait(492 - computation_time * 1000)
+                    pass
                 elif progress == 1:
                     # Delay between second and thrid LED flash
                     QtTest.QTest.qWait(820 - 1 - computation_time * 1000)
+                    pass
                 elif progress == length - 1 and scan_number != self.scans + scan_offset - 1:
                     QtTest.QTest.qWait(1000)
+                    pass
                 else:
                     # Delay between all other LED flashes
                     QtTest.QTest.qWait(860 - 1 - computation_time * 1000)
+                    pass
 
         self.scanning_in_progress = False
 
@@ -550,7 +563,7 @@ class ScanPage(BasePage):
         self.save_button.setEnabled(True)
         self.another_scan_button.setEnabled(True)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_save_button_clicked(self):
         self.file_dialog.setLabelText(
             QtWidgets.QFileDialog.DialogLabel.Accept,
@@ -585,12 +598,12 @@ class ScanPage(BasePage):
             if self.main_window.icon:
                 self.main_window.setWindowIcon(self.main_window.icon)
 
-    @QtCore.pyqtSlot(str)
+    @QtCore.Slot(str)
     def on_file_dialog_filterSelected(self, file_filter: str):
         if '.png' in file_filter:
             self.warning_screenshot_dialog.open()
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_file_dialog_accepted(self):
         # NOTE: The file dialog automatically handles
         # attempting to write to folders that require
@@ -613,12 +626,12 @@ class ScanPage(BasePage):
 
         logger.info(f'{selected} has been created in order to save Scan {current_tab}.')
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_another_scan_button_clicked(self):
         self.main_layout.insertItem(1, self.spacer2)
         self.stacked_widget.setCurrentIndex(0)
 
-    @QtCore.pyqtSlot()
+    @QtCore.Slot()
     def on_go_back_button_clicked(self):
         self.main_layout.removeItem(self.spacer2)
         self.stacked_widget.setCurrentIndex(1)
