@@ -8,7 +8,7 @@ import sys
 def main():
     for logger_name in map(
         lambda name: f'beskar.{name}',
-        ('gui', 'pages', 'popups', 'settings', 'utils', 'unknown', 'update')
+        ('gui', 'pages', 'popups', 'utils', 'unknown', 'update')
     ):
         setUpLogger(logger_name, logging_dir)
 

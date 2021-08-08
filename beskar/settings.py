@@ -1,13 +1,12 @@
 from contextlib import contextmanager
 from .constants import __version__
 from typing import Literal, Union
+from .logs import setUpLogger
 
-import logging
 import pathlib
 import json
 import os
 
-logger = logging.getLogger(__name__)
 
 if os.name == 'nt':
     location = os.environ.get('APPDATA')
@@ -29,6 +28,8 @@ else:
         logging_dir.parent.mkdir()
     if not logging_dir.exists():
         logging_dir.mkdir()
+
+logger = setUpLogger(__name__, logging_dir)
 
 logger.info(f'Logging directory set to {logging_dir}.')
 
