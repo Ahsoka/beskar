@@ -73,7 +73,7 @@ def get_number_of_devices(system=True, drivers=False):
     elif system:
         return the_system, num_of_devices
     elif drivers:
-        return the_system, has_drivers
+        return has_drivers, num_of_devices
     else:
         return num_of_devices
 
