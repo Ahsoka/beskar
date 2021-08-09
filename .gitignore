@@ -11,3 +11,6 @@ dist
 
 # Beskar Setup EXEs
 beskar-install*.exe
+
+# macOS
+.DS_Store
