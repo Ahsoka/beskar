@@ -93,6 +93,21 @@ def get_file(file_path: str, dir='images', path=False) -> Union[pathlib.Path, st
         # the assets in non escalated privileges folder such as %appdata%
         logger.warning(f'{file_path} was not detected, may be fatal.')
 
+def get_folder(folder: Union[str, pathlib.Path], path: bool = True):
+    if isinstance(folder, str):
+        folder = pathlib.Path(folder)
+
+    if not folder.exists():
+        folder = pathlib.Path('beskar') / folder
+
+    if folder.exists():
+        if path:
+            return folder
+        else:
+            return str(folder)
+
+    logger.warning(f'{folder} could not be found, may be fatal.')
+
 def error_to_exc_tuple(error: Exception):
     return (type(error), error, error.__traceback__)
 
