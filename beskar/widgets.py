@@ -1,11 +1,12 @@
 from .utils import get_file, get_folder, sort_frames
 from PyQt6 import QtWidgets, QtCore, QtGui, QtSvg
 from typing import Literal, Union
+from .settings import logging_dir
+from .logs import setUpLogger
 
-import logging
 import itertools
 
-logger = logging.getLogger(__name__)
+logger = setUpLogger(__name__, logging_dir)
 
 
 class LinkHoverColorChange(QtWidgets.QLabel):
