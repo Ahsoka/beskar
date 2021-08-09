@@ -120,8 +120,12 @@ class StepProgressBar(QtWidgets.QWidget):
     def sizeHint(self) -> QtCore.QSize:
         return QtCore.QSize(100, self.bubble_height * 2 + 2)
 
-    def next_step(self):
-        self.timer.start(40)
+    def set_step(self, step: int):
+        if self.current_step + 1 == step:
+            self.timer.start(40)
+        else:
+            self.current_step = step
+            self.update()
 
     def paintEvent(self, paint_event: QtGui.QPaintEvent):
         painter = QtGui.QPainter()
