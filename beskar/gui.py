@@ -1,7 +1,6 @@
 from .popups import MultipleSEALKitsPopup, NoSEALKitPopup, EnterVoltsPopup
 from .utils import apply_voltage, get_file, get_number_of_devices
 from .pages import ApplyVoltagePage, DarkCurrentPage, ScanPage
-from .update import UpdateChecker, close_toasters
 from PyQt6 import QtCore, QtWidgets, QtGui
 from . import __version__
 
@@ -56,6 +55,7 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
     def show(self) -> None:
         if os.name == 'nt':
+            from .update import UpdateChecker, close_toasters
             from .handle_errors import handle_exception
             from . import app
 
