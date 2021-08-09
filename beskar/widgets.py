@@ -1,4 +1,4 @@
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtCore, QtGui, QtSvg
 
 
 class LinkHoverColorChange(QtWidgets.QLabel):
@@ -28,3 +28,20 @@ class LinkHoverColorChange(QtWidgets.QLabel):
         else:
             self._set_formatted_text(self.unformated_text.format(self.link_color1))
             self.unsetCursor()
+
+
+class LabelWithIcon(LinkHoverColorChange):
+    def __init__(self, svg_path: str, link_color1: str, link_color2: str, *args, **kwargs):
+        self.svg_path = svg_path
+        super().__init__(link_color1, link_color2, *args, **kwargs)
+
+    def paintEvent(self, paint_event: QtGui.QPaintEvent) -> None:
+        painter = QtGui.QPainter()
+        painter.begin(self)
+        svg_renderer = QtSvg.QSvgRenderer(self.svg_path)
+        svg_renderer.setAspectRatioMode(QtCore.Qt.AspectRatioMode.KeepAspectRatio)
+        svg_renderer.render(
+            painter,
+            QtCore.QRectF(3, 3, *(self.font().pixelSize(),) * 2)
+        )
+        super().paintEvent(paint_event)
