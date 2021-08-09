@@ -1,4 +1,4 @@
-from typing import Generator, Tuple, Union, Literal, List
+from typing import Callable, Generator, Iterable, Tuple, Union, Literal, Any, List
 from PyQt6.QtDataVisualization import QBarDataItem
 from nidaqmx._lib import DaqNotFoundError
 from contextlib import contextmanager
@@ -6,10 +6,12 @@ from PyQt6.QtCore import QMetaObject
 from nidaqmx.system import System
 from .constants import offset
 
+import itertools
 import logging
 import pathlib
 import nidaqmx
 import numpy
+import re
 
 logger = logging.getLogger(__name__)
 
@@ -107,6 +109,22 @@ def get_folder(folder: Union[str, pathlib.Path], path: bool = True):
             return str(folder)
 
     logger.warning(f'{folder} could not be found, may be fatal.')
+
+def sort_frames(
+    folder: pathlib.Path,
+    glob: str, key: Callable[[pathlib.Path], Any] = None,
+    cycler: bool = True
+):
+    if key is None:
+        frame_number = re.compile(r'\d+')
+        key = lambda path: int(frame_number.search(path.name)[0])
+
+    sorted_frames = sorted(folder.glob(glob), key=key)
+    if cycler:
+        return itertools.cycle(sorted_frames)
+    else:
+        return sorted_frames
+
 
 def error_to_exc_tuple(error: Exception):
     return (type(error), error, error.__traceback__)
