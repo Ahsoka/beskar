@@ -6,4 +6,4 @@ PyQt6-Charts
 darkdetect
 sentry-sdk
 pyinstaller
-zroya
+zroya; platform_system == "Windows"
