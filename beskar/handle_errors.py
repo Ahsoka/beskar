@@ -11,7 +11,7 @@ import sys
 
 def send_error_report(exc_info, flush=True):
     hub = Hub.current
-    if hub.client is not None and False:
+    if hub.client is not None:
         hub.capture_event(*event_from_exception(exc_info))
         if flush:
             hub.flush()
