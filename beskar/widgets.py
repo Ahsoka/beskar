@@ -2,7 +2,10 @@ from .utils import get_file, get_folder, sort_frames
 from PyQt6 import QtWidgets, QtCore, QtGui, QtSvg
 from typing import Literal, Union
 
+import logging
 import itertools
+
+logger = logging.getLogger(__name__)
 
 
 class LinkHoverColorChange(QtWidgets.QLabel):
@@ -70,14 +73,22 @@ class StepProgressBar(QtWidgets.QWidget):
 
         self.inter_font = None
         if font_loc := get_file('Inter-Light.ttf', 'fonts'):
+            # NOTE: Cannot load the font without fontconfig on macOS
+            # and Linux, not sure how to automatically install
             inter_font_id = QtGui.QFontDatabase.addApplicationFont(font_loc)
+            if inter_font_id != -1:
+                inter_font_name = 'Inter Light'
+                inter_font_families = QtGui.QFontDatabase.applicationFontFamilies(
+                    inter_font_id
+                )
+                if inter_font_families:
+                    inter_font_name = inter_font_families[0] or inter_font_name
 
-            inter_font_name = QtGui.QFontDatabase.applicationFontFamilies(
-                inter_font_id
-            )[0] or 'Inter Light'
-            self.inter_font = QtGui.QFontDatabase.font(
-                inter_font_name, '', self.font_size
-            )
+                self.inter_font = QtGui.QFontDatabase.font(
+                    inter_font_name, '', self.font_size
+                )
+            else:
+                logger.warning('Failed to load Inter-Light.ttf')
 
         checkmark_icon_dir = get_folder(checkmark_icon_dir_str)
         self.checkmark_animated = bool(checkmark_icon_dir)
