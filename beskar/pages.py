@@ -1,9 +1,8 @@
 from .utils import BaseInteractable, TwoDQBarDataItem, apply_voltage, get_file, interact_with_LEDs, LED_position_gen
 from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
 from .constants import offset, help_tab_fixed_width, help_tab_margins
+from .widgets import DoubleSpinBox, LabelWithIcon
 from typing import Union, Tuple, List
-from .widgets import DoubleSpinBox
-from fractions import Fraction
 from . import settings
 
 import statistics as stats
@@ -156,140 +155,79 @@ class VoltageOffsetPage(BaseSetVoltagePage):
             apply_voltage(self.main_window.device_name, value + offset)
 
 
-class ApplyVoltagePage(BasePage):
+class ApplyVoltagePage(BaseSetVoltagePage):
     def __init__(self, main_window):
+        self.min_voltage = -2.5
+        self.max_voltage = 2.5
+
         with self.init(main_window):
-            self.current_voltage_applied = 0
-
-            self.apply_voltage_label = QtWidgets.QLabel("<h1>Apply Voltage</h1>")
-
-            spacer1 = QtWidgets.QSpacerItem(
-                0, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
+            super().__init__(
+                main_window,
+                'Apply Voltage',
+                'About Applying Voltage',
+                get_file('apply-voltage.md', 'desc', path=True).read_text(),
+                280,
+                (-2.5, 2.5)
             )
 
-            self.horizontal_slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
-            self.horizontal_slider.setMinimumWidth(393)
-            self.horizontal_slider.setObjectName('horizontal_slider')
-            self.horizontal_slider.setMaximum(5000)
-            self.horizontal_slider.setValue(2499)
+            self.desc.setMinimumHeight(345)
 
-            self.double_spin_box = QtWidgets.QDoubleSpinBox()
-            self.double_spin_box.setObjectName('double_spin_box')
-            self.double_spin_box.setSingleStep(0.001)
-            self.double_spin_box.setDecimals(3)
-            self.double_spin_box.setSuffix(' Volts')
+            self.slider.setMaximum(5000)
+            self.slider.setValue(2499)
 
-            self.warning_label = QtWidgets.QLabel(
+            text = (
                 '<b>WARNING:</b> This voltage may not be applied accurately'
                 ' due to limitations with the SEAL Kit.'
             )
-
-            self.apply_button = QtWidgets.QPushButton('Apply')
-            self.apply_button.setObjectName('apply_button')
-            self.apply_button.setEnabled(False)
-
-            interaction_hbox = QtWidgets.QHBoxLayout()
-            interaction_hbox.addWidget(self.horizontal_slider)
-            interaction_hbox.addWidget(self.double_spin_box)
-
-            self.interactable_layout = QtWidgets.QVBoxLayout()
-            self.interactable_layout.contentsMargins().setLeft(1000)
-            self.interactable_layout.contentsMargins().setRight(1000)
-            self.interactable_layout.setContentsMargins(10, 10, 0, 0)
-            self.interactable_layout.addWidget(self.apply_voltage_label, 0, QtCore.Qt.AlignmentFlag.AlignHCenter)
-            self.interactable_layout.addItem(spacer1)
-            self.interactable_layout.addLayout(interaction_hbox)
-            self.interactable_layout.addWidget(self.warning_label, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-            self.warning_label.hide()
-            self.interactable_layout.addWidget(self.apply_button, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-            self.interactable_layout.addItem(spacer1)
-
-            with get_file('apply-voltage.md', 'desc', path=True).open() as file:
-                # NOTE: Currently if the user compress the window vertically the text
-                # will not be fully visualable. Might want to add limitations so that
-                # this can't happen.
-                self.help_tab = QtWidgets.QLabel(file.read())
-                self.help_tab.setFixedWidth(help_tab_fixed_width)
-                self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
-                self.help_tab.setWordWrap(True)
-
-            self.desc_layout = QtWidgets.QVBoxLayout()
-            self.desc_layout.addWidget(self.help_tab)
-            self.desc_layout.addItem(spacer1)
-            self.desc_layout.setContentsMargins(help_tab_margins)
-
-            screen_size = QtWidgets.QApplication.primaryScreen().size()
-            if Fraction(screen_size.width(), screen_size.height()) >= Fraction(64, 27):
-                spacer2_policy = QtWidgets.QSizePolicy.Policy.MinimumExpanding
+            if warning_icon_loc := get_file('warning-icon.svg'):
+                self.warning_label = LabelWithIcon(warning_icon_loc, text, indent=17)
             else:
-                spacer2_policy = QtWidgets.QSizePolicy.Policy.Minimum
-
-            spacer2 = QtWidgets.QSpacerItem(
-                20, 0, spacer2_policy, QtWidgets.QSizePolicy.Policy.Minimum
-            )
-
-            self.main_layout = QtWidgets.QHBoxLayout()
-            self.main_layout.addLayout(self.interactable_layout)
-            self.main_layout.addItem(spacer2)
-            self.main_layout.addLayout(self.desc_layout)
-
-    @QtCore.pyqtSlot(float)
-    def on_double_spin_box_valueChanged(self, value):
-        value = round(value, 3)
-        self.voltage_to_be_applied = value
-        if value >= 0.75 * self.max_voltage or value <= 0.75 * self.min_voltage:
-            self.warning_label.show()
-        else:
+                self.warning_label = QtWidgets.QLabel(text)
+            sp_retain = self.warning_label.sizePolicy()
+            sp_retain.setRetainSizeWhenHidden(True)
+            self.warning_label.setSizePolicy(sp_retain)
+            self.warning_label.setFixedHeight(32)
+            self.warning_label.setObjectName('apply_voltage_warning_label')
+            self.warning_label.setWordWrap(True)
             self.warning_label.hide()
-        if self.voltage_to_be_applied == self.current_voltage_applied:
-            self.apply_button.setEnabled(False)
-        elif not self.apply_button.isEnabled():
-            self.apply_button.setEnabled(True)
-        self.horizontal_slider.setValue(round((value - self.min_voltage) * 1000))
+            self.warning_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignTop)
 
-    @QtCore.pyqtSlot(int)
-    def on_horizontal_slider_valueChanged(self, value):
-        self.voltage_to_be_applied = round(value * 0.001 + self.min_voltage, 3)
-        if self.voltage_to_be_applied == self.current_voltage_applied:
-            self.apply_button.setEnabled(False)
-        elif not self.apply_button.isEnabled():
-            self.apply_button.setEnabled(True)
-        self.double_spin_box.setValue(self.voltage_to_be_applied)
+            self.main_layout.insertWidget(3, self.warning_label)
 
-    @QtCore.pyqtSlot()
-    def on_apply_button_clicked(self):
-        # NOTE: self.voltage_to_be_applied must be inverted (since for whatever reason the
-        # SEAL kit applies oppositely charged voltage)
-        # See this for reference: https://github.com/Ahsoka/beskar/blob/main/legacy/get_led_data_12.m#L324
-        # This is the implementation in the legacy software
-        self.current_voltage_applied = self.voltage_to_be_applied
-        self.apply_button.setEnabled(False)
-
-        if self.warning_label.isVisible():
-            logger.warning('Abnormally high voltage is about to be applied.')
-
-        if not self.main_window.mocked:
-            apply_voltage(
-                self.main_window.device_name,
-                self.main_window.voltage_offset + offset - self.voltage_to_be_applied
-            )
-
-        settings['applied-voltage'] = self.current_voltage_applied
-
-    def set_min_and_max(self):
-        self.min_voltage = -round(5 - offset - self.main_window.voltage_offset, 3)
-        self.max_voltage = -round(-offset - self.main_window.voltage_offset, 3)
+    def set_min_and_max(self, voltage_offset: float):
+        self.min_voltage = -round(5 - offset - voltage_offset, 3)
+        self.max_voltage = -round(-offset - voltage_offset, 3)
 
         logger.info(f'self.min_voltage set to {self.min_voltage}.')
         logger.info(f'self.max_voltage set to {self.max_voltage}.')
 
-        self.horizontal_slider.setValue(abs(int(self.min_voltage * 1000)))
+        self.slider.setValue(abs(int(self.min_voltage * 1000)))
         self.double_spin_box.setRange(self.min_voltage, self.max_voltage)
 
         settings_applied_voltage = settings.get('applied-voltage', 0)
         if (settings_applied_voltage <= self.max_voltage
             and settings_applied_voltage >= self.min_voltage):
             self.double_spin_box.setValue(settings_applied_voltage)
+
+    def is_high_or_low_voltage(self, voltage=None) -> bool:
+        if voltage is None:
+            voltage = self.double_spin_box.value()
+        return voltage >= 0.75 * self.max_voltage or voltage <= 0.75 * self.min_voltage
+
+    @QtCore.pyqtSlot(float)
+    def on_spin_box_valueChanged(self, value):
+        value = round(value, 3)
+        self.voltage_to_be_applied = value
+        if self.is_high_or_low_voltage(value):
+            self.warning_label.show()
+        else:
+            self.warning_label.hide()
+        self.slider.setValue(round((value - self.min_voltage) * 1000))
+
+    @QtCore.pyqtSlot(int)
+    def on_slider_valueChanged(self, value):
+        self.voltage_to_be_applied = round(value * 0.001 + self.min_voltage, 3)
+        self.double_spin_box.setValue(self.voltage_to_be_applied)
 
 
 class DarkCurrentPage(BasePage):
