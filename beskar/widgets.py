@@ -124,6 +124,8 @@ class StepProgressBar(QtWidgets.QWidget):
         if self.current_step + 1 == step:
             self.timer.start(40)
         else:
+            if self.timer.isActive():
+                self.timer.stop()
             self.current_step = step
             self.update()
 
