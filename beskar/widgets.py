@@ -39,7 +39,9 @@ class LinkHoverColorChange(QtWidgets.QLabel):
 
 
 class LabelWithIcon(LinkHoverColorChange):
-    def __init__(self, svg_path: str, link_color1: str, link_color2: str, *args, **kwargs):
+    def __init__(self, svg_path: str, link_color1: str, link_color2: str, *args, indent=20, **kwargs):
+        self.text_indent = indent
+
         self.svg_path = svg_path
 
         if args and isinstance(args[0], str):
@@ -62,9 +64,8 @@ class LabelWithIcon(LinkHoverColorChange):
     def setText(self, text: str) -> None:
         super().setText(self.add_indent(text))
 
-    @staticmethod
-    def add_indent(text: str) -> str:
-        return '<p style="text-indent: 20px"> ' + text + '</p>'
+    def add_indent(self, text: str) -> str:
+        return f'<p style="text-indent: {self.text_indent}px"> ' + text + '</p>'
 
 
 class StepProgressBar(QtWidgets.QWidget):
