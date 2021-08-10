@@ -1,0 +1,147 @@
+QMainWindow {
+    background-color: black;
+}
+
+
+QDialog {
+    background-color: black;
+}
+
+
+QLabel {
+    color: white;
+}
+
+QLabel[objectName$="header"] {
+    font-size: 30px;
+    font-weight: 700;
+}
+
+QLabel[objectName$="subheader"] {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+QLabel[objectName="no_SEAL_kit_desc"] {
+    font-size: 14px;
+    font-weight: 400;
+    color: #FFF000;
+}
+
+QLabel[objectName="apply_voltage_warning_label"] {
+    font-size: 12px;
+    font-weight: 400;
+}
+
+
+QRadioButton {
+    color: white;
+    font-size: 14px;
+    font-weight: 400;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+QRadioButton:focus {
+    outline: 0;
+    border: 2px solid white;
+}
+
+
+QPushButton {
+    background-color: white;
+    color: black;
+    font-size: 19px;
+    font-weight: 700;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-radius: 12px;
+}
+
+QPushButton[objectName="no_SEAL_refresh_button"],
+QPushButton[objectName="no_SEAL_kit_button"] {
+    border-radius: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+QPushButton[objectName="no_SEAL_refresh_button"] {
+    text-align: left;
+    padding-left: 45px;
+}
+
+
+QPushButton[objectName="no_SEAL_kit_button"] {
+    text-align: center;
+}
+
+QPushButton:hover {
+    background-color: #e5e4e2;
+}
+
+QPushButton:focus {
+    outline: 0;
+    border: 2px outset #0078D8;
+}
+
+QPushButton[objectName="refresh_button"]:focus {
+    padding-left: 43px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+}
+
+QSlider::groove:vertical {
+    background: qlineargradient(
+        y1: 0,
+        y2: 1,
+        stop: 0 rgba(59,173,227,1),
+        stop: 0.25 rgba(87,111,230,1),
+        stop: 0.51 rgba(152,68,183,1),
+        stop: 1 rgba(255,53,127,1)
+    );
+    width: 4px;
+    border-radius: 2px;
+}
+QSlider::handle:vertical {
+    background-color: #1d1c25;
+    border: 2px solid rgb(59,173,227);
+    height: 26px;
+    margin: 0 -13px;
+    border-radius: 15px;
+}
+
+QAbstractSpinBox {
+    font: bold;
+    color: white;
+    background: rgba(0, 0, 0, 0);
+    selection-color: black;
+    selection-background-color: white;
+    padding-right: 3px;
+}
+
+QAbstractSpinBox::up-button, QAbstractSpinBox::down-button {
+    width: 8px;
+    border-width: 0px;
+}
+
+QAbstractSpinBox::up-button {
+    /* Icon from: https://www.freepik.com */
+    image: url(beskar/images/up-arrow-spinbox.svg);
+}
+
+QAbstractSpinBox::down-button {
+    /* Icon from: https://www.freepik.com */
+    image: url(beskar/images/down-arrow-spinbox.svg);
+}
+
+QAbstractSpinBox::up-button:pressed{
+    /* Icon modified by me, originally sourced from: https://www.freepik.com */
+    image: url(beskar/images/up-arrow-clicked-spinbox.svg);
+}
+
+QAbstractSpinBox::down-button:pressed {
+    /* Icon modified by me, originally sourced from: https://www.freepik.com */
+    image: url(beskar/images/down-arrow-clicked-spinbox.svg);
+}
+
+
