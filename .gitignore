@@ -16,4 +16,5 @@ beskar-install*.exe
 .DS_Store
 
 # Beskar Files
+settings.json
 *.log
