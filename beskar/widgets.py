@@ -39,16 +39,23 @@ class LinkHoverColorChange(QtWidgets.QLabel):
 
 
 class LabelWithIcon(LinkHoverColorChange):
-    def __init__(self, svg_path: str, link_color1: str, link_color2: str, *args, indent=20, **kwargs):
+    def __init__(
+        self,
+        svg_path: str,
+        text: str = '',
+        link_color1: str = None,
+        link_color2: str = None, indent=20
+    ):
         self.text_indent = indent
 
         self.svg_path = svg_path
 
-        if args and isinstance(args[0], str):
-            args = list(args)
-            args[0] = self.add_indent(args[0])
-
-        super().__init__(link_color1, link_color2, *args, **kwargs)
+        if link_color1 and link_color2:
+            self.super = super()
+            self.super.__init__(link_color1, link_color2, self.add_indent(text))
+        else:
+            self.super = super(LinkHoverColorChange, self)
+            self.super.__init__(self.add_indent(text))
 
     def paintEvent(self, paint_event: QtGui.QPaintEvent) -> None:
         painter = QtGui.QPainter()
@@ -59,10 +66,10 @@ class LabelWithIcon(LinkHoverColorChange):
             painter,
             QtCore.QRectF(3, 3, *(self.font().pixelSize(),) * 2)
         )
-        super().paintEvent(paint_event)
+        self.super.paintEvent(paint_event)
 
     def setText(self, text: str) -> None:
-        super().setText(self.add_indent(text))
+        self.super.setText(self.add_indent(text))
 
     def add_indent(self, text: str) -> str:
         return f'<p style="text-indent: {self.text_indent}px"> ' + text + '</p>'
