@@ -1,6 +1,5 @@
 from .utils import BaseInteractable, apply_voltage, get_number_of_devices, get_file
 from PyQt6 import QtCore, QtWidgets, QtTest, QtGui
-from nidaqmx.system import System
 from . import sys_info, settings
 from .constants import offset
 
@@ -13,71 +12,6 @@ logger = logging.getLogger(__name__)
 class BasePopup(BaseInteractable, QtWidgets.QDialog):
     def super_(self):
         super().__init__(self.main_window)
-
-
-class MultipleSEALKitsPopup(BasePopup):
-    def __init__(self, main_window):
-        with self.init(main_window):
-            self.label = QtWidgets.QLabel(
-                "Multiple SEAL kits detected, please selected which one you would like to use:"
-            )
-            self.label.setObjectName('label')
-
-            self.combo_box = QtWidgets.QComboBox()
-            self.combo_box.setObjectName('combo_box')
-            for device_name in System.local().devices.device_names:
-                logger.info(f'Detected {device_name}.')
-                self.combo_box.addItem(device_name)
-
-            self.ok_button = QtWidgets.QPushButton('OK')
-            self.ok_button.setObjectName('ok_button')
-
-            self.quit_button = QtWidgets.QPushButton('Quit')
-            self.quit_button.setObjectName('quit_button')
-
-            self.buttons_layout = QtWidgets.QHBoxLayout()
-            self.buttons_layout.addWidget(
-                self.ok_button,
-                stretch=10,
-                alignment=QtCore.Qt.AlignmentFlag.AlignRight
-            )
-            self.buttons_layout.addWidget(
-                self.quit_button,
-                alignment=QtCore.Qt.AlignmentFlag.AlignRight
-            )
-
-            self.main_layout = QtWidgets.QVBoxLayout()
-            self.main_layout.addWidget(self.label)
-            self.main_layout.addWidget(self.combo_box)
-            self.main_layout.addLayout(self.buttons_layout)
-
-            self.setFixedHeight(95)
-
-            self.setWindowTitle('Select a SEAL Kit')
-
-            # NOTE: Need to use .connect since for some reason
-            # since connectBySlots does not detect the slot
-            self.finished.connect(self.finishing)
-
-    @QtCore.pyqtSlot()
-    def on_ok_button_clicked(self):
-         self.accept()
-         logger.info('Accepted MultipleSEALKitPopup via OK button.')
-
-    QtCore.pyqtSlot()
-    def on_quit_button_clicked(self):
-        self.main_window.exiting = True
-        self.reject()
-        logger.info('Rejected MultipleSEALKitPopup via quit button.')
-        QtCore.QCoreApplication.quit()
-
-    def finishing(self, result):
-        if not self.main_window.exiting:
-            self.main_window.device_name = self.combo_box.currentText()
-            logger.info(f'Selected {self.main_window.device_name} as the SEAL kit.')
-            apply_voltage(self.main_window.device_name)
-            self.main_window.enter_volts_popup.open()
-            logger.info('EnterVoltsPopup opened from MultipleSEALKitPopup.')
 
 
 class NoSEALKitPopup(BasePopup):
