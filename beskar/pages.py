@@ -150,13 +150,13 @@ class NoSEALKitPage(BasePage):
                         'try refreshing again.</p>'
                     )
                 elif self.main_window.stacked_widget.currentIndex() == 0:
-                    self.main_window.set_page_index(1, 'select')
+                    self.main_window.next_page('select')
             self.animation_in_progress = False
             self.refresh_button.setText('Refresh')
 
     @QtCore.pyqtSlot()
     def on_no_SEAL_kit_button_clicked(self):
-        self.main_window.set_page_index(1, 'mocked')
+        self.main_window.next_page('mocked')
 
     def mouse_press_event(self) -> None:
         if ((self.refresh_button.hasFocus() and not self.refresh_button.underMouse())
