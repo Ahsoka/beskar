@@ -219,7 +219,7 @@ class SelectSEALKitPage(BasePage):
 
         self.setFocusPolicy(QtCore.Qt.FocusPolicy.TabFocus)
 
-    def focusInEvent(self, foucs_event: QtGui.QFocusEvent) -> None:
+    def focusInEvent(self, focus_event: QtGui.QFocusEvent) -> None:
         self.buttons_group.button(0).setFocus(QtCore.Qt.FocusReason.TabFocusReason)
 
     def focusNextPrevChild(self, next_: bool) -> bool:
