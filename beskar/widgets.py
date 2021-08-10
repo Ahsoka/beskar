@@ -108,6 +108,7 @@ class StepProgressBar(QtWidgets.QWidget):
         self.bubble_width = 15
 
         self.timer = QtCore.QTimer()
+        self.timer.setTimerType(QtCore.Qt.TimerType.PreciseTimer)
         self.timer.timeout.connect(self.repaint)
 
         self.pen = QtGui.QPen(QtGui.QColorConstants.White, 1)
