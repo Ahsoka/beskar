@@ -1,6 +1,6 @@
 from .utils import BaseInteractable, get_file
 from PyQt6 import QtCore, QtWidgets, QtGui
-from . import sys_info, settings
+from . import sys_info
 
 import logging
 
@@ -10,46 +10,6 @@ logger = logging.getLogger(__name__)
 class BasePopup(BaseInteractable, QtWidgets.QDialog):
     def super_(self):
         super().__init__(self.main_window)
-
-
-class MockedModePopup(BasePopup):
-    def __init__(self, main_window):
-        with self.init(main_window):
-            self.show_again = True
-
-            self.setFixedSize(350, 225)
-
-            # NOTE: This file must exist or the program will crash
-            with get_file('mocked-mode.md', 'desc', path=True).open() as file:
-                self.text = QtWidgets.QLabel(file.read())
-                self.text.setWordWrap(True)
-                self.text.setTextFormat(QtCore.Qt.TextFormat.RichText)
-
-            self.dont_show_again = QtWidgets.QCheckBox("Don't show this message again.")
-            self.dont_show_again.setObjectName('check_box')
-
-            self.ok_button = QtWidgets.QPushButton('OK')
-            self.ok_button.setObjectName('ok_button')
-
-            self.main_layout = QtWidgets.QVBoxLayout()
-            self.main_layout.addWidget(self.text)
-            self.main_layout.addWidget(self.dont_show_again, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-            self.main_layout.addWidget(self.ok_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-
-            self.setWindowTitle('Mocked Mode')
-
-    def closeEvent(self, close_event):
-        settings['show-mocked-mode'] = self.show_again
-
-    @QtCore.pyqtSlot()
-    def on_ok_button_clicked(self):
-        settings['show-mocked-mode'] = self.show_again
-        self.accept()
-        logger.info('Accepted MockedModePopup via OK button.')
-
-    @QtCore.pyqtSlot(int)
-    def on_check_box_stateChanged(self, state):
-        self.show_again = not bool(state)
 
 
 class ErrorPopup(BasePopup):
