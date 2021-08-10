@@ -3,10 +3,12 @@ from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTes
 from .constants import offset, help_tab_fixed_width, help_tab_margins
 from .widgets import DoubleSpinBox, LabelWithIcon
 from typing import Union, Tuple, List
+from nidaqmx.system import System
 from . import settings
 
 import statistics as stats
 import darkdetect
+import itertools
 import logging
 import nidaqmx
 import pathlib
@@ -21,6 +23,72 @@ logger = logging.getLogger(__name__)
 class BasePage(BaseInteractable, QtWidgets.QWidget):
     def super_(self):
         super().__init__()
+
+
+class SelectSEALKitPage(BasePage):
+    def __init__(self, main_window):
+        with self.init(main_window):
+            self.header = QtWidgets.QLabel('Select SEAL Kit')
+            self.header.setObjectName('select_SEAL_kit_header')
+
+            self.buttons_group = QtWidgets.QButtonGroup()
+            self.main_layout = QtWidgets.QVBoxLayout()
+            self.main_layout.setSpacing(0)
+            self.main_layout.addWidget(
+                self.header, alignment=QtCore.Qt.AlignmentFlag.AlignCenter
+            )
+            self.main_layout.addSpacing(30)
+            device_names = System.local().devices.device_names
+            # device_names = [f"Dev {num + 1}" for num in range(4)]
+            for index, device_name in enumerate(device_names):
+                radio_button = QtWidgets.QRadioButton(f" {device_name}")
+                radio_button.setFocusPolicy(QtCore.Qt.FocusPolicy.TabFocus)
+                radio_button.setObjectName(f'select_SEAL_kit_radio_button{index}')
+                radio_button.clicked.connect(self.mouse_press_event)
+                radio_button.setFixedWidth(205)
+                if index == 0:
+                    radio_button.setChecked(True)
+
+                self.buttons_group.addButton(radio_button, id=index)
+                self.main_layout.addWidget(
+                    radio_button,
+                    alignment=QtCore.Qt.AlignmentFlag.AlignCenter
+                )
+                if index != len(device_names) - 1:
+                    self.main_layout.addSpacing(20)
+            self.main_layout.addStretch(10)
+
+            self.current_button = itertools.cycle(range(len(device_names)))
+
+        self.setFocusPolicy(QtCore.Qt.FocusPolicy.TabFocus)
+
+    def focusInEvent(self, foucs_event: QtGui.QFocusEvent) -> None:
+        self.buttons_group.button(0).setFocus(QtCore.Qt.FocusReason.TabFocusReason)
+
+    def focusNextPrevChild(self, next_: bool) -> bool:
+        buttons = self.buttons_group.buttons()
+        try:
+            button_index = buttons.index(self.focusWidget())
+        except ValueError:
+            return False
+        if next_:
+            if button_index == len(buttons) - 1:
+                return False
+            new_index = button_index + 1
+        else:
+            if button_index == 0:
+                return False
+            new_index = button_index - 1
+
+        self.buttons_group.button(new_index).setFocus(
+            QtCore.Qt.FocusReason.TabFocusReason
+        )
+        return True
+
+    def mouse_press_event(self) -> None:
+        for button in self.buttons_group.buttons():
+            if button.hasFocus() and not button.underMouse():
+                self.main_window.set_focus()
 
 
 class MockedModePage(BasePage):
