@@ -406,18 +406,25 @@ class ApplyVoltagePage(BaseSetVoltagePage):
         logger.info(f'self.min_voltage set to {self.min_voltage}.')
         logger.info(f'self.max_voltage set to {self.max_voltage}.')
 
-        self.slider.setValue(abs(int(self.min_voltage * 1000)))
+        old_value = self.double_spin_box.value()
+
         self.double_spin_box.setRange(self.min_voltage, self.max_voltage)
 
-        settings_applied_voltage = settings.get('applied-voltage', 0)
-        if (settings_applied_voltage <= self.max_voltage
-            and settings_applied_voltage >= self.min_voltage):
-            self.double_spin_box.setValue(settings_applied_voltage)
+        if old_value in self:
+            self.double_spin_box.setValue(old_value)
+        else:
+            self.double_spin_box.setValue(0)
 
     def is_high_or_low_voltage(self, voltage=None) -> bool:
         if voltage is None:
             voltage = self.double_spin_box.value()
         return voltage >= 0.75 * self.max_voltage or voltage <= 0.75 * self.min_voltage
+
+    def __contains__(self, voltage: Union[int, float]) -> bool:
+        return (
+            voltage <= self.max_voltage
+            and voltage >= self.min_voltage
+        )
 
     @QtCore.pyqtSlot(float)
     def on_spin_box_valueChanged(self, value):
