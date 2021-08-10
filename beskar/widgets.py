@@ -64,9 +64,18 @@ class LabelWithIcon(LinkHoverColorChange):
         svg_renderer.setAspectRatioMode(QtCore.Qt.AspectRatioMode.KeepAspectRatio)
         svg_renderer.render(
             painter,
-            QtCore.QRectF(3, 3, *(self.font().pixelSize(),) * 2)
+            QtCore.QRectF(3, 3, *(self.get_font_size(),) * 2)
         )
         self.super.paintEvent(paint_event)
+
+    def get_font_size(self):
+        font_size = 9 # NOTE: I think the default is 9
+        if self.font().pixelSize() != -1:
+            font_size = self.font().pixelSize()
+        elif self.font().pointSize() != -1:
+            font_size = self.font().pointSize()
+
+        return font_size
 
     def setText(self, text: str) -> None:
         self.super.setText(self.add_indent(text))
@@ -253,3 +262,4 @@ class StepProgressBar(QtWidgets.QWidget):
             )
 
         painter.setPen(self.pen)
+
