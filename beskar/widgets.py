@@ -263,3 +263,141 @@ class StepProgressBar(QtWidgets.QWidget):
 
         painter.setPen(self.pen)
 
+
+class DoubleSpinBox(QtWidgets.QDoubleSpinBox):
+    up_clicked = QtCore.pyqtSignal()
+    down_clicked = QtCore.pyqtSignal()
+
+    number_keys = {
+        QtCore.Qt.Key.Key_0,
+        QtCore.Qt.Key.Key_1,
+        QtCore.Qt.Key.Key_2,
+        QtCore.Qt.Key.Key_3,
+        QtCore.Qt.Key.Key_4,
+        QtCore.Qt.Key.Key_5,
+        QtCore.Qt.Key.Key_6,
+        QtCore.Qt.Key.Key_7,
+        QtCore.Qt.Key.Key_8,
+        QtCore.Qt.Key.Key_9,
+    }
+
+    removal_keys = {QtCore.Qt.Key.Key_Backspace, QtCore.Qt.Key.Key_Delete}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self.up_clicked.connect(self.remove_highlight)
+        self.down_clicked.connect(self.remove_highlight)
+
+        self.valueChanged.connect(self.resize_on_num_change)
+
+    def mousePressEvent(self, mouse_event: QtGui.QMouseEvent):
+        # Retrieved from:
+        # https://stackoverflow.com/questions/65226231/qspinbox-check-if-up-or-down-button-is-pressed
+
+        super().mousePressEvent(mouse_event)
+
+        opt = QtWidgets.QStyleOptionSpinBox()
+        self.initStyleOption(opt)
+
+        control = self.style().hitTestComplexControl(
+            QtWidgets.QStyle.ComplexControl.CC_SpinBox,
+            opt,
+            mouse_event.position().toPoint(),
+            self
+        )
+        if control == QtWidgets.QStyle.SubControl.SC_SpinBoxUp:
+            self.up_clicked.emit()
+        elif control == QtWidgets.QStyle.SubControl.SC_SpinBoxDown:
+            self.down_clicked.emit()
+
+    def remove_highlight(self):
+        self.lineEdit().deselect()
+
+    def keyPressEvent(self, key_event: QtGui.QKeyEvent) -> None:
+        pre_decimal_len = len(str(int(self.maximum())))
+        edit_zone_threshold = pre_decimal_len + self.decimals() + 1
+        negative = self.value() < 0 or self.lineEdit().text()[0] == '-'
+
+        cursor_pos = self.lineEdit().cursorPosition()
+        text = self.lineEdit().text()
+        if negative:
+            text = text[1:]
+            if cursor_pos != 0:
+                cursor_pos -= 1
+
+        if key_event.key() in self.number_keys:
+            if cursor_pos < edit_zone_threshold:
+                adding = 1
+
+                if cursor_pos == pre_decimal_len:
+                    cursor_pos += 1
+                try:
+                    new_num = float(
+                        (
+                            text[:cursor_pos]
+                            + key_event.text()
+                            + text[cursor_pos + 1:]
+                        ).rstrip(self.suffix())
+                    )
+                except ValueError:
+                    new_num = float('inf')
+                if negative:
+                    new_num = -new_num
+                if new_num <= self.maximum():
+                    minus = ''
+                    if negative:
+                        minus = '-'
+                        adding = 2
+                    self.lineEdit().setText(
+                        minus + text[:cursor_pos] + key_event.text() + text[cursor_pos + 1:]
+                    )
+
+                self.lineEdit().setCursorPosition(cursor_pos + adding)
+        elif key_event.key() == QtCore.Qt.Key.Key_Period and cursor_pos == pre_decimal_len:
+            self.lineEdit().setCursorPosition(cursor_pos + 1)
+        elif key_event.key() in self.removal_keys:
+            if cursor_pos > edit_zone_threshold and key_event.key() == QtCore.Qt.Key.Key_Backspace:
+                self.lineEdit().setCursorPosition(edit_zone_threshold)
+            elif cursor_pos <= edit_zone_threshold:
+                new_pos = cursor_pos
+                if key_event.key() == QtCore.Qt.Key.Key_Backspace and cursor_pos > 0:
+                    if negative and cursor_pos == 1:
+                        text = text[1:]
+                    else:
+                        if cursor_pos == pre_decimal_len + 1:
+                            cursor_pos -= 1
+                        text = text[:cursor_pos - 1] + '0' + text[cursor_pos:]
+                        new_pos = cursor_pos - 1
+                elif key_event.key() == QtCore.Qt.Key.Key_Delete and cursor_pos < edit_zone_threshold:
+                    if negative and cursor_pos == 0:
+                        text = text[1:]
+                    else:
+                        if cursor_pos == 1:
+                            cursor_pos = 2
+                        text = text[:cursor_pos] + '0' + text[cursor_pos + 1:]
+                        new_pos = cursor_pos + 1
+                self.lineEdit().setText(text)
+                self.lineEdit().setCursorPosition(new_pos)
+        else:
+            super().keyPressEvent(key_event)
+
+    def resizeEvent(self, resize_event: QtGui.QResizeEvent) -> None:
+        super().resizeEvent(resize_event)
+        self.resize(self.sizeHint())
+
+    def resize_on_num_change(self, value):
+        size = self.sizeHint()
+        if self.size() != size:
+            self.resize(size)
+
+    def sizeHint(self) -> QtCore.QSize:
+        size_hint = super().sizeHint()
+        size = None
+        if self.minimum() < 0:
+            if self.value() >= 0:
+                size = QtCore.QSize(size_hint)
+                size.setWidth(size.width() - 5)
+        if size is None:
+            size = size_hint
+        return size
