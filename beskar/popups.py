@@ -1,7 +1,6 @@
-from .utils import BaseInteractable, apply_voltage, get_file
+from .utils import BaseInteractable, get_file
 from PyQt6 import QtCore, QtWidgets, QtGui
 from . import sys_info, settings
-from .constants import offset
 
 import logging
 
@@ -11,70 +10,6 @@ logger = logging.getLogger(__name__)
 class BasePopup(BaseInteractable, QtWidgets.QDialog):
     def super_(self):
         super().__init__(self.main_window)
-
-
-class EnterVoltsPopup(BasePopup):
-    def __init__(self, main_window):
-        with self.init(main_window):
-            self.main_window.voltage_offset = 0
-
-            self.label = QtWidgets.QLabel(
-                "Enter current reading on multimeter and "
-                "use slider until the reading is zero (or close to zero)"
-            )
-
-
-            self.horizontal_slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Horizontal)
-            self.horizontal_slider.setObjectName('horizontal_slider')
-            self.horizontal_slider.setMaximum(1000)
-
-            self.double_spin_box = QtWidgets.QDoubleSpinBox()
-            self.double_spin_box.setObjectName('double_spin_box')
-            self.double_spin_box.setRange(0, 1)
-            self.double_spin_box.setSingleStep(0.001)
-            self.double_spin_box.setDecimals(3)
-            self.double_spin_box.setSuffix(' Volts')
-
-            self.middle_horizontal_layout = QtWidgets.QHBoxLayout()
-            self.middle_horizontal_layout.addWidget(self.horizontal_slider)
-            self.middle_horizontal_layout.addWidget(self.double_spin_box)
-
-
-            self.push_button = QtWidgets.QPushButton('OK')
-            self.push_button.setObjectName('push_button')
-
-            self.main_layout = QtWidgets.QVBoxLayout()
-            self.main_layout.addWidget(self.label)
-            self.main_layout.addLayout(self.middle_horizontal_layout)
-            self.main_layout.addWidget(self.push_button, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-
-            self.setWindowTitle('Select Offset Voltage')
-
-    @QtCore.pyqtSlot()
-    def on_push_button_clicked(self):
-        settings['voltage-offset'] = self.main_window.voltage_offset
-        self.main_window.apply_voltage_widget.set_min_and_max()
-        self.accept()
-        logger.info('Accepted EnterVoltsPopup via OK button.')
-
-    @QtCore.pyqtSlot(int)
-    def on_horizontal_slider_valueChanged(self, position):
-        self.main_window.voltage_offset = voltage = position / 1000
-        self.double_spin_box.setValue(voltage)
-        apply_voltage(self.main_window.device_name, voltage + offset)
-
-    @QtCore.pyqtSlot(float)
-    def on_double_spin_box_valueChanged(self, value):
-        self.main_window.voltage_offset = value
-        self.horizontal_slider.setValue(int(value * 1000))
-        apply_voltage(self.main_window.device_name, value + offset)
-
-    def open(self):
-        self.double_spin_box.setValue(settings.get('voltage-offset', 0))
-        return super().open()
-
-    def closeEvent(self, close_event):
-        self.main_window.apply_voltage_widget.set_min_and_max()
 
 
 class MockedModePopup(BasePopup):
