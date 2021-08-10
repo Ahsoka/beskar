@@ -52,6 +52,8 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
     def show(self) -> None:
         if os.name == 'nt':
+            # TODO: End thread upon application shutdown
+
             from .update import UpdateChecker, close_toasters
             from .handle_errors import handle_exception
             from . import app
