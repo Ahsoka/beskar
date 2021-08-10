@@ -23,6 +23,46 @@ class BasePage(BaseInteractable, QtWidgets.QWidget):
         super().__init__()
 
 
+class MockedModePage(BasePage):
+    def __init__(self, main_window):
+        with self.init(main_window):
+            desc_width = 270
+
+            self.header = QtWidgets.QLabel('Mocked Mode')
+            self.header.setObjectName('mocked_mode_header')
+            self.header.setFixedWidth(desc_width)
+            self.header.setFixedHeight(30)
+            self.header.setSizePolicy(
+                QtWidgets.QSizePolicy.Policy.Minimum,
+                QtWidgets.QSizePolicy.Policy.Fixed
+            )
+
+            self.desc = QtWidgets.QLabel(
+                get_file('mocked-mode.md', 'desc', path=True).read_text()
+                # NOTE: This will error out if the file doesn't exist but maybe
+                # that is a good thing?
+            )
+            self.desc.setObjectName('mocked_mode_desc')
+            self.desc.setWordWrap(True)
+            self.desc.setFixedWidth(desc_width)
+            self.desc.setMinimumHeight(205)
+            self.desc.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
+
+
+            self.main_layout = QtWidgets.QVBoxLayout()
+            self.main_layout.setSpacing(0)
+            self.main_layout.addWidget(
+                self.header,
+                alignment=QtCore.Qt.AlignmentFlag.AlignHCenter
+            )
+            self.main_layout.addSpacing(10)
+            self.main_layout.addWidget(
+                self.desc,
+                alignment=QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignHCenter
+            )
+            self.main_layout.addStretch(10)
+
+
 class ApplyVoltagePage(BasePage):
     def __init__(self, main_window):
         with self.init(main_window):
