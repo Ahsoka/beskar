@@ -1,4 +1,4 @@
-from typing import Callable, Generator, Iterable, Tuple, Union, Literal, Any, List
+from typing import Callable, Generator, Tuple, Union, Literal, Any, List
 from PyQt6.QtDataVisualization import QBarDataItem
 from nidaqmx._lib import DaqNotFoundError
 from contextlib import contextmanager
