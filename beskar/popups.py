@@ -1,9 +1,8 @@
-from .utils import BaseInteractable, apply_voltage, get_number_of_devices, get_file
-from PyQt6 import QtCore, QtWidgets, QtTest, QtGui
+from .utils import BaseInteractable, apply_voltage, get_file
+from PyQt6 import QtCore, QtWidgets, QtGui
 from . import sys_info, settings
 from .constants import offset
 
-import random
 import logging
 
 logger = logging.getLogger(__name__)
@@ -12,109 +11,6 @@ logger = logging.getLogger(__name__)
 class BasePopup(BaseInteractable, QtWidgets.QDialog):
     def super_(self):
         super().__init__(self.main_window)
-
-
-class NoSEALKitPopup(BasePopup):
-    def __init__(self, main_window):
-        with self.init(main_window):
-            self.label = QtWidgets.QLabel(
-                "SEAL kit not detected, please make sure it's plugged in"
-            )
-
-            self.no_drivers = QtWidgets.QLabel(
-                '<b>WARNING:</b> Drivers are not detected on this computer. '
-                'In order to connect with the SEAL kit you must install the drivers from '
-                '<a href="https://www.ni.com/en-us/support/downloads/drivers/download.ni-daqmx.html#348669">here</a>.'
-            )
-            self.no_drivers.setOpenExternalLinks(True)
-            self.no_drivers.setWordWrap(True)
-            self.no_drivers.hide()
-
-            self.combo_box = QtWidgets.QComboBox()
-            self.combo_box.setObjectName('combo_box')
-
-            self.refresh_push_button = QtWidgets.QPushButton('Refresh')
-            self.refresh_push_button.setObjectName('refresh_push_button')
-
-            self.mocked_mode_button = QtWidgets.QPushButton('Mocked Mode')
-            self.mocked_mode_button.setObjectName('mocked_mode_button')
-
-            self.quit_button = QtWidgets.QPushButton('Quit')
-            self.quit_button.setObjectName('quit_button')
-
-            self.buttons_layout = QtWidgets.QHBoxLayout()
-            self.buttons_layout.addWidget(self.refresh_push_button)
-            self.buttons_layout.addWidget(self.mocked_mode_button)
-            self.buttons_layout.addWidget(self.quit_button)
-
-            self.main_layout = QtWidgets.QVBoxLayout()
-            self.main_layout.addWidget(self.label)
-            self.main_layout.addWidget(self.no_drivers)
-            self.main_layout.addLayout(self.buttons_layout)
-
-            self.setWindowFlag(QtCore.Qt.WindowType.WindowCloseButtonHint, on=False)
-
-            self.setFixedSize(315, 68)
-
-            self.setWindowTitle('No SEAL Kit Detected')
-
-    @QtCore.pyqtSlot()
-    def on_refresh_push_button_clicked(self):
-        if self.refresh_push_button.text() == 'Refresh':
-            self.label.setText('Looking')
-            for _ in range(5):
-                QtTest.QTest.qWait(100)
-                self.label.setText(f"{self.label.text()}.")
-            system, num_of_devices, has_drivers = get_number_of_devices(drivers=True)
-            if not has_drivers and self.no_drivers.isHidden():
-                logger.warning('No drivers detected.')
-                self.setFixedHeight(130)
-                self.no_drivers.show()
-            if num_of_devices == 0:
-                self.label.setText('SEAL kit not detected, please try refreshing again.')
-            else:
-                self.setWindowTitle('SEAL Kit Detected')
-                for device_name in system.devices.device_names:
-                    self.combo_box.addItem(device_name)
-                if len(system.devices.device_names) == 1:
-                    self.label.setText("The SEAL kit has been detected! Click 'OK' to access the program.")
-                else:
-                    self.label.setText(
-                        "Several SEAL kits have been detected. Please select which one you would like to use and click 'OK'."
-                    )
-                self.main_layout.insertWidget(1, self.combo_box)
-                self.refresh_push_button.setText('OK')
-        elif self.refresh_push_button.text() == 'OK':
-            self.main_window.device_name = self.combo_box.currentText()
-            self.accept()
-            apply_voltage(self.main_window.device_name)
-            self.main_window.enter_volts_popup.open()
-            logger.info('EnterVoltsPopup opened from NoSEALKitPopup.')
-        else:
-            raise RuntimeError('This should never be triggered.')
-
-    def keyPressEvent(self, key_event: QtGui.QKeyEvent) -> None:
-        if key_event.key() != QtCore.Qt.Key.Key_Escape:
-            super().keyPressEvent(key_event)
-
-    @QtCore.pyqtSlot()
-    def on_mocked_mode_button_clicked(self):
-        self.main_window.mocked = True
-        logger.info('Mocked mode activated.')
-        self.main_window.setWindowTitle(f"{self.main_window.windowTitle()} - Mocked Mode")
-        self.accept()
-        self.main_window.voltage_offset = round(random.random(), 3)
-        self.main_window.apply_voltage_widget.set_min_and_max()
-        if settings.get('show-mocked-mode', True):
-            mocked_popup = MockedModePopup(self.main_window)
-            mocked_popup.open()
-            logger.info('MockedModePopup opened from NoSEALKitPopup.')
-
-    @QtCore.pyqtSlot()
-    def on_quit_button_clicked(self):
-        self.reject()
-        logger.info('Rejected NoSEALKitPopup via quit button.')
-        QtCore.QCoreApplication.quit()
 
 
 class EnterVoltsPopup(BasePopup):
