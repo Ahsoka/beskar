@@ -93,7 +93,7 @@ class NoSEALKitPage(BasePage):
             )
 
             self.refresh_button = QtWidgets.QPushButton('Refresh')
-            self.refresh_button.setObjectName('refresh_button')
+            self.refresh_button.setObjectName('no_SEAL_refresh_button')
             if refresh_icon_loc := get_file('refresh-icon.svg'):
                 self.refresh_button.setIcon(QtGui.QIcon(refresh_icon_loc))
             elif self.refresh_animated:
@@ -127,7 +127,7 @@ class NoSEALKitPage(BasePage):
             self.main_layout.addStretch(10)
 
     @QtCore.pyqtSlot()
-    def on_refresh_button_clicked(self):
+    def on_no_SEAL_refresh_button_clicked(self):
         if not self.animation_in_progress:
             self.refresh_button.setText('Looking')
 
