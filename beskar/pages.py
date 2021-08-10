@@ -128,6 +128,34 @@ class BaseSetVoltagePage(BasePage):
         self.main_layout.addLayout(self.middle_layout)
 
 
+class VoltageOffsetPage(BaseSetVoltagePage):
+    def __init__(self, main_window):
+        with self.init(main_window):
+            super().__init__(
+                main_window,
+                'Select Voltage Offset',
+                'About Voltage Offset',
+                get_file('voltage-offset.md', 'desc', path=True).read_text(),
+                280,
+                (0, 1)
+            )
+            self.main_layout.addSpacing(32)
+
+            self.slider.setMaximum(1000)
+
+    @QtCore.pyqtSlot(int)
+    def on_slider_valueChanged(self, position):
+        voltage = position / 1000
+        self.double_spin_box.setValue(voltage)
+
+    @QtCore.pyqtSlot(float)
+    def on_spin_box_valueChanged(self, value):
+        self.slider.setValue(int(value * 1000))
+
+        if not self.main_window.mocked:
+            apply_voltage(self.main_window.device_name, value + offset)
+
+
 class ApplyVoltagePage(BasePage):
     def __init__(self, main_window):
         with self.init(main_window):
