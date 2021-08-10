@@ -2,6 +2,7 @@ from .pages import DarkCurrentPage, ScanPage
 from PyQt6 import QtCore, QtWidgets, QtGui
 from .utils import get_file
 from . import __version__
+from typing import Union
 
 import os
 import logging
@@ -10,12 +11,12 @@ logger = logging.getLogger(__name__)
 
 
 class BeskarWindow(QtWidgets.QMainWindow):
-    def __init__(self):
+    def __init__(self, mocked: bool, device_name: Union[str, None]):
         super().__init__()
 
-        self.mocked = False
+        self.mocked = mocked
 
-        self.device_name = None
+        self.device_name = device_name
 
         self.exiting = False
 
