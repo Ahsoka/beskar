@@ -410,10 +410,7 @@ class ApplyVoltagePage(BaseSetVoltagePage):
 
         self.double_spin_box.setRange(self.min_voltage, self.max_voltage)
 
-        if old_value in self:
-            self.double_spin_box.setValue(old_value)
-        else:
-            self.double_spin_box.setValue(0)
+        self.on_spin_box_valueChanged(old_value if old_value in self else 0)
 
     def is_high_or_low_voltage(self, voltage=None) -> bool:
         if voltage is None:
