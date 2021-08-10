@@ -1,10 +1,20 @@
-from .utils import BaseInteractable, TwoDQBarDataItem, apply_voltage, get_file, interact_with_LEDs, LED_position_gen
 from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
+from .widgets import DoubleSpinBox, LabelWithIcon, LinkHoverColorChange
 from .constants import offset, help_tab_fixed_width, help_tab_margins
-from .widgets import DoubleSpinBox, LabelWithIcon
 from typing import Union, Tuple, List
 from nidaqmx.system import System
 from . import settings
+from .utils import (
+    get_number_of_devices,
+    interact_with_LEDs,
+    BaseInteractable,
+    TwoDQBarDataItem,
+    LED_position_gen,
+    apply_voltage,
+    sort_frames,
+    get_folder,
+    get_file
+)
 
 import statistics as stats
 import darkdetect
@@ -23,6 +33,153 @@ logger = logging.getLogger(__name__)
 class BasePage(BaseInteractable, QtWidgets.QWidget):
     def super_(self):
         super().__init__()
+
+
+class NoSEALKitPage(BasePage):
+    def __init__(
+        self,
+        main_window,
+        have_drivers: bool,
+        refresh_icon_dir_str: str = 'images/refresh-icon-frames'
+    ):
+        with self.init(main_window):
+            self.have_drivers = have_drivers
+            self.animation_in_progress = False
+
+            refresh_icon_dir = get_folder(refresh_icon_dir_str)
+            self.refresh_animated = bool(refresh_icon_dir)
+            if self.refresh_animated:
+                self.frames = sort_frames(refresh_icon_dir, '*.svg')
+                first_refresh_icon_frame = next(self.frames)
+
+            self.header = QtWidgets.QLabel('No SEAL Kit Detected')
+            self.header.setObjectName('no_SEAL_kit_header')
+            font = self.header.font()
+            font.setHintingPreference(QtGui.QFont.HintingPreference.PreferFullHinting)
+            self.header.setFont(font)
+            self.header.setSizePolicy(
+                QtWidgets.QSizePolicy.Policy.Minimum,
+                QtWidgets.QSizePolicy.Policy.Fixed
+            )
+
+            if warning_icon_loc := get_file('warning-icon.svg'):
+                self.desc = LabelWithIcon(
+                    warning_icon_loc,
+                    link_color1='#0078D8',
+                    link_color2='#777777'
+                )
+            else:
+                self.desc = LinkHoverColorChange('#0078D8', '#777777')
+            self.desc.setWordWrap(True)
+            self.desc.setObjectName('no_SEAL_kit_desc')
+            self.desc.setFixedWidth(300)
+            if self.have_drivers:
+                self.desc.setText(
+                    'Double check the SEAL kit is plugged in.'
+                )
+                self.desc.setMinimumHeight(48)
+            else:
+                self.desc.setText(
+                    '<b>WARNING:</b> Drivers are not detected on this computer. '
+                    'In order to connect with the SEAL kit you must install the drivers from '
+                    '<a style="color: {}; text-decoration: none" href="https://www.ni.com/en-us/support/downloads/drivers/download.ni-daqmx.html#348669">here</a>.'
+                )
+                self.desc.setOpenExternalLinks(True)
+                self.desc.setMinimumHeight(100)
+            self.desc.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
+            self.desc.setSizePolicy(
+                QtWidgets.QSizePolicy.Policy.Minimum,
+                QtWidgets.QSizePolicy.Policy.Minimum,
+            )
+
+            self.refresh_button = QtWidgets.QPushButton('Refresh')
+            self.refresh_button.setObjectName('refresh_button')
+            if refresh_icon_loc := get_file('refresh-icon.svg'):
+                self.refresh_button.setIcon(QtGui.QIcon(refresh_icon_loc))
+            elif self.refresh_animated:
+                self.refresh_button.setIcon(QtGui.QIcon(str(first_refresh_icon_frame)))
+            self.refresh_button.setFocusPolicy(QtCore.Qt.FocusPolicy.TabFocus)
+            self.refresh_button.setFixedWidth(300)
+            self.refresh_button.clicked.connect(self.mouse_press_event)
+
+            self.no_SEAL_kit_button = QtWidgets.QPushButton("Don't have a SEAL kit")
+            self.no_SEAL_kit_button.setObjectName('no_SEAL_kit_button')
+            self.no_SEAL_kit_button.setFixedWidth(300)
+            if disconnected_icon_loc := get_file('SEAL-kit-disconnected-icon.svg'):
+                self.no_SEAL_kit_button.setIcon(QtGui.QIcon(disconnected_icon_loc))
+            self.no_SEAL_kit_button.setFocusPolicy(QtCore.Qt.FocusPolicy.TabFocus)
+
+            self.main_layout = QtWidgets.QVBoxLayout()
+            self.main_layout.setSpacing(0)
+            self.main_layout.addWidget(
+                self.header,
+                alignment=QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignHCenter
+            )
+            self.main_layout.addSpacing(10)
+            self.main_layout.addWidget(
+                self.desc,
+                alignment=QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignHCenter
+            )
+            self.main_layout.addSpacing(50)
+            self.main_layout.addWidget(self.refresh_button, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
+            self.main_layout.addSpacing(20)
+            self.main_layout.addWidget(self.no_SEAL_kit_button, alignment=QtCore.Qt.AlignmentFlag.AlignCenter)
+            self.main_layout.addStretch(10)
+
+    @QtCore.pyqtSlot()
+    def on_refresh_button_clicked(self):
+        # TODO: Account for situation where
+        # button is pushed, the user activated
+        # mocked mode and the SEAL kit is detected.
+
+        if not self.animation_in_progress:
+            self.refresh_button.setText('Looking')
+
+            if self.refresh_animated:
+                self.animation_in_progress = True
+                for frame_num, frame in zip(range(28), self.frames):
+                    QtTest.QTest.qWait(36)
+                    self.refresh_button.setIcon(QtGui.QIcon(str(frame)))
+                    if frame_num != 0 and frame_num % 5 == 0:
+                        self.refresh_button.setText(f'{self.refresh_button.text()}.')
+            else:
+                for _ in range(5):
+                    QtTest.QTest.qWait(200)
+                    self.refresh_button.setText(f'{self.refresh_button.text()}.')
+            if self.have_drivers:
+                num_of_devices = get_number_of_devices(system=False)
+                if num_of_devices == 0:
+                    self.desc.setText(
+                        '<p style="text-indent: 20px">SEAL kit not detected, '
+                        'try refreshing again.</p>'
+                    )
+                else:
+                    if self.main_window.stacked_widget.indexOf(
+                        self.main_window.select_SEAL_kit_page
+                    ) == -1:
+                        self.main_window.select_SEAL_kit_page = SelectSEALKitPage(self.main_window)
+                        self.main_window.stacked_widget.insertWidget(
+                            1, self.main_window.select_SEAL_kit_page
+                        )
+                    self.main_window.set_page_index(1)
+            self.animation_in_progress = False
+            self.refresh_button.setText('Refresh')
+
+    @QtCore.pyqtSlot()
+    def on_no_SEAL_kit_button_clicked(self):
+        if self.main_window.stacked_widget.indexOf(
+            self.main_window.mocked_mode_page
+        ) == -1:
+            self.main_window.mocked_mode_page = MockedModePage(self.main_window)
+            self.main_window.stacked_widget.insertWidget(
+                1, self.main_window.mocked_mode_page
+            )
+        self.main_window.set_page_index(1)
+
+    def mouse_press_event(self) -> None:
+        if ((self.refresh_button.hasFocus() and not self.refresh_button.underMouse())
+            or (self.no_SEAL_kit_button.hasFocus() and not self.no_SEAL_kit_button.underMouse())):
+            self.main_window.set_focus()
 
 
 class SelectSEALKitPage(BasePage):
