@@ -14,3 +14,6 @@ beskar-install*.exe
 
 # macOS
 .DS_Store
+
+# Beskar Files
+*.log
