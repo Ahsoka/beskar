@@ -50,18 +50,18 @@ class BeskarWindow(QtWidgets.QMainWindow):
         QtCore.QMetaObject.connectSlotsByName(self)
 
     def show(self) -> None:
-        if os.name == 'nt':
-            # TODO: End thread upon application shutdown
+        # if os.name == 'nt':
+        #     # TODO: End thread upon application shutdown
 
-            from .update import UpdateChecker, close_toasters
-            from .handle_errors import handle_exception
-            from . import app
+        #     from .update import UpdateChecker, close_toasters
+        #     from .handle_errors import handle_exception
+        #     from . import app
 
-            self.update_thread = UpdateChecker()
-            self.update_thread.raise_exception.connect(lambda tup: handle_exception(*tup))
-            self.update_thread.close_all_windows.connect(QtWidgets.QApplication.closeAllWindows)
-            app.aboutToQuit.connect(close_toasters)
-            self.update_thread.start()
+        #     self.update_thread = UpdateChecker()
+        #     self.update_thread.raise_exception.connect(lambda tup: handle_exception(*tup))
+        #     self.update_thread.close_all_windows.connect(QtWidgets.QApplication.closeAllWindows)
+        #     app.aboutToQuit.connect(close_toasters)
+        #     self.update_thread.start()
 
         super().show()
 
