@@ -356,7 +356,6 @@ class VoltageOffsetPage(BaseSetVoltagePage):
     def __init__(self, main_window):
         with self.init(main_window):
             super().__init__(
-                main_window,
                 'Select Voltage Offset',
                 'About Voltage Offset',
                 get_file('voltage-offset.md', 'desc', path=True).read_text(),
@@ -387,7 +386,6 @@ class ApplyVoltagePage(BaseSetVoltagePage):
 
         with self.init(main_window):
             super().__init__(
-                main_window,
                 'Apply Voltage',
                 'About Applying Voltage',
                 get_file('apply-voltage.md', 'desc', path=True).read_text(),
