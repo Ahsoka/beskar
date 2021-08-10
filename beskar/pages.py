@@ -1,8 +1,9 @@
 from .utils import BaseInteractable, TwoDQBarDataItem, apply_voltage, get_file, interact_with_LEDs, LED_position_gen
 from PyQt6 import QtCore, QtWidgets, QtCharts, QtGui, QtDataVisualization, QtTest
 from .constants import offset, help_tab_fixed_width, help_tab_margins
+from typing import Union, Tuple, List
+from .widgets import DoubleSpinBox
 from fractions import Fraction
-from typing import List
 from . import settings
 
 import statistics as stats
@@ -61,6 +62,70 @@ class MockedModePage(BasePage):
                 alignment=QtCore.Qt.AlignmentFlag.AlignTop | QtCore.Qt.AlignmentFlag.AlignHCenter
             )
             self.main_layout.addStretch(10)
+
+
+class BaseSetVoltagePage(BasePage):
+    def __init__(
+        self,
+        header: str,
+        about_header: str,
+        desc: str,
+        desc_width,
+        spin_box_range: Tuple[Union[int, float], Union[int, float]],
+        suffix: str = ' Volts'
+    ):
+        self.set_with_settings = False
+
+        self.header = QtWidgets.QLabel(header)
+        self.header.setObjectName(f"{'_'.join(header.lower())}_header")
+
+        # TODO: Make slider like an Apple slider where you can click on a given
+        # location and slider will automatically move to that location.
+        # Reference: https://stackoverflow.com/questions/52689047/moving-qslider-to-mouse-click-position
+        self.slider = QtWidgets.QSlider(QtCore.Qt.Orientation.Vertical)
+        self.slider.setMinimumWidth(30)
+        self.slider.setObjectName('slider')
+
+        self.double_spin_box = DoubleSpinBox()
+        self.double_spin_box.setRange(spin_box_range[0], spin_box_range[1])
+        self.double_spin_box.setSingleStep(0.001)
+        self.double_spin_box.setDecimals(3)
+        self.double_spin_box.setObjectName('spin_box')
+        self.double_spin_box.setSuffix(suffix)
+
+        self.slider_layout = QtWidgets.QVBoxLayout()
+        self.slider_layout.addWidget(
+            self.slider,
+            alignment=QtCore.Qt.AlignmentFlag.AlignHCenter
+        )
+        self.slider_layout.addSpacing(8)
+        self.slider_layout.addWidget(
+            self.double_spin_box,
+            alignment=QtCore.Qt.AlignmentFlag.AlignHCenter
+        )
+
+        self.about_header = QtWidgets.QLabel(about_header)
+        self.about_header.setObjectName(f"{'_'.join(about_header.split())}_subheader")
+
+        self.desc = QtWidgets.QLabel(desc)
+        self.desc.setFixedWidth(desc_width)
+        self.desc.setWordWrap(True)
+
+        self.about_layout = QtWidgets.QVBoxLayout()
+        self.about_layout.addWidget(self.about_header)
+        self.about_layout.addWidget(self.desc)
+        self.about_layout.addStretch(10)
+
+        self.middle_layout = QtWidgets.QHBoxLayout()
+        self.middle_layout.addLayout(self.slider_layout)
+        self.middle_layout.addStretch(20)
+        self.middle_layout.addLayout(self.about_layout)
+
+        self.main_layout = QtWidgets.QVBoxLayout()
+        self.main_layout.setSpacing(0)
+        self.main_layout.addWidget(self.header)
+        self.main_layout.addSpacing(30)
+        self.main_layout.addLayout(self.middle_layout)
 
 
 class ApplyVoltagePage(BasePage):
