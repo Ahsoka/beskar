@@ -128,10 +128,6 @@ class NoSEALKitPage(BasePage):
 
     @QtCore.pyqtSlot()
     def on_refresh_button_clicked(self):
-        # TODO: Account for situation where
-        # button is pushed, the user activated
-        # mocked mode and the SEAL kit is detected.
-
         if not self.animation_in_progress:
             self.refresh_button.setText('Looking')
 
@@ -153,28 +149,14 @@ class NoSEALKitPage(BasePage):
                         '<p style="text-indent: 20px">SEAL kit not detected, '
                         'try refreshing again.</p>'
                     )
-                else:
-                    if self.main_window.stacked_widget.indexOf(
-                        self.main_window.select_SEAL_kit_page
-                    ) == -1:
-                        self.main_window.select_SEAL_kit_page = SelectSEALKitPage(self.main_window)
-                        self.main_window.stacked_widget.insertWidget(
-                            1, self.main_window.select_SEAL_kit_page
-                        )
-                    self.main_window.set_page_index(1)
+                elif self.main_window.stacked_widget.currentIndex() == 0:
+                    self.main_window.set_page_index(1, 'select')
             self.animation_in_progress = False
             self.refresh_button.setText('Refresh')
 
     @QtCore.pyqtSlot()
     def on_no_SEAL_kit_button_clicked(self):
-        if self.main_window.stacked_widget.indexOf(
-            self.main_window.mocked_mode_page
-        ) == -1:
-            self.main_window.mocked_mode_page = MockedModePage(self.main_window)
-            self.main_window.stacked_widget.insertWidget(
-                1, self.main_window.mocked_mode_page
-            )
-        self.main_window.set_page_index(1)
+        self.main_window.set_page_index(1, 'mocked')
 
     def mouse_press_event(self) -> None:
         if ((self.refresh_button.hasFocus() and not self.refresh_button.underMouse())
