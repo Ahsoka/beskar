@@ -102,6 +102,7 @@ QSlider::groove:vertical {
     width: 4px;
     border-radius: 2px;
 }
+
 QSlider::handle:vertical {
     background-color: #1d1c25;
     border: 2px solid rgb(59,173,227);
@@ -109,6 +110,7 @@ QSlider::handle:vertical {
     margin: 0 -13px;
     border-radius: 15px;
 }
+
 
 QAbstractSpinBox {
     font: bold;
@@ -143,5 +145,3 @@ QAbstractSpinBox::down-button:pressed {
     /* Icon modified by me, originally sourced from: https://www.freepik.com */
     image: url(beskar/images/down-arrow-clicked-spinbox.svg);
 }
-
-
