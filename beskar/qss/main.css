@@ -146,3 +146,10 @@ QAbstractSpinBox::down-button:pressed {
     /* Icon modified by me, originally sourced from: https://www.freepik.com */
     image: url(beskar/images/down-arrow-clicked-spinbox.svg);
 }
+
+
+QChartView[objectName="dark_current_chart_view"] {
+    /* NOTE: From some reason I am able to set a transparent background
+    when using QSS code, but not when using setBackgroundBrush. */
+    background-color: rgba(0, 0, 0, 0);
+}
