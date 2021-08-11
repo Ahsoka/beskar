@@ -475,6 +475,7 @@ class DarkCurrentPage(BasePage):
 
             self.refresh_button = QtWidgets.QPushButton('Refresh')
             self.refresh_button.setObjectName('dark_current_refresh_button')
+            self.refresh_button.setFocusPolicy(QtCore.Qt.FocusPolicy.TabFocus)
             self.refresh_button.setFixedWidth(100)
 
             self.chart_layout = QtWidgets.QVBoxLayout()
@@ -537,6 +538,12 @@ class DarkCurrentPage(BasePage):
     @QtCore.pyqtSlot()
     def on_dark_current_refresh_button_clicked(self):
         self.update_data()
+
+    def mousePressEvent(self, mouse_event: QtGui.QMouseEvent = None) -> None:
+        if self.refresh_button.hasFocus() and not self.refresh_button.underMouse():
+            self.setFocus(QtCore.Qt.FocusReason.OtherFocusReason)
+        if mouse_event:
+            super().mousePressEvent(mouse_event)
 
 
 class ScanPage(BasePage):
