@@ -463,6 +463,10 @@ class DarkCurrentPage(BasePage):
             for axis in self.chart.axes():
                 axis.setGridLineVisible(False)
                 axis.setMinorGridLineVisible(False)
+            self.chart.axes(QtCore.Qt.Orientation.Horizontal)[0].setTitleText('Sample Number')
+            self.chart.axes(QtCore.Qt.Orientation.Horizontal)[0].setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
+            self.chart.axes(QtCore.Qt.Orientation.Vertical)[0].setTitleText('Volts')
+            self.chart.axes(QtCore.Qt.Orientation.Vertical)[0].setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
             self.chart.legend().hide()
             self.chart.layout().setContentsMargins(0, 0, 0, 0)
             self.chart.setBackgroundRoundness(30)
