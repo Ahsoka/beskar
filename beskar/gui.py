@@ -69,7 +69,6 @@ class BeskarWindow(QtWidgets.QMainWindow):
     def create_options_menu(self):
         space_between_buttons = 20
 
-        # TODO: Add description for each QCommandLinkButton
         spacer1 = QtWidgets.QSpacerItem(
             0, space_between_buttons, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred
         )
