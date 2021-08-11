@@ -532,13 +532,16 @@ class DarkCurrentPage(BasePage):
 
     def set_y_axis_range(self, upper: Union[float, int] = None):
         if upper is None:
-            samples = [sample for sample in self.bar.barSets()[0]]
-            upper = max(samples) * 1.1
+            upper = max(self.samples) * 1.1
             if upper < 1:
                 upper = 1
 
         if hasattr(self, 'chart'):
             self.chart.axes(QtCore.Qt.Orientation.Vertical)[0].setRange(0, upper)
+
+    @property
+    def samples(self):
+        return [sample for sample in self.bar.barSets()[0]]
 
     @QtCore.pyqtSlot()
     def on_dark_current_refresh_button_clicked(self):
