@@ -469,6 +469,9 @@ class DarkCurrentPage(BasePage):
 
             self.chart_view = QtCharts.QChartView(self.chart)
             self.chart_view.setObjectName('dark_current_chart_view')
+            self.chart_view.setViewportUpdateMode(
+                QtWidgets.QGraphicsView.ViewportUpdateMode.FullViewportUpdate
+            )
             self.chart_view.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
             self.chart_view.setBackgroundBrush(QtCore.Qt.GlobalColor.black)
             self.chart_view.setMinimumSize(335, 500)
