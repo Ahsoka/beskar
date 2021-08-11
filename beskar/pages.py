@@ -483,22 +483,14 @@ class DarkCurrentPage(BasePage):
                 self.help_tab.setFixedWidth(help_tab_fixed_width)
                 self.help_tab.setWordWrap(True)
 
-            spacer1 = QtWidgets.QSpacerItem(
-                0, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-            )
-
             self.desc_layout = QtWidgets.QVBoxLayout()
             self.desc_layout.addWidget(self.help_tab)
-            self.desc_layout.addItem(spacer1)
+            self.desc_layout.addStretch(40)
             self.desc_layout.setContentsMargins(help_tab_margins)
-
-            spacer2 = spacer2 = QtWidgets.QSpacerItem(
-                20, 0, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum
-            )
 
             self.main_layout = QtWidgets.QHBoxLayout()
             self.main_layout.addLayout(self.chart_layout)
-            self.main_layout.addItem(spacer2)
+            self.main_layout.addSpacing(20)
             self.main_layout.addLayout(self.desc_layout)
 
     def update_data(self):
