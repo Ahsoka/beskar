@@ -469,6 +469,9 @@ class DarkCurrentPage(BasePage):
             x_axis.setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
 
             y_axis = self.chart.axes(QtCore.Qt.Orientation.Vertical)[0]
+            font = y_axis.titleFont()
+            font.setHintingPreference(QtGui.QFont.HintingPreference.PreferNoHinting)
+            y_axis.setTitleFont(font)
             y_axis.setTitleText('Volts')
             y_axis.setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
 
