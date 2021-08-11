@@ -42,12 +42,15 @@ class BeskarWindow(QtWidgets.QMainWindow):
         self.stacked_widget.addWidget(self.dark_current_widget)
         self.stacked_widget.addWidget(self.scan_widget)
 
-        self.splitter = QtWidgets.QSplitter(QtCore.Qt.Orientation.Horizontal)
-        self.splitter.addWidget(self.menu_group_box)
-        self.splitter.addWidget(self.stacked_widget)
+        self.main_layout = QtWidgets.QHBoxLayout()
+        self.main_layout.setSpacing(0)
+        self.main_layout.addWidget(self.menu_widget)
+        self.main_layout.addWidget(self.stacked_widget)
 
-        self.setCentralWidget(self.splitter)
-        self.splitter.setSizes((1, 100_000))
+        self.layout_widget = QtWidgets.QWidget()
+        self.layout_widget.setLayout(self.main_layout)
+        self.setCentralWidget(self.layout_widget)
+
         self.showMaximized()
 
         QtCore.QMetaObject.connectSlotsByName(self)
@@ -73,21 +76,29 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.dark_current_menu = QtWidgets.QCommandLinkButton('Dark Current')
         self.dark_current_menu.setObjectName('dark_current_menu_button')
+        self.dark_current_menu.setIcon(QtGui.QIcon(get_file('dark-current-page-icon.svg')))
+        self.dark_current_menu.setIconSize(QtCore.QSize(20, 25))
+        self.dark_current_menu.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
         self.dark_current_menu.setCheckable(True)
+        self.dark_current_menu.setChecked(True)
 
         self.scan_menu = QtWidgets.QCommandLinkButton('Scan')
+        self.scan_menu.setIcon(QtGui.QIcon(get_file('scan-page-icon.svg')))
+        self.scan_menu.setIconSize(QtCore.QSize(20, 25))
         self.scan_menu.setObjectName('scan_menu_button')
         self.scan_menu.setCheckable(True)
+        self.dark_current_menu.setFocusPolicy(QtCore.Qt.FocusPolicy.NoFocus)
 
-        self.vertical_menu_layout = QtWidgets.QVBoxLayout()
-        self.vertical_menu_layout.addSpacing(space_between_buttons)
-        self.vertical_menu_layout.addWidget(self.dark_current_menu)
-        self.vertical_menu_layout.addSpacing(space_between_buttons)
-        self.vertical_menu_layout.addWidget(self.scan_menu)
-        self.vertical_menu_layout.addStretch(40)
+        self.menu_layout = QtWidgets.QVBoxLayout()
+        self.menu_layout.addSpacing(space_between_buttons)
+        self.menu_layout.addWidget(self.dark_current_menu)
+        self.menu_layout.addSpacing(space_between_buttons)
+        self.menu_layout.addWidget(self.scan_menu)
+        self.menu_layout.addStretch(40)
 
-        self.menu_group_box = QtWidgets.QGroupBox()
-        self.menu_group_box.setLayout(self.vertical_menu_layout)
+        self.menu_widget = QtWidgets.QWidget()
+        self.menu_widget.setLayout(self.menu_layout)
+        self.menu_widget.setObjectName('menu_widget')
 
     def closeEvent(self, close_event: QtGui.QCloseEvent) -> None:
         self.exiting = True
