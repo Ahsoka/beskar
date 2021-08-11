@@ -471,7 +471,7 @@ class DarkCurrentPage(BasePage):
             self.chart_view.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
 
             self.refresh_button = QtWidgets.QPushButton('Refresh')
-            self.refresh_button.setObjectName('refresh_button')
+            self.refresh_button.setObjectName('dark_current_refresh_button')
 
             self.chart_layout = QtWidgets.QVBoxLayout()
             self.chart_layout.addWidget(self.chart_view)
@@ -520,7 +520,7 @@ class DarkCurrentPage(BasePage):
         logger.info('Updated dark current readings.')
 
     @QtCore.pyqtSlot()
-    def on_refresh_button_clicked(self):
+    def on_dark_current_refresh_button_clicked(self):
         self.update_data()
 
     def on_scatter_hovered(self, point: QtCore.QPointF, state):
