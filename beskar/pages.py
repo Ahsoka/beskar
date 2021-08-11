@@ -475,7 +475,7 @@ class DarkCurrentPage(BasePage):
                 QtWidgets.QGraphicsView.ViewportUpdateMode.FullViewportUpdate
             )
             self.chart_view.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
-            self.chart_view.setMinimumSize(335, 500)
+            self.chart_view.setMinimumSize(630, 500)
 
             self.refresh_button = QtWidgets.QPushButton('Refresh')
             self.refresh_button.setObjectName('dark_current_refresh_button')
