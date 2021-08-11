@@ -95,6 +95,20 @@ QPushButton[objectName="no_SEAL_refresh_button"]:focus {
 }
 
 
+QCommandLinkButton[objectName="dark_current_menu_button"],
+QCommandLinkButton[objectName="scan_menu_button"] {
+    background-color: none;
+    border-radius: 0px;
+    color: white;
+
+}
+
+QCommandLinkButton[objectName="dark_current_menu_button"]:checked,
+QCommandLinkButton[objectName="scan_menu_button"]:checked {
+    border-left: 2px solid #0078D7;
+}
+
+
 QSlider::groove:vertical {
     background: qlineargradient(
         y1: 0,
