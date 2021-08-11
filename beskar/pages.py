@@ -484,6 +484,7 @@ class DarkCurrentPage(BasePage):
 
             self.chart_layout = QtWidgets.QVBoxLayout()
             self.chart_layout.addWidget(self.chart_view)
+            self.chart_layout.setSpacing(30)
             self.chart_layout.addWidget(self.refresh_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
             self.help_tab = QtWidgets.QLabel(get_file('dark-current.md', 'desc', path=True).read_text())
