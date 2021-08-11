@@ -90,6 +90,7 @@ QPushButton[objectName="no_SEAL_refresh_button"]:focus {
     padding-bottom: 13px;
 }
 
+
 QSlider::groove:vertical {
     background: qlineargradient(
         y1: 0,
