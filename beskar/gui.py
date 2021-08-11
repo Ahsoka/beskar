@@ -9,6 +9,8 @@ import logging
 
 logger = logging.getLogger(__name__)
 
+# TODO: Handle event when USB is disconnect in the middle of program
+
 
 class BeskarWindow(QtWidgets.QMainWindow):
     def __init__(self, mocked: bool, device_name: Union[str, None]):
