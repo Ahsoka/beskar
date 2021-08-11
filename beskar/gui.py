@@ -71,32 +71,20 @@ class BeskarWindow(QtWidgets.QMainWindow):
     def create_options_menu(self):
         space_between_buttons = 20
 
-        spacer1 = QtWidgets.QSpacerItem(
-            0, space_between_buttons, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred
-        )
-
         self.dark_current_menu = QtWidgets.QCommandLinkButton('Dark Current')
         self.dark_current_menu.setObjectName('dark_current_menu_button')
         self.dark_current_menu.setCheckable(True)
-
-        spacer2 = QtWidgets.QSpacerItem(
-            0, space_between_buttons, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred
-        )
 
         self.scan_menu = QtWidgets.QCommandLinkButton('Scan')
         self.scan_menu.setObjectName('scan_menu_button')
         self.scan_menu.setCheckable(True)
 
-        spacer3 = QtWidgets.QSpacerItem(
-            0, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-        )
-
         self.vertical_menu_layout = QtWidgets.QVBoxLayout()
-        self.vertical_menu_layout.addItem(spacer1)
+        self.vertical_menu_layout.addSpacing(space_between_buttons)
         self.vertical_menu_layout.addWidget(self.dark_current_menu)
-        self.vertical_menu_layout.addItem(spacer2)
+        self.vertical_menu_layout.addSpacing(space_between_buttons)
         self.vertical_menu_layout.addWidget(self.scan_menu)
-        self.vertical_menu_layout.addItem(spacer3)
+        self.vertical_menu_layout.addStretch(40)
 
         self.menu_group_box = QtWidgets.QGroupBox()
         self.menu_group_box.setLayout(self.vertical_menu_layout)
