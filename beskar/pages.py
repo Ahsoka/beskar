@@ -459,14 +459,19 @@ class DarkCurrentPage(BasePage):
             self.chart.setTitleFont(title_font)
             self.chart.setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
             self.chart.addSeries(self.bar)
+
             self.chart.createDefaultAxes()
             for axis in self.chart.axes():
                 axis.setGridLineVisible(False)
                 axis.setMinorGridLineVisible(False)
-            self.chart.axes(QtCore.Qt.Orientation.Horizontal)[0].setTitleText('Sample Number')
-            self.chart.axes(QtCore.Qt.Orientation.Horizontal)[0].setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
-            self.chart.axes(QtCore.Qt.Orientation.Vertical)[0].setTitleText('Volts')
-            self.chart.axes(QtCore.Qt.Orientation.Vertical)[0].setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
+            x_axis = self.chart.axes(QtCore.Qt.Orientation.Horizontal)[0]
+            x_axis.setTitleText('Sample Number')
+            x_axis.setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
+
+            y_axis = self.chart.axes(QtCore.Qt.Orientation.Vertical)[0]
+            y_axis.setTitleText('Volts')
+            y_axis.setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
+
             self.chart.legend().hide()
             self.chart.layout().setContentsMargins(0, 0, 0, 0)
             self.chart.setBackgroundRoundness(30)
