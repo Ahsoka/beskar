@@ -1,7 +1,7 @@
 <h2>About Dark Current</h2>
 <p>The dark current page displays the dark current reading from the SEAL kit.</p>
 
-<p>Dark current readings should be below 0.5 volts.  Periodically check the dark current values by refreshing the dark current readings by clicking the <b>Refresh</b> button in bottom left corner of the scatter plot.  The exact value of a reading can be seen by hovering the mouse over a point (note that this feature can be buggy and the reading may only be displayed for a few seconds). Sometimes it can take between 1 and 10 minutes for dark current values to stabilize to below the 0.5 volts threshold.  If the dark current is still above the 0.5 volts threshold then try reducing the applied voltage using the <b>Apply Voltage</b> page.</p>
+<p>Dark current readings should be below 0.5 volts.  Periodically check the dark current values by refreshing the dark current readings by clicking the <b>Refresh</b> button in bottom left corner of the scatter plot.  Sometimes it can take between 1 and 10 minutes for dark current values to stabilize to below the 0.5 volts threshold.  If the dark current is still above the 0.5 volts threshold then try reducing the applied voltage using the <b>Apply Voltage</b> page.</p>
 
 <p>Dark current is the amount of current that passes when the LEDs are not turned on. Note that, although current is measured in amps, the values plotted here are in volts.  This is because the SEAL kit does an internal conversion from current to voltage.</p>
 
