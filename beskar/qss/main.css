@@ -57,6 +57,7 @@ BasePage QPushButton {
     padding-top: 8px;
     padding-bottom: 8px;
     border-radius: 12px;
+    width: 100px;
 }
 
 QPushButton[objectName="no_SEAL_refresh_button"],
