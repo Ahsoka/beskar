@@ -84,7 +84,7 @@ QPushButton:focus {
     border: 2px outset #0078D8;
 }
 
-QPushButton[objectName="refresh_button"]:focus {
+QPushButton[objectName="no_SEAL_refresh_button"]:focus {
     padding-left: 43px;
     padding-top: 13px;
     padding-bottom: 13px;
