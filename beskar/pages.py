@@ -477,11 +477,10 @@ class DarkCurrentPage(BasePage):
             self.chart_layout.addWidget(self.chart_view)
             self.chart_layout.addWidget(self.refresh_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
-            with get_file('dark-current.md', 'desc', path=True).open() as file:
-                self.help_tab = QtWidgets.QLabel(file.read())
-                self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
-                self.help_tab.setFixedWidth(help_tab_fixed_width)
-                self.help_tab.setWordWrap(True)
+            self.help_tab = QtWidgets.QLabel(get_file('dark-current.md', 'desc', path=True).read_text())
+            self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
+            self.help_tab.setFixedWidth(help_tab_fixed_width)
+            self.help_tab.setWordWrap(True)
 
             self.desc_layout = QtWidgets.QVBoxLayout()
             self.desc_layout.addWidget(self.help_tab)
