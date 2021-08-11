@@ -48,7 +48,8 @@ QRadioButton:focus {
 }
 
 
-QPushButton {
+BasePopup QPushButton,
+BasePage QPushButton {
     background-color: white;
     color: black;
     font-size: 19px;
@@ -75,11 +76,13 @@ QPushButton[objectName="no_SEAL_kit_button"] {
     text-align: center;
 }
 
-QPushButton:hover {
+BasePopup QPushButton:hover,
+BasePage QPushButton:hover {
     background-color: #e5e4e2;
 }
 
-QPushButton:focus {
+BasePopup QPushButton:focus,
+BasePage QPushButton:focus {
     outline: 0;
     border: 2px outset #0078D8;
 }
