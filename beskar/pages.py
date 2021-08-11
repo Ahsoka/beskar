@@ -442,36 +442,40 @@ class ApplyVoltagePage(BaseSetVoltagePage):
 class DarkCurrentPage(BasePage):
     def __init__(self, main_window):
         with self.init(main_window):
-            self.x_axis = QtCharts.QCategoryAxis()
-            self.x_axis.setRange(0.5, 10.5)
-            for num in range(10):
-                self.x_axis.append(str(num + 1), num + 1)
-            self.x_axis.setLabelsPosition(QtCharts.QCategoryAxis.AxisLabelsPosition.AxisLabelsPositionOnValue)
-            self.x_axis.setTitleText('Sample Number')
+            self.bar = QtCharts.QBarSeries()
+            self.bar.setLabelsVisible(True)
+            self.bar.setLabelsPosition(
+                QtCharts.QAbstractBarSeries.LabelsPosition.LabelsOutsideEnd
+            )
 
-            self.y_axis = QtCharts.QValueAxis()
-            self.y_axis.setTitleText('Voltage')
-
-            self.scatter = QtCharts.QScatterSeries()
-            # NOTE: Need to use .connect since for some reason
-            # since connectBySlots does not detect the slot
-            self.scatter.hovered.connect(self.on_scatter_hovered)
+            self.update_data()
 
             self.chart = QtCharts.QChart()
-            self.chart.addSeries(self.scatter)
-            self.chart.addAxis(self.x_axis, QtCore.Qt.AlignmentFlag.AlignBottom)
-            self.chart.addAxis(self.y_axis, QtCore.Qt.AlignmentFlag.AlignLeft)
-            self.scatter.attachAxis(self.x_axis)
-            self.scatter.attachAxis(self.y_axis)
-            self.chart.setAnimationOptions(QtCharts.QChart.AnimationOption.SeriesAnimations)
-            self.chart.setTitle('<h1>Dark Current</h1>')
+            self.chart.setTitle('Dark Current')
+            title_font = QtGui.QFont()
+            title_font.setPointSizeF(30)
+            title_font.setWeight(700)
+            title_font.setHintingPreference(QtGui.QFont.HintingPreference.PreferFullHinting)
+            self.chart.setTitleFont(title_font)
+            self.chart.setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
+            self.chart.addSeries(self.bar)
+            self.chart.createDefaultAxes()
+            for axis in self.chart.axes():
+                axis.setGridLineVisible(False)
+                axis.setMinorGridLineVisible(False)
             self.chart.legend().hide()
 
+            self.set_y_axis_range()
+
             self.chart_view = QtCharts.QChartView(self.chart)
+            self.chart_view.setObjectName('dark_current_chart_view')
             self.chart_view.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
+            self.chart_view.setBackgroundBrush(QtCore.Qt.GlobalColor.black)
+            self.chart_view.setMinimumSize(335, 500)
 
             self.refresh_button = QtWidgets.QPushButton('Refresh')
             self.refresh_button.setObjectName('dark_current_refresh_button')
+            self.refresh_button.setFixedWidth(100)
 
             self.chart_layout = QtWidgets.QVBoxLayout()
             self.chart_layout.addWidget(self.chart_view)
@@ -489,11 +493,15 @@ class DarkCurrentPage(BasePage):
 
             self.main_layout = QtWidgets.QHBoxLayout()
             self.main_layout.addLayout(self.chart_layout)
-            self.main_layout.addSpacing(20)
+            self.main_layout.addSpacing(30)
             self.main_layout.addLayout(self.desc_layout)
+            self.main_layout.setContentsMargins(
+                30, 30, 11, 11
+            )
 
     def update_data(self):
-        self.scatter.clear()
+        self.bar.clear()
+
         if self.main_window.mocked:
             samples = [random.random() * 0.6 for _ in range(10)]
         else:
@@ -504,33 +512,31 @@ class DarkCurrentPage(BasePage):
                     max_val=10
                 )
                 samples = task.read(number_of_samples_per_channel=10)
-        if not hasattr(self, 'samples'):
-            self.samples = samples
-        elif samples == self.samples:
-            self.chart.removeSeries(self.scatter)
-            self.chart.addSeries(self.scatter)
-            self.scatter.attachAxis(self.x_axis)
-            self.scatter.attachAxis(self.y_axis)
-        self.samples = samples
-        self.y_axis.setRange(min(self.samples) * 0.9, max(self.samples) * 1.1)
-        for num, sample in enumerate(self.samples):
-            self.scatter.append(num + 1, sample)
+
+        bar_set = QtCharts.QBarSet('Values')
+        bar_set.setLabelColor(QtGui.QColor(0, 0, 0))
+        bar_set.append(samples)
+
+        self.bar.append(bar_set)
+
+        if max(samples) > 0.9:
+            self.set_y_axis_range(max(samples) * 1.1)
 
         logger.info('Updated dark current readings.')
+
+    def set_y_axis_range(self, upper: Union[float, int] = None):
+        if upper is None:
+            samples = [sample for sample in self.bar.barSets()[0]]
+            upper = max(samples) * 1.1
+            if upper < 1:
+                upper = 1
+
+        if hasattr(self, 'chart'):
+            self.chart.axes(QtCore.Qt.Orientation.Vertical)[0].setRange(0, upper)
 
     @QtCore.pyqtSlot()
     def on_dark_current_refresh_button_clicked(self):
         self.update_data()
-
-    def on_scatter_hovered(self, point: QtCore.QPointF, state):
-        # TODO: Might want to add the ability to copy the values
-
-        # NOTE: This is a bit buggy at the moment and does not display for 10 seconds.
-        # Also only shows when the mouse is stationary.
-
-        QtWidgets.QToolTip.showText(
-            QtGui.QCursor.pos(), str((int(point.x()), point.y())), msecShowTime=10_000
-        )
 
 
 class ScanPage(BasePage):
