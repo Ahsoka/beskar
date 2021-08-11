@@ -464,6 +464,7 @@ class DarkCurrentPage(BasePage):
                 axis.setGridLineVisible(False)
                 axis.setMinorGridLineVisible(False)
             self.chart.legend().hide()
+            self.chart.layout().setContentsMargins(0, 0, 0, 0)
 
             self.set_y_axis_range()
 
