@@ -546,10 +546,6 @@ class ScanPage(BasePage):
 
             self.scan_label = QtWidgets.QLabel('<h1>Scan</h1>')
 
-            spacer1 = QtWidgets.QSpacerItem(
-                0, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding
-            )
-
             self.select_label = QtWidgets.QLabel(
                 'Select the number of scans you would like to do:'
             )
@@ -586,10 +582,10 @@ class ScanPage(BasePage):
             )
 
             self.num_of_scan_layout = QtWidgets.QVBoxLayout()
-            self.num_of_scan_layout.addItem(spacer1)
+            self.num_of_scan_layout.addStretch(40)
             self.num_of_scan_layout.addLayout(self.interaction_layout)
             self.num_of_scan_layout.addLayout(self.num_of_scan_buttons_layout)
-            self.num_of_scan_layout.addItem(spacer1)
+            self.num_of_scan_layout.addStretch(40)
 
             self.num_of_scan_layout_widget = QtWidgets.QWidget()
             self.num_of_scan_layout_widget.setLayout(self.num_of_scan_layout)
@@ -663,7 +659,7 @@ class ScanPage(BasePage):
 
             self.desc_layout = QtWidgets.QVBoxLayout()
             self.desc_layout.addWidget(self.help_tab)
-            self.desc_layout.addItem(spacer1)
+            self.desc_layout.addStretch(40)
             self.desc_layout.setContentsMargins(help_tab_margins)
 
             self.spacer2  = QtWidgets.QSpacerItem(
