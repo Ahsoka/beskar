@@ -148,6 +148,7 @@ QAbstractSpinBox {
     selection-color: black;
     selection-background-color: white;
     padding-right: 3px;
+    border: none;
 }
 
 QAbstractSpinBox::up-button, QAbstractSpinBox::down-button {
