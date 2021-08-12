@@ -199,6 +199,7 @@ class StartUpPopup(BasePopup):
         if key_event.key() != QtCore.Qt.Key.Key_Escape:
             super().keyPressEvent(key_event)
 
+# TODO: Update ErrorPopup to include computer name
 
 class ErrorPopup(BasePopup):
     def __init__(self, traceback: str):
