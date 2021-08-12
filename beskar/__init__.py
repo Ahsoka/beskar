@@ -2,6 +2,7 @@ from sentry_sdk.integrations.logging import LoggingIntegration
 from PyQt6.QtWidgets import QApplication
 from .constants import __version__
 from .settings import Settings
+from .utils import get_file
 
 import sys
 import logging
@@ -63,6 +64,8 @@ settings = Settings()
 from .popups import StartUpPopup
 
 app = QApplication(sys.argv)
+app.setStyleSheet(get_file('main.css', 'qss', path=True).read_text())
+
 startup = StartUpPopup()
 
 update_thread = None
