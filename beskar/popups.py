@@ -12,6 +12,7 @@ from .pages import (
     MockedModePage
 )
 
+import socket
 import logging
 
 logger = logging.getLogger(__name__)
@@ -199,7 +200,6 @@ class StartUpPopup(BasePopup):
         if key_event.key() != QtCore.Qt.Key.Key_Escape:
             super().keyPressEvent(key_event)
 
-# TODO: Update ErrorPopup to include computer name
 
 class ErrorPopup(BasePopup):
     def __init__(self, traceback: str):
@@ -223,10 +223,15 @@ class ErrorPopup(BasePopup):
                 f"<b>OS Theme:</b> {sys_info['theme']}"
             )
 
+            self.computer_name_label = QtWidgets.QLabel(
+                f"<b>Computer Name:</b> {socket.gethostname()}"
+            )
+
             self.sys_info_layout = QtWidgets.QVBoxLayout()
             self.sys_info_layout.addWidget(self.os_name_label)
             self.sys_info_layout.addWidget(self.os_version_label)
             self.sys_info_layout.addWidget(self.os_theme_label)
+            self.sys_info_layout.addWidget(self.computer_name_label)
 
             self.sys_info_group_box = QtWidgets.QGroupBox('System Information')
             self.sys_info_group_box.setLayout(self.sys_info_layout)
