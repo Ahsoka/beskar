@@ -2,14 +2,13 @@ from sentry_sdk.utils import event_from_exception
 from PyQt6.QtCore import QCoreApplication
 from .popups import ErrorPopup
 from sentry_sdk import Hub
+from .update import pool
 
 import traceback
 import pathlib
 import inspect
 import logging
 import sys
-
-# TODO: Consider closing pool connections in updates.py
 
 def send_error_report(exc_info, flush=True):
     hub = Hub.current
@@ -60,6 +59,8 @@ def handle_exception(exc_type, exc_value, trace):
             )
 
         logger.critical('The following error occured:', exc_info=exc_tuple)
+
+        pool.clear()
     except Exception as second_error:
         second_error.__context__ = exc_value
         if popup.sending:
