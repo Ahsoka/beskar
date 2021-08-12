@@ -88,6 +88,11 @@ BasePage QPushButton:focus {
     border: 2px outset #0078D8;
 }
 
+BasePopup QPushButton:disabled,
+BasePage QPushButton:disabled {
+    background-color: rgba(255, 255, 255, 50%) ;
+}
+
 QPushButton[objectName="no_SEAL_refresh_button"]:focus {
     padding-left: 43px;
     padding-top: 13px;
