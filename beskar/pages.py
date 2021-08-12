@@ -451,13 +451,13 @@ class DarkCurrentPage(BasePage):
             self.update_data()
 
             self.chart = QtCharts.QChart()
+            self.chart.setTheme(QtCharts.QChart.ChartTheme.ChartThemeDark)
             self.chart.setTitle('Dark Current')
             title_font = QtGui.QFont()
             title_font.setPointSizeF(30)
             title_font.setWeight(700)
             title_font.setHintingPreference(QtGui.QFont.HintingPreference.PreferFullHinting)
             self.chart.setTitleFont(title_font)
-            self.chart.setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
             self.chart.addSeries(self.bar)
 
             self.chart.createDefaultAxes()
@@ -466,18 +466,17 @@ class DarkCurrentPage(BasePage):
                 axis.setMinorGridLineVisible(False)
             x_axis = self.chart.axes(QtCore.Qt.Orientation.Horizontal)[0]
             x_axis.setTitleText('Sample Number')
-            x_axis.setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
 
             y_axis = self.chart.axes(QtCore.Qt.Orientation.Vertical)[0]
             font = y_axis.titleFont()
             font.setHintingPreference(QtGui.QFont.HintingPreference.PreferNoHinting)
             y_axis.setTitleFont(font)
             y_axis.setTitleText('Volts')
-            y_axis.setTitleBrush(QtGui.QColor(QtCore.Qt.GlobalColor.black))
 
             self.chart.legend().hide()
             self.chart.layout().setContentsMargins(0, 0, 0, 0)
             self.chart.setBackgroundRoundness(30)
+            self.chart.setBackgroundBrush(QtCore.Qt.GlobalColor.black)
 
             self.set_y_axis_range()
 
@@ -532,7 +531,9 @@ class DarkCurrentPage(BasePage):
                 samples = task.read(number_of_samples_per_channel=10)
 
         bar_set = QtCharts.QBarSet('Values')
-        bar_set.setLabelColor(QtGui.QColor(0, 0, 0))
+        bar_set.setLabelColor(QtCore.Qt.GlobalColor.white)
+        bar_set.setBrush(0x73C2FB)
+        bar_set.setBorderColor(QtGui.QColor(0, 0, 0, 0))
         bar_set.append(samples)
 
         self.bar.append(bar_set)
