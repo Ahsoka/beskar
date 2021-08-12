@@ -1,9 +1,9 @@
 from .utils import BaseInteractable, apply_voltage, get_file, get_number_of_devices
 from PyQt6 import QtCore, QtWidgets, QtGui
+from .constants import offset, __version__
 from .widgets import StepProgressBar
 from typing import Literal
 from . import sys_info, settings
-from .constants import offset
 from .pages import (
     NoSEALKitPage,
     SelectSEALKitPage,
@@ -84,6 +84,8 @@ class StartUpPopup(BasePopup):
         self.main_layout.setSpacing(0)
 
         self.setWindowIcon(QtGui.QIcon(get_file('beskar-icon.png')))
+
+        self.setWindowTitle(f'Beskar {__version__}')
 
         self.setMinimumSize(430, 650)
         self.resize(560, 650)
