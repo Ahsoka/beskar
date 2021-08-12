@@ -64,3 +64,14 @@ from .popups import StartUpPopup
 
 app = QApplication(sys.argv)
 startup = StartUpPopup()
+
+update_thread = None
+if sys.platform == 'win32':
+    from .update import UpdateChecker, close_toasters
+    from .handle_errors import handle_exception
+
+    update_thread = UpdateChecker()
+    update_thread.raise_exception.connect(lambda tup: handle_exception(*tup))
+    update_thread.close_all_windows.connect(QApplication.closeAllWindows)
+    app.aboutToQuit.connect(close_toasters)
+    startup.rejected.connect(close_toasters)
