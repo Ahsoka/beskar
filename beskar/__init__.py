@@ -61,11 +61,14 @@ sentry_sdk.init(
 
 settings = Settings()
 
-from .popups import StartUpPopup
-
 app = QApplication(sys.argv)
+
+from .handle_errors import handle_exception
+sys.excepthook = handle_exception
+
 app.setStyleSheet(get_file('main.css', 'qss', path=True).read_text())
 
+from .popups import StartUpPopup
 startup = StartUpPopup()
 
 update_thread = None

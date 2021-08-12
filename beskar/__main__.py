@@ -1,4 +1,3 @@
-from .handle_errors import handle_exception
 from . import app, startup, update_thread
 from .settings import logging_dir
 from .gui import BeskarWindow
@@ -12,8 +11,6 @@ def main():
         ('gui', 'pages', 'popups', 'utils', 'unknown', 'update')
     ):
         setUpLogger(logger_name, logging_dir)
-
-    sys.excepthook = handle_exception
 
     if update_thread:
         update_thread.start()
