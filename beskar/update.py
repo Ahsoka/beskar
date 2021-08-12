@@ -86,6 +86,7 @@ def on_toaster_interaction(notification_id, action_id, setup_exe, update_checker
                 category=ResourceWarning
             )
             subprocess.Popen(f'{(setup_exe_dir / setup_exe).absolute()}')
+            pool.clear()
             update_checker.quit()
         elif action_id == 1:
             webbrowser.open(latest_url)
@@ -158,6 +159,7 @@ def show(
     return toaster_id
 
 def close_toasters():
+    pool.clear()
     for toaster_id in toasters:
         # NOTE: The version of zroya on PyPi currently has a bug
         # in it that prevents the `hide` function from working correctly.
