@@ -108,6 +108,11 @@ QCommandLinkButton[objectName="scan_menu_button"]:checked {
     border-left: 2px solid #0078D7;
 }
 
+QCommandLinkButton[objectName="dark_current_menu_button"]:hover:!checked,
+QCommandLinkButton[objectName="scan_menu_button"]:hover:!checked {
+    background-color: #353535;
+}
+
 
 QSlider::groove:vertical {
     background: qlineargradient(
