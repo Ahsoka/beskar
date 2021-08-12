@@ -573,55 +573,16 @@ class ScanPage(BasePage):
             self.led_position_gen = LED_position_gen(start_at_zero=True)
             self.led_position = next(self.led_position_gen)
 
-            self.scans = 1
+            self.scanned = []
 
-            self.scanning_in_progress = False
+            self.scan_index = None
+            self.last_scanned = None
 
-            self.scan_label = QtWidgets.QLabel('<h1>Scan</h1>')
-
-            self.select_label = QtWidgets.QLabel(
-                'Select the number of scans you would like to do:'
-            )
-
-            self.spin_box = QtWidgets.QSpinBox()
-            self.spin_box.setObjectName('spin_box')
-            self.spin_box.setRange(1, 10)
-            self.spin_box.setSuffix(' Scan')
-
-            self.interaction_layout = QtWidgets.QHBoxLayout()
-            self.interaction_layout.addWidget(
-                self.select_label, stretch=10, alignment=QtCore.Qt.AlignmentFlag.AlignRight
-            )
-            self.interaction_layout.addWidget(
-                self.spin_box, alignment=QtCore.Qt.AlignmentFlag.AlignRight
-            )
-
-            self.go_back_button = QtWidgets.QPushButton('Go back to scans')
-            self.go_back_button.setObjectName('go_back_button')
-            self.go_back_button.hide()
-
-            self.ok_button = QtWidgets.QPushButton('OK')
-            self.ok_button.setObjectName('ok_button')
-
-            self.num_of_scan_buttons_layout = QtWidgets.QHBoxLayout()
-            self.num_of_scan_buttons_layout.addWidget(
-                self.go_back_button,
-                stretch=10,
-                alignment=QtCore.Qt.AlignmentFlag.AlignRight
-            )
-            self.num_of_scan_buttons_layout.addWidget(
-                self.ok_button,
-                alignment=QtCore.Qt.AlignmentFlag.AlignRight
-            )
-
-            self.num_of_scan_layout = QtWidgets.QVBoxLayout()
-            self.num_of_scan_layout.addStretch(40)
-            self.num_of_scan_layout.addLayout(self.interaction_layout)
-            self.num_of_scan_layout.addLayout(self.num_of_scan_buttons_layout)
-            self.num_of_scan_layout.addStretch(40)
-
-            self.num_of_scan_layout_widget = QtWidgets.QWidget()
-            self.num_of_scan_layout_widget.setLayout(self.num_of_scan_layout)
+            self.scan_label = QtWidgets.QLabel('Scan')
+            font = self.scan_label.font()
+            font.setHintingPreference(QtGui.QFont.HintingPreference.PreferFullHinting)
+            self.scan_label.setFont(font)
+            self.scan_label.setObjectName('scan_page_header')
 
             self.bar_charts: List[
                 List[
@@ -636,11 +597,22 @@ class ScanPage(BasePage):
             self.bar_charts_tab = QtWidgets.QTabWidget()
             self.bar_charts_tab.setObjectName('bar_charts_tab')
 
+            self.create_bar_graph()
+
+            self.bar_charts_tab.addTab(QtWidgets.QWidget(), '')
+
             self.scanning_progress_label = QtWidgets.QLabel('Scanning progress:')
+            self.scanning_progress_label.hide()
+
             self.progress_bar = QtWidgets.QProgressBar()
+            sp_retain = self.progress_bar.sizePolicy()
+            sp_retain.setRetainSizeWhenHidden(True)
+            self.progress_bar.setSizePolicy(sp_retain)
+            self.progress_bar.hide()
 
             self.progress_bar_layout = QtWidgets.QHBoxLayout()
             self.progress_bar_layout.addWidget(self.scanning_progress_label)
+            self.progress_bar_layout.addSpacing(10)
             self.progress_bar_layout.addWidget(self.progress_bar)
 
             self.notice_for_reading = QtWidgets.QLabel(
@@ -648,40 +620,36 @@ class ScanPage(BasePage):
                 "The reason you can't see anything happening on screen is because the values being "
                 'read are zeros.'
             )
-            self.notice_for_reading.setSizePolicy(
-                self.notice_for_reading.sizePolicy().horizontalPolicy(), QtWidgets.QSizePolicy.Policy.Fixed
-            )
+            sp_retain = self.notice_for_reading.sizePolicy()
+            sp_retain.setVerticalPolicy(QtWidgets.QSizePolicy.Policy.Fixed)
+            sp_retain.setRetainSizeWhenHidden(True)
+            self.notice_for_reading.setSizePolicy(sp_retain)
+            self.notice_for_reading.hide()
 
-            self.save_button = QtWidgets.QPushButton('Save scan')
+            self.start_button = QtWidgets.QPushButton('Start')
+            self.start_button.setObjectName('start_button')
+
+            self.save_button = QtWidgets.QPushButton('Save')
             self.save_button.setObjectName('save_button')
             self.save_button.setEnabled(False)
-
-            self.another_scan_button = QtWidgets.QPushButton('Do another scan(s)')
-            self.another_scan_button.setObjectName('another_scan_button')
-            self.another_scan_button.setEnabled(False)
+            self.save_button.hide()
 
             self.buttons_layout = QtWidgets.QHBoxLayout()
-            self.buttons_layout.addWidget(self.save_button, stretch=10, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-            self.buttons_layout.addWidget(self.another_scan_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+            self.buttons_layout.setSpacing(0)
+            self.buttons_layout.addStretch(100)
+            self.buttons_layout.addWidget(self.start_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
+            self.buttons_layout.addWidget(self.save_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
 
             self.bar_chart_layout = QtWidgets.QVBoxLayout()
+            self.bar_chart_layout.setSpacing(0)
+            self.bar_chart_layout.addWidget(self.scan_label, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
             self.bar_chart_layout.addWidget(self.bar_charts_tab)
+            self.bar_chart_layout.addSpacing(10)
             self.bar_chart_layout.addLayout(self.progress_bar_layout)
+            self.bar_chart_layout.addSpacing(10)
             self.bar_chart_layout.addWidget(self.notice_for_reading, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-            self.notice_for_reading.hide()
+            self.bar_chart_layout.addSpacing(10)
             self.bar_chart_layout.addLayout(self.buttons_layout)
-            # self.bar_chart_layout.addWidget(self.another_scan_button, alignment=QtCore.Qt.AlignmentFlag.AlignRight)
-
-            self.bar_chart_layout_widget = QtWidgets.QWidget()
-            self.bar_chart_layout_widget.setLayout(self.bar_chart_layout)
-
-            self.stacked_widget = QtWidgets.QStackedWidget()
-            self.stacked_widget.addWidget(self.num_of_scan_layout_widget)
-            self.stacked_widget.addWidget(self.bar_chart_layout_widget)
-
-            self.main_vbox_layout = QtWidgets.QVBoxLayout()
-            self.main_vbox_layout.addWidget(self.scan_label, alignment=QtCore.Qt.AlignmentFlag.AlignHCenter)
-            self.main_vbox_layout.addWidget(self.stacked_widget)
 
             with get_file('scan.md', 'desc', path=True).open() as file:
                 self.help_tab = QtWidgets.QLabel(file.read())
@@ -700,9 +668,12 @@ class ScanPage(BasePage):
             )
 
             self.main_layout = QtWidgets.QHBoxLayout()
-            self.main_layout.addLayout(self.main_vbox_layout)
-            self.main_layout.addItem(self.spacer2)
+            self.main_layout.addLayout(self.bar_chart_layout)
+            self.main_layout.addSpacing(30)
             self.main_layout.addLayout(self.desc_layout)
+            self.main_layout.setContentsMargins(
+                30, 30, 11, 11
+            )
 
             self.file_dialog = QtWidgets.QFileDialog(
                 self.main_window,
@@ -724,64 +695,70 @@ class ScanPage(BasePage):
                 self.main_window
             )
 
-        self.spin_box.setValue(settings.get('scans', 1))
+    def create_bar_graph(self, index=0):
+        # TODO: Figure out how to make bars matte
 
-    def create_bar_graph(self):
         graph_components = [
             QtDataVisualization.Q3DBars(),
             QtDataVisualization.QBar3DSeries(),
             numpy.zeros((8, 8)).view(TwoDQBarDataItem)
         ]
-        graph_components[0].addSeries(graph_components[1])
-        graph_components[0].rowAxis().setRange(0, 7)
-        graph_components[0].columnAxis().setRange(0, 7)
-        graph_components.append(QtWidgets.QWidget.createWindowContainer(graph_components[0]))
+
+        bars: QtDataVisualization.Q3DBars = graph_components[0]
+        bars.addSeries(graph_components[1])
+        bars.rowAxis().setRange(0, 7)
+        bars.columnAxis().setRange(0, 7)
+        bars.setShadowQuality(QtDataVisualization.QAbstract3DGraph.ShadowQuality.ShadowQualityNone)
+        theme = QtDataVisualization.Q3DTheme(QtDataVisualization.Q3DTheme.Theme.ThemeEbony)
+        theme.setAmbientLightStrength(0.5)
+        theme.setBaseColors([0x73C2FB])
+        theme.setSingleHighlightColor(0xFFFFFF)
+        bars.setActiveTheme(theme)
+        graph_components.append(QtWidgets.QWidget.createWindowContainer(bars))
 
         self.bar_charts.append(graph_components)
 
-        self.bar_charts_tab.addTab(self.bar_charts[len(self.bar_charts) - 1][3], f'Scan {len(self.bar_charts)}')
+        self.bar_charts_tab.insertTab(
+            index,
+            self.bar_charts[len(self.bar_charts) - 1][3],
+            f'Scan {len(self.bar_charts)}'
+        )
 
     @QtCore.pyqtSlot(int)
-    def on_bar_charts_tab_currentChanged(self, tab):
-        if tab + 1 == len(self.bar_charts):
-            self.progress_bar.show()
+    def on_bar_charts_tab_currentChanged(self, tab: int):
+        if tab + 1 == len(self.bar_charts_tab):
+            self.create_bar_graph(tab)
+            self.bar_charts_tab.setCurrentIndex(tab)
+        elif tab == self.scan_index:
             self.scanning_progress_label.show()
-            self.save_button.setEnabled(not self.scanning_in_progress)
+            self.progress_bar.show()
+            self.start_button.hide()
+            self.save_button.show()
+            self.save_button.setEnabled(False)
+        elif tab in self.scanned:
+            self.start_button.hide()
+            self.save_button.show()
+            self.save_button.setEnabled(True)
+            self.notice_for_reading.hide()
         else:
             self.progress_bar.hide()
             self.scanning_progress_label.hide()
             self.notice_for_reading.hide()
-            self.save_button.setEnabled(True)
-
-    @QtCore.pyqtSlot(int)
-    def on_spin_box_valueChanged(self, value):
-        self.scans = value
-        if value == 1:
-            self.spin_box.setSuffix(' Scan')
-        else:
-            self.spin_box.setSuffix(' Scans')
+            self.save_button.hide()
+            self.start_button.show()
+            self.start_button.setEnabled(self.scan_index is None)
 
     @QtCore.pyqtSlot()
-    def on_ok_button_clicked(self):
-        self.scanning_in_progress = True
+    def on_start_button_clicked(self):
+        if self.scan_index is None:
+            # TODO: Move to another thread, this stops when app is moved around
+            self.scan_index = scan_number = self.bar_charts_tab.currentIndex()
 
-        self.main_layout.removeItem(self.spacer2)
+            self.scanning_progress_label.show()
+            self.progress_bar.show()
 
-        self.another_scan_button.setEnabled(False)
-
-        self.stacked_widget.setCurrentIndex(1)
-
-        settings['scans'] = self.scans
-
-        scan_offset = len(self.bar_charts_tab)
-
-        logger.info(f'{self.scans} scans have been initiated.')
-
-        for scan_number in range(self.scans):
-            scan_number += scan_offset
-
-            self.create_bar_graph()
-            self.bar_charts_tab.setCurrentIndex(scan_number)
+            self.start_button.hide()
+            self.save_button.show()
 
             self.progress_bar.setValue(0)
 
@@ -803,6 +780,7 @@ class ScanPage(BasePage):
                 loop_start = time.time()
                 if self.main_window.mocked:
                     samples = [random.random() for _ in range(10)]
+                    # samples = [dark_current] * 10
                 else:
                     with nidaqmx.Task() as task:
                         task.ai_channels.add_ai_voltage_chan(
@@ -835,21 +813,15 @@ class ScanPage(BasePage):
                 elif progress == 1:
                     # Delay between second and thrid LED flash
                     QtTest.QTest.qWait(820 - 1 - computation_time * 1000)
-                elif progress == length - 1 and scan_number != self.scans + scan_offset - 1:
-                    QtTest.QTest.qWait(1000)
                 else:
                     # Delay between all other LED flashes
                     QtTest.QTest.qWait(860 - 1 - computation_time * 1000)
 
-        self.scanning_in_progress = False
+            self.scanned.append(self.scan_index)
+            self.scan_index = None
 
-        self.notice_for_reading.hide()
-
-        if self.go_back_button.isHidden():
-            self.go_back_button.show()
-
-        self.save_button.setEnabled(True)
-        self.another_scan_button.setEnabled(True)
+            self.save_button.setEnabled(True)
+            self.notice_for_reading.hide()
 
     @QtCore.pyqtSlot()
     def on_save_button_clicked(self):
@@ -913,13 +885,3 @@ class ScanPage(BasePage):
             raise RuntimeError(f'This should never be triggered: {file_ext=}')
 
         logger.info(f'{selected} has been created in order to save Scan {current_tab}.')
-
-    @QtCore.pyqtSlot()
-    def on_another_scan_button_clicked(self):
-        self.main_layout.insertItem(1, self.spacer2)
-        self.stacked_widget.setCurrentIndex(0)
-
-    @QtCore.pyqtSlot()
-    def on_go_back_button_clicked(self):
-        self.main_layout.removeItem(self.spacer2)
-        self.stacked_widget.setCurrentIndex(1)
