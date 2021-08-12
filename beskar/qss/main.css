@@ -181,3 +181,16 @@ QChartView[objectName="dark_current_chart_view"] {
     when using QSS code, but not when using setBackgroundBrush. */
     background-color: rgba(0, 0, 0, 0);
 }
+
+
+QProgressBar {
+    color: white;
+    border-radius: 5px;
+    text-align: right;
+    margin-right: 30px;
+}
+
+QProgressBar::chunk {
+    border-radius: 5px;
+    background-color: #0078D7;
+}
