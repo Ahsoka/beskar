@@ -9,6 +9,8 @@ import inspect
 import logging
 import sys
 
+# TODO: Consider closing pool connections in updates.py
+
 def send_error_report(exc_info, flush=True):
     hub = Hub.current
     if hub.client is not None:
