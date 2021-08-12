@@ -712,6 +712,9 @@ class ScanPage(BasePage):
         theme.setAmbientLightStrength(0.5)
         theme.setBaseColors([0x73C2FB])
         theme.setSingleHighlightColor(0xFFFFFF)
+        font = theme.font()
+        font.setBold(True)
+        theme.setFont(font)
         bars.setActiveTheme(theme)
         graph_components.append(QtWidgets.QWidget.createWindowContainer(bars))
 
