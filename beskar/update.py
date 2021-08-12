@@ -1,6 +1,5 @@
 from .utils import get_file, error_to_exc_tuple
 from PyQt6.QtCore import QThread, pyqtSignal
-from PyQt6.QtWidgets import QApplication
 from urllib3.exceptions import HTTPError
 from typing import Callable, Union, List
 from .constants import __version__
@@ -79,8 +78,6 @@ def download(version):
 def on_toaster_interaction(notification_id, action_id, setup_exe, update_checker: 'UpdateChecker'):
     try:
         if action_id == 0:
-            QApplication.setQuitOnLastWindowClosed(False)
-
             update_checker.close_all_windows.emit()
 
             warnings.filterwarnings(
@@ -89,7 +86,7 @@ def on_toaster_interaction(notification_id, action_id, setup_exe, update_checker
                 category=ResourceWarning
             )
             subprocess.Popen(f'{(setup_exe_dir / setup_exe).absolute()}')
-            QApplication.quit()
+            update_checker.quit()
         elif action_id == 1:
             webbrowser.open(latest_url)
             toaster = create_toaster(
