@@ -2,8 +2,8 @@ from .utils import BaseInteractable, apply_voltage, get_file, get_number_of_devi
 from .constants import offset, __version__
 from PyQt6 import QtCore, QtWidgets, QtGui
 from .widgets import StepProgressBar
-from typing import Literal
 from . import sys_info, settings
+from typing import Literal
 from .pages import (
     NoSEALKitPage,
     SelectSEALKitPage,
