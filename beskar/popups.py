@@ -246,7 +246,8 @@ class ErrorPopup(BasePopup):
 
             self.github_notice = QtWidgets.QLabel(
                 "If you don't want to automatically send a crash report please "
-                'file a GitHub issue <a href="https://github.com/Ahsoka/beskar/issues/new">here</a>.'
+                'file a GitHub issue <a style="color: #0078D8; text-decoration: none" '
+                'href="https://github.com/Ahsoka/beskar/issues/new">here</a>.'
             )
             self.github_notice.setOpenExternalLinks(True)
 
