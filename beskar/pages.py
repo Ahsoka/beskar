@@ -651,7 +651,7 @@ class ScanPage(BasePage):
             self.bar_chart_layout.addSpacing(10)
             self.bar_chart_layout.addLayout(self.buttons_layout)
 
-            self.help_tab = QtWidgets.QLabel(get_file('scan.md', 'desc', path=True).read_text())
+            self.help_tab = LinkHoverColorChange('#0078D8', '#777777', get_file('scan.md', 'desc', path=True).read_text())
             self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
             self.help_tab.setOpenExternalLinks(True)
             self.help_tab.setFixedWidth(help_tab_fixed_width)
