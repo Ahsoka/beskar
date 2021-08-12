@@ -194,3 +194,45 @@ QProgressBar::chunk {
     border-radius: 5px;
     background-color: #0078D7;
 }
+
+
+QTabWidget::pane {
+    /* NOTE: The line below does not actually do anything.
+    However the prescene of this selector prevents
+    the default from occur which causes weird visual
+    artifacts. */
+    border: none;
+}
+
+
+
+QTabBar::tab {
+    background-color: rgba(0, 0, 0, 0);
+    font: bold;
+    font-size: 20px;
+    color: #777777;
+    min-width: 40px;
+    height: 20px;
+    margin-right: 20px;
+    padding-bottom: 6px;
+}
+
+QTabBar::tab:selected {
+    color: white;
+    border-bottom: 2px solid #209FDF;
+    margin-bottom: 10px;
+}
+
+QTabBar::tab:last {
+    width: 20px;
+    height: 20px;
+    image: url(beskar/images/tab-widget-plus-icon.svg);
+    image-position: left;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    margin-right: 0px;
+}
+
+QTabBar::tab:last:hover {
+    image: url(beskar/images/hovered-tab-widget-plus-icon.svg);
+}
