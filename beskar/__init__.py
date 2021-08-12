@@ -60,7 +60,7 @@ sentry_sdk.init(
 
 settings = Settings()
 
-from .gui import BeskarWindow
+from .popups import StartUpPopup
 
 app = QApplication(sys.argv)
-window = BeskarWindow()
+startup = StartUpPopup()
