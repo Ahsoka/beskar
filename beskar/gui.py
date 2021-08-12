@@ -90,30 +90,32 @@ class BeskarWindow(QtWidgets.QMainWindow):
     @QtCore.pyqtSlot()
     def on_dark_current_menu_button_clicked(self):
         self.dark_current_menu.setChecked(True)
-        self.scan_menu.setChecked(False)
+        if self.stacked_widget.currentIndex() == 1:
+            self.scan_menu.setChecked(False)
 
-        self.stacked_widget.setCurrentIndex(0)
+            self.stacked_widget.setCurrentIndex(0)
 
-        self.dark_current_widget.update_data()
+            self.dark_current_widget.update_data()
 
-        self.high_dark_current(
-            'These dark current values are unusually high values. '
-            'There might be something wrong with the SEAL kit you are using.'
-        )
+            self.high_dark_current(
+                'These dark current values are unusually high values. '
+                'There might be something wrong with the SEAL kit you are using.'
+            )
 
     @QtCore.pyqtSlot()
     def on_scan_menu_button_clicked(self):
-        self.dark_current_widget.update_data()
-
         self.scan_menu.setChecked(True)
-        self.dark_current_menu.setChecked(False)
+        if self.stacked_widget.currentIndex() == 0:
+            self.dark_current_widget.update_data()
 
-        self.stacked_widget.setCurrentIndex(1)
+            self.dark_current_menu.setChecked(False)
 
-        self.high_dark_current(
-            'Scanning may not be accurate due to unusually high dark current values. '
-            'There might be something wrong with the SEAL kit you are using.'
-        )
+            self.stacked_widget.setCurrentIndex(1)
+
+            self.high_dark_current(
+                'Scanning may not be accurate due to unusually high dark current values. '
+                'There might be something wrong with the SEAL kit you are using.'
+            )
 
     def high_dark_current(self, msg: str, title: str = 'Unusually High Dark Current'):
         if max(self.dark_current_widget.samples) > 1:
