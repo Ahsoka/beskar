@@ -20,6 +20,9 @@ class LinkHoverColorChange(QtWidgets.QLabel):
 
         super().__init__(*args, **kwargs)
 
+        if self.unformated_text:
+            self.setText(self.unformated_text)
+
         self.linkHovered.connect(self.change_link_color)
 
     def setText(self, text: str) -> None:
