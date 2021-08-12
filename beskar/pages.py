@@ -252,7 +252,7 @@ class MockedModePage(BasePage):
             self.desc.setObjectName('mocked_mode_desc')
             self.desc.setWordWrap(True)
             self.desc.setFixedWidth(desc_width)
-            self.desc.setMinimumHeight(205)
+            self.desc.setMinimumHeight(220)
             self.desc.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
 
 
