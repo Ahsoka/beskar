@@ -651,12 +651,11 @@ class ScanPage(BasePage):
             self.bar_chart_layout.addSpacing(10)
             self.bar_chart_layout.addLayout(self.buttons_layout)
 
-            with get_file('scan.md', 'desc', path=True).open() as file:
-                self.help_tab = QtWidgets.QLabel(file.read())
-                self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
-                self.help_tab.setOpenExternalLinks(True)
-                self.help_tab.setFixedWidth(help_tab_fixed_width)
-                self.help_tab.setWordWrap(True)
+            self.help_tab = QtWidgets.QLabel(get_file('scan.md', 'desc', path=True).read_text())
+            self.help_tab.setTextFormat(QtCore.Qt.TextFormat.RichText)
+            self.help_tab.setOpenExternalLinks(True)
+            self.help_tab.setFixedWidth(help_tab_fixed_width)
+            self.help_tab.setWordWrap(True)
 
             self.desc_layout = QtWidgets.QVBoxLayout()
             self.desc_layout.addWidget(self.help_tab)
