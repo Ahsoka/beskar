@@ -1,6 +1,6 @@
 from .utils import BaseInteractable, apply_voltage, get_file, get_number_of_devices
-from PyQt6 import QtCore, QtWidgets, QtGui
 from .constants import offset, __version__
+from PyQt6 import QtCore, QtWidgets, QtGui
 from .widgets import StepProgressBar
 from typing import Literal
 from . import sys_info, settings
@@ -102,6 +102,8 @@ class StartUpPopup(BasePopup):
             self.back_button.hide()
             if self.total_steps == 4:
                 self.next_button.hide()
+                if (window_title := f'Beskar {__version__}') != self.windowTitle():
+                    self.setWindowTitle(window_title)
         else:
             self.back_button.show()
             self.next_button.show()
@@ -123,12 +125,16 @@ class StartUpPopup(BasePopup):
                     self.mocked_mode_page = MockedModePage(self)
                 page = self.mocked_mode_page
                 other_page = self.select_SEAL_kit_page
+                if (window_title := f'Beskar {__version__} (Mocked Mode)') != self.windowTitle():
+                    self.setWindowTitle(window_title)
                 self.mocked = True
             elif widget == 'select':
                 if not self.select_SEAL_kit_page:
                     self.select_SEAL_kit_page = SelectSEALKitPage(self)
                 page = self.select_SEAL_kit_page
                 other_page = self.mocked_mode_page
+                if (window_title := f'Beskar {__version__}') != self.windowTitle():
+                    self.setWindowTitle(window_title)
                 self.mocked = False
             if self.stacked_widget.widget(1) == other_page:
                 self.stacked_widget.removeWidget(other_page)
