@@ -8,7 +8,7 @@ QDialog {
 }
 
 
-QLabel, QGroupBox {
+QLabel, QGroupBox, QCheckBox {
     color: white;
 }
 
