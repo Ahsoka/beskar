@@ -21,7 +21,10 @@ class BeskarWindow(QtWidgets.QMainWindow):
 
         self.exiting = False
 
-        self.setWindowTitle(f'Beskar {__version__}')
+        if self.mocked:
+            self.setWindowTitle(f'Beskar {__version__} (Mocked Mode)')
+        else:
+            self.setWindowTitle(f'Beskar {__version__}')
 
         icon_path = get_file('beskar-icon.png')
         self.icon = None
