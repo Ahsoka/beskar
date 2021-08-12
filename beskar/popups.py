@@ -83,6 +83,8 @@ class StartUpPopup(BasePopup):
         self.main_layout.setContentsMargins(20, 10, 20, 20)
         self.main_layout.setSpacing(0)
 
+        self.setWindowIcon(QtGui.QIcon(get_file('beskar-icon.png')))
+
         self.setMinimumSize(430, 650)
         self.resize(560, 650)
 
