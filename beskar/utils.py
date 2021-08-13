@@ -46,6 +46,8 @@ def interact_with_LEDs(device_name: str, interaction: Literal['on', 'off', 'on&o
     if interaction not in {'on', 'off', 'on&off'}:
         raise ValueError(f"interaction must be 'on', 'off', or 'on&off', not '{interaction}'")
 
+    logger.info(f'The LEDs in the SEAL kit were turned {interaction}.')
+
     with nidaqmx.Task() as task:
         task.do_channels.add_do_chan(f'{device_name}/port0/line0')
         if interaction == 'on':

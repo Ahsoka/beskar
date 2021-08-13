@@ -3,6 +3,8 @@ from .widgets import DoubleSpinBox, LabelWithIcon, LinkHoverColorChange
 from .constants import offset, help_tab_fixed_width, help_tab_margins
 from typing import Union, Tuple, List
 from nidaqmx.system import System
+from .settings import logging_dir
+from .logs import setUpLogger
 from .utils import (
     get_number_of_devices,
     interact_with_LEDs,
@@ -18,7 +20,6 @@ from .utils import (
 import statistics as stats
 import darkdetect
 import itertools
-import logging
 import nidaqmx
 import pathlib
 import numpy
@@ -26,7 +27,7 @@ import random
 import time
 import csv
 
-logger = logging.getLogger(__name__)
+logger = setUpLogger(__name__, logging_dir)
 
 
 class BasePage(BaseInteractable, QtWidgets.QWidget):
@@ -78,6 +79,7 @@ class NoSEALKitPage(BasePage):
                 )
                 self.desc.setMinimumHeight(48)
             else:
+                logger.debug('No drivers were detected on this computer.')
                 self.desc.setText(
                     '<b>WARNING:</b> Drivers are not detected on this computer. '
                     'In order to connect with the SEAL kit you must install the drivers from '
@@ -128,6 +130,8 @@ class NoSEALKitPage(BasePage):
     @QtCore.pyqtSlot()
     def on_no_SEAL_refresh_button_clicked(self):
         if not self.animation_in_progress:
+            logger.info('The user is looking for a SEAL kit.')
+
             self.refresh_button.setText('Looking')
 
             if self.refresh_animated:
@@ -148,7 +152,9 @@ class NoSEALKitPage(BasePage):
                         '<p style="text-indent: 20px">SEAL kit not detected, '
                         'try refreshing again.</p>'
                     )
+                    logger.info('The program failed to find a SEAL kit.')
                 elif self.main_window.stacked_widget.currentIndex() == 0:
+                    logger.info('The program has found a SEAL kit.')
                     self.main_window.next_page('select')
             self.animation_in_progress = False
             self.refresh_button.setText('Refresh')
@@ -177,6 +183,7 @@ class SelectSEALKitPage(BasePage):
             )
             self.main_layout.addSpacing(30)
             device_names = System.local().devices.device_names
+            logger.debug(f'The following devices were detected {device_names}.')
             # device_names = [f"Dev {num + 1}" for num in range(4)]
             for index, device_name in enumerate(device_names):
                 radio_button = QtWidgets.QRadioButton(f" {device_name}")
@@ -624,6 +631,8 @@ class ScanThread(QtCore.QThread):
     def run(self):
         self.scan_page.scan_index = scan_number = self.scan_page.bar_charts_tab.currentIndex()
 
+        logger.info(f'Scan {scan_number + 1} was initiated.')
+
         self.show_progress_bar.emit()
 
         self.hide_start_button.emit()
@@ -672,7 +681,7 @@ class ScanThread(QtCore.QThread):
 
             if self.scan_page.bar_charts_tab.currentIndex() == scan_number:
                 if self.scan_page.bar_charts[scan_number][2].last_values_zero():
-                    logger.info('The last four values read from the SEAL kit have been zeros.')
+                    logger.debug('The last four values read from the SEAL kit have been zeros.')
                     self.show_notice_for_reading.emit()
                 else:
                     self.hide_notice_for_reading.emit()
@@ -694,6 +703,8 @@ class ScanThread(QtCore.QThread):
 
         self.scan_page.save_button.setEnabled(True)
         self.hide_notice_for_reading.emit()
+
+        logger.info(f'Scan {scan_number + 1} ended.')
 
 
 class ScanPage(BasePage):
@@ -855,6 +866,8 @@ class ScanPage(BasePage):
             f'Scan {len(self.bar_charts)}'
         )
 
+        logger.info(f'A new 3D bar chart created for Scan {len(self.bar_charts)}.')
+
     @QtCore.pyqtSlot(int)
     def on_bar_charts_tab_currentChanged(self, tab: int):
         if tab + 1 == len(self.bar_charts_tab):
@@ -945,7 +958,7 @@ class ScanPage(BasePage):
         else:
             raise RuntimeError(f'This should never be triggered: {file_ext=}')
 
-        logger.info(f'{selected} has been created in order to save Scan {current_tab}.')
+        logger.info(f"'{selected}' has been created in order to save Scan {current_tab + 1}.")
 
     def mousePressEvent(self, mouse_event: QtGui.QMouseEvent = None) -> None:
         if ((self.start_button.hasFocus() and not self.start_button.underMouse())

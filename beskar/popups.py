@@ -2,7 +2,9 @@ from .utils import BaseInteractable, apply_voltage, get_file, get_number_of_devi
 from .constants import offset, __version__
 from PyQt6 import QtCore, QtWidgets, QtGui
 from .widgets import StepProgressBar
+from .settings import logging_dir
 from . import sys_info, settings
+from .logs import setUpLogger
 from typing import Literal
 from .pages import (
     NoSEALKitPage,
@@ -13,9 +15,8 @@ from .pages import (
 )
 
 import socket
-import logging
 
-logger = logging.getLogger(__name__)
+logger = setUpLogger(__name__, logging_dir)
 
 
 class BasePopup(BaseInteractable, QtWidgets.QDialog):
@@ -55,15 +56,18 @@ class StartUpPopup(BasePopup):
             self.mocked_mode_page = None
 
             if num_of_devices == 0:
+                logger.info('No SEAL kit was detected.')
                 self.no_SEAL_kit_page = NoSEALKitPage(self, drivers)
                 self.total_steps = 4
                 self.stacked_widget.addWidget(self.no_SEAL_kit_page)
                 self.next_button.hide()
             elif num_of_devices == 1:
                 self.device_name = system.devices.device_names[0]
+                logger.info(f'A single SEAL kit was detected: {self.device_name}.')
                 apply_voltage(self.device_name)
                 self.total_steps = 2
             else:
+                logger.info('Multiple SEAL kits were detected.')
                 self.select_SEAL_kit_page = SelectSEALKitPage(self)
                 self.stacked_widget.addWidget(self.select_SEAL_kit_page)
                 self.total_steps = 3
@@ -111,14 +115,15 @@ class StartUpPopup(BasePopup):
 
         if index == len(self.stacked_widget):
             if not self.mocked:
-                apply_voltage(
-                    self.device_name,
-                    (
-                        self.voltage_offset_page.double_spin_box.value()
-                        + offset - self.apply_voltage_page.double_spin_box.value()
-                    )
+                voltage_to_apply = (
+                    self.voltage_offset_page.double_spin_box.value()
+                    + offset - self.apply_voltage_page.double_spin_box.value()
                 )
+                if self.apply_voltage_page.is_high_or_low_voltage(voltage_to_apply):
+                    logger.debug('A possible extremely low or high amount of voltage has been applied.')
+                apply_voltage(self.device_name, voltage_to_apply)
             settings['applied-voltage'] = self.apply_voltage_page.double_spin_box.value()
+            logger.info('User finished inputting information into the StartUpPopup.')
             self.accept()
         elif self.total_steps == 4 and index == 1 and widget:
             if widget == 'mocked':
@@ -129,6 +134,7 @@ class StartUpPopup(BasePopup):
                 if (window_title := f'Beskar {__version__} (Mocked Mode)') != self.windowTitle():
                     self.setWindowTitle(window_title)
                 self.mocked = True
+                logger.info('Mocked mode was enabled.')
             elif widget == 'select':
                 if not self.select_SEAL_kit_page:
                     self.select_SEAL_kit_page = SelectSEALKitPage(self)
