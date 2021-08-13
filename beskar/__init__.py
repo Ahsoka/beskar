@@ -70,7 +70,10 @@ app = QApplication(sys.argv)
 from .handle_errors import handle_exception
 sys.excepthook = handle_exception
 
-app.setStyleSheet(get_file('main.css', 'qss', path=True).read_text())
+qss = get_file('main.css', 'qss', path=True).read_text()
+if getattr(sys, 'frozen', False):
+    qss = qss.replace('beskar/images', 'images')
+app.setStyleSheet(qss)
 
 from .popups import StartUpPopup
 startup = StartUpPopup()
