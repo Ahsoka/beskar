@@ -567,6 +567,124 @@ class DarkCurrentPage(BasePage):
             super().mousePressEvent(mouse_event)
 
 
+class ScanThread(QtCore.QThread):
+    update_dark_current = QtCore.pyqtSignal()
+
+    show_progress_bar = QtCore.pyqtSignal()
+    show_save_button = QtCore.pyqtSignal()
+    show_notice_for_reading = QtCore.pyqtSignal()
+
+    hide_start_button = QtCore.pyqtSignal()
+    hide_notice_for_reading = QtCore.pyqtSignal()
+
+    update_bar_chart = QtCore.pyqtSignal(int, list)
+
+    def __init__(self, scan_page: 'ScanPage'):
+        super().__init__()
+
+        self.scan_page = scan_page
+
+        self.connect_signals()
+
+    def connect_signals(self):
+        self.update_dark_current.connect(
+            self.scan_page.main_window.dark_current_widget.update_data
+        )
+
+        self.show_progress_bar.connect(
+            self.scan_page.scanning_progress_label.show
+        )
+        self.show_progress_bar.connect(
+            self.scan_page.progress_bar.show
+        )
+        self.show_save_button.connect(
+            self.scan_page.save_button.show
+        )
+        self.show_notice_for_reading.connect(
+            self.scan_page.notice_for_reading.show
+        )
+
+        self.hide_start_button.connect(
+            self.scan_page.start_button.hide
+        )
+        self.hide_notice_for_reading.connect(
+            self.scan_page.notice_for_reading.hide
+        )
+
+    def run(self):
+        self.scan_page.scan_index = scan_number = self.scan_page.bar_charts_tab.currentIndex()
+
+        self.show_progress_bar.emit()
+
+        self.hide_start_button.emit()
+        self.show_save_button.emit()
+
+        self.scan_page.progress_bar.setValue(0)
+
+        self.scan_page.scanning_thread.update_dark_current.emit()
+
+        dark_current = stats.mean(self.scan_page.main_window.dark_current_widget.samples)
+
+        length = 64 if len(self.scan_page.led_position) == 3 else 65
+        self.scan_page.progress_bar.setMaximum(length)
+
+        if not self.scan_page.main_window.mocked:
+            interact_with_LEDs(self.scan_page.main_window.device_name, 'on&off')
+
+        # Delay for signal to flash LEDs
+        time.sleep(0.412)
+
+        for progress in range(length):
+            if self.scan_page.main_window.exiting:
+                return
+            loop_start = time.time()
+            if self.scan_page.main_window.mocked:
+                samples = [random.random() for _ in range(10)]
+                # samples = [dark_current] * 10
+            else:
+                with nidaqmx.Task() as task:
+                    task.ai_channels.add_ai_voltage_chan(
+                        f'{self.scan_page.main_window.device_name}/ai1', min_val=-10, max_val=10
+                    )
+                    samples = task.read(10)
+            self.scan_page.bar_charts[scan_number][2][
+                self.scan_page.led_position[0], self.scan_page.led_position[1]
+            ] = max(samples) - dark_current
+
+            self.scan_page.bar_charts[scan_number][1].dataProxy().resetArray(
+                    self.scan_page.bar_charts[scan_number][2].tolist(convert_to_bar_data=True)
+            )
+
+            self.scan_page.progress_bar.setValue(progress + 1)
+
+            self.scan_page.led_position = next(self.scan_page.led_position_gen)
+
+            if self.scan_page.bar_charts_tab.currentIndex() == scan_number:
+                if self.scan_page.bar_charts[scan_number][2].last_values_zero():
+                    logger.info('The last four values read from the SEAL kit have been zeros.')
+                    self.show_notice_for_reading.emit()
+                else:
+                    self.hide_notice_for_reading.emit()
+
+            computation_time = time.time() - loop_start
+
+            if progress == 0:
+                # Delay between the first and second LED flash
+                time.sleep(0.492 - computation_time)
+            elif progress == 1:
+                # Delay between second and thrid LED flash
+                time.sleep(0.820 - 0.001 - computation_time)
+            else:
+                # Delay between all other LED flashes
+                time.sleep(0.860 - 0.001 - computation_time)
+
+        self.scan_page.scanned.append(self.scan_page.scan_index)
+        self.scan_page.scan_index = None
+
+        self.scan_page.save_button.setEnabled(True)
+        self.hide_notice_for_reading.emit()
+
+
 class ScanPage(BasePage):
     def __init__(self, main_window):
         with self.init(main_window):
@@ -694,6 +812,8 @@ class ScanPage(BasePage):
                 self.main_window
             )
 
+            self.scanning_thread = ScanThread(self)
+
     def create_bar_graph(self, index=0):
         # TODO: Figure out how to make bars matte
 
@@ -752,78 +872,8 @@ class ScanPage(BasePage):
 
     @QtCore.pyqtSlot()
     def on_start_button_clicked(self):
-        if self.scan_index is None:
-            # TODO: Move to another thread, this stops when app is moved around
-            self.scan_index = scan_number = self.bar_charts_tab.currentIndex()
-
-            self.scanning_progress_label.show()
-            self.progress_bar.show()
-
-            self.start_button.hide()
-            self.save_button.show()
-
-            self.progress_bar.setValue(0)
-
-            self.main_window.dark_current_widget.update_data()
-            dark_current = stats.mean(self.main_window.dark_current_widget.samples)
-
-            length = 64 if len(self.led_position) == 3 else 65
-            self.progress_bar.setMaximum(length)
-
-            if not self.main_window.mocked:
-                interact_with_LEDs(self.main_window.device_name, 'on&off')
-
-            # Delay for signal to flash LEDs
-            QtTest.QTest.qWait(412)
-
-            for progress in range(length):
-                if self.main_window.exiting:
-                    return
-                loop_start = time.time()
-                if self.main_window.mocked:
-                    samples = [random.random() for _ in range(10)]
-                    # samples = [dark_current] * 10
-                else:
-                    with nidaqmx.Task() as task:
-                        task.ai_channels.add_ai_voltage_chan(
-                            f'{self.main_window.device_name}/ai1', min_val=-10, max_val=10
-                        )
-                        samples = task.read(10)
-                self.bar_charts[scan_number][2][
-                    self.led_position[0], self.led_position[1]
-                ] = max(samples) - dark_current
-                self.bar_charts[scan_number][1].dataProxy().resetArray(
-                    self.bar_charts[scan_number][2].tolist(convert_to_bar_data=True)
-                )
-
-                self.progress_bar.setValue(progress + 1)
-
-                self.led_position = next(self.led_position_gen)
-
-                if self.bar_charts_tab.currentIndex() == scan_number:
-                    if self.bar_charts[scan_number][2].last_values_zero():
-                        logger.info('The last four values read from the SEAL kit have been zeros.')
-                        self.notice_for_reading.show()
-                    else:
-                        self.notice_for_reading.hide()
-
-                computation_time = time.time() - loop_start
-
-                if progress == 0:
-                    # Delay between the first and second LED flash
-                    QtTest.QTest.qWait(492 - computation_time * 1000)
-                elif progress == 1:
-                    # Delay between second and thrid LED flash
-                    QtTest.QTest.qWait(820 - 1 - computation_time * 1000)
-                else:
-                    # Delay between all other LED flashes
-                    QtTest.QTest.qWait(860 - 1 - computation_time * 1000)
-
-            self.scanned.append(self.scan_index)
-            self.scan_index = None
-
-            self.save_button.setEnabled(True)
-            self.notice_for_reading.hide()
+        if not self.scanning_thread.isRunning():
+            self.scanning_thread.start()
 
     @QtCore.pyqtSlot()
     def on_save_button_clicked(self):
