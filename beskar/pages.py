@@ -756,9 +756,11 @@ class ScanPage(BasePage):
             self.notice_for_reading.hide()
 
             self.start_button = QtWidgets.QPushButton('Start')
+            self.start_button.setFocusPolicy(QtCore.Qt.FocusPolicy.TabFocus)
             self.start_button.setObjectName('start_button')
 
             self.save_button = QtWidgets.QPushButton('Save')
+            self.save_button.setFocusPolicy(QtCore.Qt.FocusPolicy.TabFocus)
             self.save_button.setObjectName('save_button')
             self.save_button.setEnabled(False)
             self.save_button.hide()
@@ -948,3 +950,10 @@ class ScanPage(BasePage):
             raise RuntimeError(f'This should never be triggered: {file_ext=}')
 
         logger.info(f'{selected} has been created in order to save Scan {current_tab}.')
+
+    def mousePressEvent(self, mouse_event: QtGui.QMouseEvent = None) -> None:
+        if ((self.start_button.hasFocus() and not self.start_button.underMouse())
+            or (self.save_button.hasFocus() and not self.save_button.underMouse())):
+            self.setFocus(QtCore.Qt.FocusReason.OtherFocusReason)
+        if mouse_event:
+            super().mousePressEvent(mouse_event)
