@@ -1,5 +1,6 @@
 from .pages import DarkCurrentPage, ScanPage
 from PyQt6 import QtCore, QtWidgets, QtGui
+from threading import Event
 from .utils import get_file
 from . import __version__
 from typing import Union
@@ -14,6 +15,8 @@ logger = logging.getLogger(__name__)
 class BeskarWindow(QtWidgets.QMainWindow):
     def __init__(self, mocked: bool, device_name: Union[str, None]):
         super().__init__()
+
+        self.wait_condition = Event()
 
         self.mocked = mocked
 
@@ -109,9 +112,9 @@ class BeskarWindow(QtWidgets.QMainWindow):
     def on_scan_menu_button_clicked(self):
         self.scan_menu.setChecked(True)
         if self.stacked_widget.currentIndex() == 0:
-            self.dark_current_widget.update_data()
-
             self.dark_current_menu.setChecked(False)
+
+            self.dark_current_widget.update_data()
 
             self.stacked_widget.setCurrentIndex(1)
 

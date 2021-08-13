@@ -543,6 +543,9 @@ class DarkCurrentPage(BasePage):
 
         logger.info('Updated dark current readings.')
 
+        self.main_window.wait_condition.set()
+        self.main_window.wait_condition.clear()
+
     def set_y_axis_range(self, upper: Union[float, int] = None):
         if upper is None:
             upper = max(self.samples) * 1.1
@@ -622,6 +625,7 @@ class ScanThread(QtCore.QThread):
         self.scan_page.progress_bar.setValue(0)
 
         self.scan_page.scanning_thread.update_dark_current.emit()
+        self.scan_page.main_window.wait_condition.wait()
 
         dark_current = stats.mean(self.scan_page.main_window.dark_current_widget.samples)
 
