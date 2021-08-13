@@ -793,10 +793,6 @@ class ScanPage(BasePage):
             self.desc_layout.addStretch(40)
             self.desc_layout.setContentsMargins(help_tab_margins)
 
-            self.spacer2  = QtWidgets.QSpacerItem(
-                20, 0, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum
-            )
-
             self.main_layout = QtWidgets.QHBoxLayout()
             self.main_layout.addLayout(self.bar_chart_layout)
             self.main_layout.addSpacing(30)
