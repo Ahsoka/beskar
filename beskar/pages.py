@@ -571,6 +571,9 @@ class DarkCurrentPage(BasePage):
 
 class ScanThread(QtCore.QThread):
     update_dark_current = QtCore.pyqtSignal()
+    update_progress_bar = QtCore.pyqtSignal(int)
+
+    set_maximum_progress_bar = QtCore.pyqtSignal(int)
 
     show_progress_bar = QtCore.pyqtSignal()
     show_save_button = QtCore.pyqtSignal()
@@ -589,6 +592,13 @@ class ScanThread(QtCore.QThread):
     def connect_signals(self):
         self.update_dark_current.connect(
             self.scan_page.main_window.dark_current_widget.update_data
+        )
+        self.update_progress_bar.connect(
+            self.scan_page.progress_bar.setValue
+        )
+
+        self.set_maximum_progress_bar.connect(
+            self.scan_page.progress_bar.setMaximum
         )
 
         self.show_progress_bar.connect(
@@ -619,7 +629,7 @@ class ScanThread(QtCore.QThread):
         self.hide_start_button.emit()
         self.show_save_button.emit()
 
-        self.scan_page.progress_bar.setValue(0)
+        self.update_progress_bar.emit(0)
 
         self.scan_page.scanning_thread.update_dark_current.emit()
         self.scan_page.main_window.wait_condition.wait()
@@ -627,7 +637,7 @@ class ScanThread(QtCore.QThread):
         dark_current = stats.mean(self.scan_page.main_window.dark_current_widget.samples)
 
         length = 64 if len(self.scan_page.led_position) == 3 else 65
-        self.scan_page.progress_bar.setMaximum(length)
+        self.set_maximum_progress_bar.emit(length)
 
         if not self.scan_page.main_window.mocked:
             interact_with_LEDs(self.scan_page.main_window.device_name, 'on&off')
@@ -656,7 +666,7 @@ class ScanThread(QtCore.QThread):
                     self.scan_page.bar_charts[scan_number][2].tolist(convert_to_bar_data=True)
             )
 
-            self.scan_page.progress_bar.setValue(progress + 1)
+            self.update_progress_bar.emit(progress + 1)
 
             self.scan_page.led_position = next(self.scan_page.led_position_gen)
 
