@@ -22,6 +22,7 @@ if __name__ == '__main__':
         '--add-data', r'beskar\images;images',
         '--add-data', r'beskar\qss;qss',
         '--add-data', r'beskar\fonts;fonts',
+        '--add-data', f'{pyqt6_dir / "Qt6" / "plugins" / "iconengines"};iconengines',
         '--add-data', f'{pyqt6_dir / "Qt6" / "plugins" / "platforms"};platforms',
         '--add-data', f'{pyqt6_dir / "Qt6" / "plugins" / "styles"};styles',
         '--add-data', r'beskar\desc;desc',
