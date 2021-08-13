@@ -41,6 +41,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "dist\Beskar\{#MyAppExeName}"; DestDir: "{app}"; Flags: ignoreversion
 Source: "dist\Beskar\certifi\cacert.pem"; DestDir: "{app}\certifi"; Flags: ignoreversion
 Source: "dist\Beskar\*"; DestDir: "{app}"; Flags: ignoreversion
+Source: "dist\Beskar\qss\*"; DestDir: "{app}\qss"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "dist\Beskar\desc\*"; DestDir: "{app}\desc"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "dist\Beskar\images\*"; DestDir: "{app}\images"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "dist\Beskar\numpy\*"; DestDir: "{app}\numpy"; Flags: ignoreversion recursesubdirs createallsubdirs
