@@ -78,8 +78,6 @@ def download(version):
 def on_toaster_interaction(notification_id, action_id, setup_exe, update_checker: 'UpdateChecker'):
     try:
         if action_id == 0:
-            update_checker.close_all_windows.emit()
-
             warnings.filterwarnings(
                 'ignore',
                 r'subprocess \d+ is still running',
@@ -87,7 +85,7 @@ def on_toaster_interaction(notification_id, action_id, setup_exe, update_checker
             )
             subprocess.Popen(f'{(setup_exe_dir / setup_exe).absolute()}')
             pool.clear()
-            update_checker.quit()
+            update_checker.close_all_windows.emit()
         elif action_id == 1:
             webbrowser.open(latest_url)
             toaster = create_toaster(
