@@ -580,8 +580,6 @@ class ScanThread(QtCore.QThread):
     hide_start_button = QtCore.pyqtSignal()
     hide_notice_for_reading = QtCore.pyqtSignal()
 
-    update_bar_chart = QtCore.pyqtSignal(int, list)
-
     def __init__(self, scan_page: 'ScanPage'):
         super().__init__()
 
