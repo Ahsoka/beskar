@@ -3,7 +3,6 @@ from .widgets import DoubleSpinBox, LabelWithIcon, LinkHoverColorChange
 from .constants import offset, help_tab_fixed_width, help_tab_margins
 from typing import Union, Tuple, List
 from nidaqmx.system import System
-from . import settings
 from .utils import (
     get_number_of_devices,
     interact_with_LEDs,
