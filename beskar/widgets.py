@@ -382,7 +382,7 @@ class DoubleSpinBox(QtWidgets.QDoubleSpinBox):
                         new_pos = cursor_pos + 1
                 self.lineEdit().setText(text)
                 self.lineEdit().setCursorPosition(new_pos)
-        else:
+        elif key_event.key() != QtCore.Qt.Key.Key_Plus:
             super().keyPressEvent(key_event)
 
     def resizeEvent(self, resize_event: QtGui.QResizeEvent) -> None:
