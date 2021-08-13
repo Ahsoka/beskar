@@ -1,7 +1,7 @@
 from sentry_sdk.integrations.logging import LoggingIntegration
+from .settings import Settings, logging_dir
 from PyQt6.QtWidgets import QApplication
 from .constants import __version__
-from .settings import Settings
 from .utils import get_file
 
 import sys
@@ -9,6 +9,7 @@ import logging
 import platform
 import darkdetect
 import sentry_sdk
+import faulthandler
 
 if getattr(sys, 'frozen', False):
     from .source import FrozenImporter, get_source_internet
@@ -60,6 +61,9 @@ sentry_sdk.init(
 )
 
 settings = Settings()
+
+segfault_log = (logging_dir / 'faulthandler.log').open(mode='a')
+faulthandler.enable(segfault_log)
 
 app = QApplication(sys.argv)
 
