@@ -640,6 +640,8 @@ class ScanThread(QtCore.QThread):
 
         self.update_progress_bar.emit(0)
 
+        self.scan_page.save_button.setEnabled(False)
+
         self.scan_page.scanning_thread.update_dark_current.emit()
         self.scan_page.main_window.wait_condition.wait()
 
