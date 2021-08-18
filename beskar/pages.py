@@ -704,6 +704,8 @@ class ScanThread(QtCore.QThread):
         self.scan_page.scan_index = None
 
         self.scan_page.save_button.setEnabled(True)
+        self.scan_page.start_button.setEnabled(True)
+
         self.hide_notice_for_reading.emit()
 
         logger.info(f'Scan {scan_number + 1} ended.')
