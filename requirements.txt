@@ -3,7 +3,7 @@ numpy
 PyQt6>=6.1.0
 PyQt6-DataVisualization
 PyQt6-Charts
-darkdetect
+darkdetect>=0.4.0
 sentry-sdk
 pyinstaller
 zroya; platform_system == "Windows"
