@@ -64,7 +64,7 @@ def setUpLogger(
             encoding='UTF-8'
         )
     else:
-        raise TypeError(f"{file_name} must be str type, '{type(file_name)}'.")
+        raise TypeError(f"{file_name} must be str type, not '{type(file_name)}'.")
     # Do not use loggging.NOTSET, does not work for some reason
     # use logging.DEBUG if you want the lowest level
     everything.setLevel(logging.DEBUG)
