@@ -203,8 +203,6 @@ class SelectSEALKitPage(BasePage):
                     self.main_layout.addSpacing(20)
             self.main_layout.addStretch(10)
 
-            self.current_button = itertools.cycle(range(len(device_names)))
-
         self.setFocusPolicy(QtCore.Qt.FocusPolicy.TabFocus)
 
     def focusInEvent(self, focus_event: QtGui.QFocusEvent) -> None:
