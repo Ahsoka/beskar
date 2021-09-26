@@ -283,7 +283,7 @@ class BaseSetVoltagePage(BasePage):
         about_header: str,
         desc: str,
         desc_width,
-        spin_box_range: Tuple[Union[int, int], Union[float, float]],
+        spin_box_range: Tuple[Union[int, float], Union[int, float]],
         suffix: str = ' Volts'
     ):
         self.set_with_settings = False
