@@ -127,7 +127,6 @@ def sort_frames(
     else:
         return sorted_frames
 
-
 def error_to_exc_tuple(error: Exception):
     return (type(error), error, error.__traceback__)
 
